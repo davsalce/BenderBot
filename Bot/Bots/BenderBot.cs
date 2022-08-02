@@ -7,6 +7,12 @@ namespace Bot.Bots
 {
     public class BenderBot : ActivityHandler
     {
+        private readonly QuestionAnsweringClient questionAnsweringClient;
+
+        public BenderBot(QuestionAnsweringClient questionAnsweringClient)
+        {
+            this.questionAnsweringClient = questionAnsweringClient;
+        }
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded,
             ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
@@ -17,9 +23,7 @@ namespace Bot.Bots
         {
             string textMessage = turnContext.Activity.Text;
 
-            Uri uri = new Uri("https://ts-bot-language.cognitiveservices.azure.com");
-            AzureKeyCredential azureKeyCredential = new AzureKeyCredential("08f8aae73b7a4049a0ba8f58187c3c67");
-            QuestionAnsweringClient questionAnsweringClient = new QuestionAnsweringClient(uri, azureKeyCredential);
+
 
             QuestionAnsweringProject questionAnsweringProject = new QuestionAnsweringProject("ts-bot-customQuestionAnswering", "production");
             AnswersOptions answersOptions = new AnswersOptions()
@@ -28,8 +32,7 @@ namespace Bot.Bots
                 IncludeUnstructuredSources = true
             };
 
-
-            Response<AnswersResult> customQuestionAnsweringResult = await questionAnsweringClient.GetAnswersAsync(textMessage, questionAnsweringProject);
+            Response<AnswersResult> customQuestionAnsweringResult = await this.questionAnsweringClient.GetAnswersAsync(textMessage, questionAnsweringProject);
             AnswersResult? answersResult = customQuestionAnsweringResult.Value;
             List<KnowledgeBaseAnswer>? knowledgeBaseAnswers = answersResult.Answers as List<KnowledgeBaseAnswer>;
             if (knowledgeBaseAnswers != null && knowledgeBaseAnswers.Any())
