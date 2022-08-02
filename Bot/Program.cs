@@ -13,6 +13,11 @@ builder.Services.AddSingleton<QuestionAnsweringClient>(builder =>
     AzureKeyCredential azureKeyCredential = new AzureKeyCredential("08f8aae73b7a4049a0ba8f58187c3c67");
     return new QuestionAnsweringClient(uri, azureKeyCredential);
 });
+builder.Services.AddSingleton<QuestionAnsweringProject>(builder =>
+{
+    return new QuestionAnsweringProject("ts-bot-customQuestionAnswering", "production");
+
+});
 WebApplication? app = builder.Build();
 
 app.MapGet("/",() =>"Hello World!");

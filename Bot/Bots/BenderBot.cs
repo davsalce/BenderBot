@@ -8,11 +8,13 @@ namespace Bot.Bots
     public class BenderBot : ActivityHandler
     {
         private readonly QuestionAnsweringClient questionAnsweringClient;
-
-        public BenderBot(QuestionAnsweringClient questionAnsweringClient)
+        private readonly QuestionAnsweringProject questionAnsweringProject;
+        public BenderBot(QuestionAnsweringClient questionAnsweringClient, QuestionAnsweringProject questionAnsweringProject)
         {
             this.questionAnsweringClient = questionAnsweringClient;
+            this.questionAnsweringProject = questionAnsweringProject;
         }
+
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded,
             ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
@@ -23,9 +25,7 @@ namespace Bot.Bots
         {
             string textMessage = turnContext.Activity.Text;
 
-
-
-            QuestionAnsweringProject questionAnsweringProject = new QuestionAnsweringProject("ts-bot-customQuestionAnswering", "production");
+           
             AnswersOptions answersOptions = new AnswersOptions()
             {
                 ConfidenceThreshold = 0.8,
@@ -35,6 +35,7 @@ namespace Bot.Bots
             Response<AnswersResult> customQuestionAnsweringResult = await this.questionAnsweringClient.GetAnswersAsync(textMessage, questionAnsweringProject);
             AnswersResult? answersResult = customQuestionAnsweringResult.Value;
             List<KnowledgeBaseAnswer>? knowledgeBaseAnswers = answersResult.Answers as List<KnowledgeBaseAnswer>;
+
             if (knowledgeBaseAnswers != null && knowledgeBaseAnswers.Any())
             {
                 KnowledgeBaseAnswer? knowledgeBaseAnswer = knowledgeBaseAnswers.FirstOrDefault();
@@ -46,6 +47,5 @@ namespace Bot.Bots
                 await turnContext.SendActivityAsync(text, cancellationToken: cancellationToken);
             }
         }
-
     }
 }
