@@ -28,8 +28,14 @@ namespace Bot.Bots
            
             AnswersOptions answersOptions = new AnswersOptions()
             {
-                ConfidenceThreshold = 0.8,
-                IncludeUnstructuredSources = true
+                ConfidenceThreshold = 0.5,
+                IncludeUnstructuredSources = true,
+                ShortAnswerOptions = new ShortAnswerOptions()
+                {
+                    ConfidenceThreshold = 0.1,
+                    Size = 200,
+
+                }
             };
 
             Response<AnswersResult> customQuestionAnsweringResult = await this.questionAnsweringClient.GetAnswersAsync(textMessage, questionAnsweringProject);
