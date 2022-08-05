@@ -2,6 +2,8 @@ using Azure;
 using Azure.AI.Language.Conversations;
 using Azure.AI.Language.QuestionAnswering;
 using Bot.Bots;
+using Bot.CLU;
+using Bot.CQA;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 
@@ -11,23 +13,30 @@ builder.Services.AddTransient<IBot, BenderBot>();
 builder.Services.AddTransient<IBotFrameworkHttpAdapter, CloudAdapter>();
 builder.Services.AddSingleton<QuestionAnsweringClient>(servicesProvider =>
 {
+    CQAOptions CQAOptions = builder.Configuration.GetSection("CustomQuestionAnswering").Get<CQAOptions>();
+
     QuestionAnsweringClientOptions questionAnsweringClientOptions = new QuestionAnsweringClientOptions()
+
     {
         DefaultLanguage = "es-ES"
     };
-    Uri uri = new Uri("https://ts-bot-language.cognitiveservices.azure.com");
-    AzureKeyCredential azureKeyCredential = new AzureKeyCredential("08f8aae73b7a4049a0ba8f58187c3c67");
+    Uri uri = new Uri(CQAOptions.CustomQuestionAnsweringClient.Endpoint);
+    AzureKeyCredential azureKeyCredential = new AzureKeyCredential(CQAOptions.CustomQuestionAnsweringClient.Credential);
     return new QuestionAnsweringClient(uri, azureKeyCredential, questionAnsweringClientOptions);
 });
+
 builder.Services.AddSingleton<QuestionAnsweringProject>(servicesProvider =>
 {
-    return new QuestionAnsweringProject("ts-bot-customQuestionAnswering", "production");
+    CQAOptions CQAOptions = builder.Configuration.GetSection("CustomQuestionAnswering").Get<CQAOptions>();
+
+    return new QuestionAnsweringProject(CQAOptions.QuestionAnsweringProject.ProyectName, CQAOptions.QuestionAnsweringProject.DeploymentName);
 
 });
 builder.Services.AddSingleton<ConversationAnalysisClient>(servicesProvider =>
-{ 
-    Uri endpoint = new Uri("https://ts-bot-language.cognitiveservices.azure.com");
-    AzureKeyCredential credential = new AzureKeyCredential("08f8aae73b7a4049a0ba8f58187c3c67"); 
+{
+    CLUOptions CLUOptions = builder.Configuration.GetSection("ConversationLanguageUnderstandingClient").Get<CLUOptions>();
+    Uri endpoint = new Uri(CLUOptions.Endpoint);
+    AzureKeyCredential credential = new AzureKeyCredential(CLUOptions.Credential); 
     return new ConversationAnalysisClient(endpoint, credential);
 
 });

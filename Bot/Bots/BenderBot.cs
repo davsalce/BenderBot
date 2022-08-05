@@ -69,10 +69,6 @@ namespace Bot.Bots
                 }
             }
 
-
-
-
-
             AnswersOptions answersOptions = new AnswersOptions()
             {
                 ConfidenceThreshold = 0.9,
