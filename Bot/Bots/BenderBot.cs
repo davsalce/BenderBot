@@ -12,12 +12,10 @@ namespace Bot.Bots
     {
         private readonly QuestionAnsweringClient questionAnsweringClient;
         private readonly QuestionAnsweringProject questionAnsweringProject;
-        private readonly ConversationAnalysisClient conversationAnalysisClient;
-        public BenderBot(QuestionAnsweringClient questionAnsweringClient, QuestionAnsweringProject questionAnsweringProject, ConversationAnalysisClient conversationAnalysisClient)
+        public BenderBot(QuestionAnsweringClient questionAnsweringClient, QuestionAnsweringProject questionAnsweringProject)
         {
             this.questionAnsweringClient = questionAnsweringClient;
             this.questionAnsweringProject = questionAnsweringProject;
-            this.conversationAnalysisClient = conversationAnalysisClient;
         }
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded,

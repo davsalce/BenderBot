@@ -8,11 +8,11 @@ using IMiddleware = Microsoft.Bot.Builder.IMiddleware;
 
 namespace Bot.Middleware
 {
-    public class CLUmiddleware : IMiddleware
+    public class CLUMiddleware : IMiddleware
     {
         private readonly ConversationAnalysisClient conversationAnalysisClient;
         private readonly ConversationState conversationState;
-        public CLUmiddleware(ConversationAnalysisClient conversationAnalysisClient, ConversationState conversationState)
+        public CLUMiddleware(ConversationAnalysisClient conversationAnalysisClient, ConversationState conversationState)
         {
             this.conversationAnalysisClient = conversationAnalysisClient;
             this.conversationState = conversationState;
