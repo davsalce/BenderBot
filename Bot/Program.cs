@@ -1,16 +1,18 @@
 using Azure;
 using Azure.AI.Language.Conversations;
 using Azure.AI.Language.QuestionAnswering;
+using Bot;
 using Bot.Bots;
 using Bot.CLU;
 using Bot.CQA;
+using Bot.Middleware;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddTransient<IBot, BenderBot>();
-builder.Services.AddTransient<IBotFrameworkHttpAdapter, CloudAdapter>();
+builder.Services.AddTransient<IBotFrameworkHttpAdapter, BenderAdapter>();
 builder.Services.AddSingleton<QuestionAnsweringClient>(servicesProvider =>
 {
     CQAOptions CQAOptions = builder.Configuration.GetSection("CustomQuestionAnswering").Get<CQAOptions>();
@@ -40,6 +42,9 @@ builder.Services.AddSingleton<ConversationAnalysisClient>(servicesProvider =>
     return new ConversationAnalysisClient(endpoint, credential);
 
 });
+builder.Services.AddSingleton<IStorage, MemoryStorage>();
+builder.Services.AddSingleton<ConversationState>();
+builder.Services.AddSingleton<CLUMiddleware>();
 WebApplication? app = builder.Build();
 
 app.MapGet("/",() =>"Hello World!");
