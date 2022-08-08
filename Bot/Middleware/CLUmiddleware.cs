@@ -52,7 +52,7 @@ namespace Bot.Middleware
                 {
                     using JsonDocument result = JsonDocument.Parse(response.ContentStream);
                     JsonElement conversationalTaskResult = result.RootElement;
-                    JsonElement conversationPrediction = conversationalTaskResult.GetProperty("result").GetProperty("prediction");
+                    JsonElement conversationPrediction = conversationalTaskResult.GetProperty("result").GetProperty("prediction").Clone();
                     IStatePropertyAccessor<JsonElement> statePropertyAccessor = conversationState.CreateProperty<JsonElement>("CLUPrediction");
                     await statePropertyAccessor.SetAsync(turnContext, conversationPrediction);
                 }
