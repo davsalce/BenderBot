@@ -1,6 +1,7 @@
 ﻿using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
+using MockSeries;
 using System.Text.Json;
 
 namespace Bot.Dialogs
@@ -8,11 +9,13 @@ namespace Bot.Dialogs
     public class TrendingDialog : ComponentDialog
     {
         private readonly ConversationState _conversationState;
+        private readonly SeriesClient _seriesClient;
 
-        public record Entity(string category, string text);
-        public TrendingDialog(ConversationState conversationState)
+        
+        public TrendingDialog(ConversationState conversationState, SeriesClient seriesClient)
         {
             _conversationState = conversationState;
+            _seriesClient = seriesClient;
             var waterfallSteps = new WaterfallStep[]
          {
                 GetPeriodFromCLU,
@@ -28,7 +31,7 @@ namespace Bot.Dialogs
 
             InitialDialogId = nameof(WaterfallDialog);
         }
-
+        public record Resolution(string dateTimeSubKind, DateTime value, DateTime beguin, DateTime end);
 
         private async Task<DialogTurnResult> GetPeriodFromCLU(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
@@ -36,13 +39,11 @@ namespace Bot.Dialogs
             JsonElement CLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
 
 
-            var entities = CLUPrediction.GetProperty("entities").Deserialize<List<Entity>>();
-            Entity? period = entities?.FirstOrDefault<Entity>(entity =>
-                                                                        entity.category.Equals("DateTime")
-                                                                        && (entity.text.Equals("hoy")
-                                                                            || entity.text.Equals("semana")
-                                                                            || entity.text.Equals("mes")
-                                                                            || entity.text.Equals("por siempre")));
+            var resolutions = CLUPrediction.GetProperty("entities").GetProperty("resolutions").Deserialize<List<Resolution>>();
+            Resolution? period = resolutions?.FirstOrDefault<Resolution>(resolution =>
+                                                                         resolution.value.Equals(DateTime.Date) // hoy
+                                                                         
+                                                                         );
             return await stepContext.NextAsync(period, cancellationToken: cancellationToken);
         }
 
