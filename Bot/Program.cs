@@ -5,6 +5,7 @@ using Bot;
 using Bot.Bots;
 using Bot.CLU;
 using Bot.CQA;
+using Bot.Dialogs;
 using Bot.Middleware;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
@@ -40,11 +41,11 @@ builder.Services.AddSingleton<ConversationAnalysisClient>(servicesProvider =>
     Uri endpoint = new Uri(CLUOptions.Endpoint);
     AzureKeyCredential credential = new AzureKeyCredential(CLUOptions.Credential); 
     return new ConversationAnalysisClient(endpoint, credential);
-
 });
 builder.Services.AddSingleton<IStorage, MemoryStorage>();
 builder.Services.AddSingleton<ConversationState>();
 builder.Services.AddSingleton<CLUMiddleware>();
+builder.Services.AddSingleton<CQADialog>();
 WebApplication? app = builder.Build();
 
 app.MapGet("/",() =>"Hello World!");
