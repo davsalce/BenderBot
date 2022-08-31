@@ -10,11 +10,13 @@ namespace Bot.Bots
     {
         private readonly ConversationState _conversationState;
         private readonly CQADialog _cQADialog;
+        private readonly TrendingDialog _trendingDialog;
 
-        public BenderBot(ConversationState conversationState, CQADialog CQADialog)
+        public BenderBot(ConversationState conversationState, CQADialog CQADialog, TrendingDialog trendingDialog)
         {
             this._conversationState = conversationState;
             _cQADialog = CQADialog;
+            _trendingDialog = trendingDialog;
         }
         public override Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
@@ -34,6 +36,9 @@ namespace Bot.Bots
             IStatePropertyAccessor<JsonElement> statePropertyAccessor = _conversationState.CreateProperty<JsonElement>("CLUPrediction");
             JsonElement CLUPrediction = await statePropertyAccessor.GetAsync(turnContext, cancellationToken: cancellationToken);
 
+
+            IStatePropertyAccessor<DialogState> dialogStatePropertyAccesor = _conversationState.CreateProperty<DialogState>("DialogState");
+
             string? topIntent = CLUPrediction.GetProperty("topIntent").GetString();
             switch (topIntent)
             {
@@ -44,14 +49,16 @@ namespace Bot.Bots
                     await turnContext.SendActivityAsync(topIntent, cancellationToken: cancellationToken);
                     break;
                 case "TrendingSeries":
+                    // Envía Actividad de tipo texto, con el texto "TrendingSeries"
                     await turnContext.SendActivityAsync(topIntent, cancellationToken: cancellationToken);
+                    // Ejecuta el diálogo de Trending
+                    await _trendingDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                     break;
                 case "RecomendSeries":
                     await turnContext.SendActivityAsync(topIntent, cancellationToken: cancellationToken);
                     break;
                 case "None":
                 default:
-                    IStatePropertyAccessor<DialogState> dialogStatePropertyAccesor = _conversationState.CreateProperty<DialogState>("DialogState");
                     await _cQADialog.RunAsync( turnContext, dialogStatePropertyAccesor,  cancellationToken);
                     break;
             }

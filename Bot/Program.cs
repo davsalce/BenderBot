@@ -9,6 +9,7 @@ using Bot.Dialogs;
 using Bot.Middleware;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using MockSeries;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +47,8 @@ builder.Services.AddSingleton<IStorage, MemoryStorage>();
 builder.Services.AddSingleton<ConversationState>();
 builder.Services.AddSingleton<CLUMiddleware>();
 builder.Services.AddSingleton<CQADialog>();
+builder.Services.AddSingleton<TrendingDialog>();
+builder.Services.AddSingleton<SeriesClient>();
 WebApplication? app = builder.Build();
 
 app.MapGet("/",() =>"Hello World!");
