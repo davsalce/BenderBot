@@ -30,7 +30,7 @@ namespace Bot.Dialogs
                 GetSeriesbyPeriod
          };
 
-            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
+            AddDialog(new WaterfallDialog(nameof(WaterfallDialog) + nameof(TrendingDialog) , waterfallSteps));
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             //AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>), AgePromptValidatorAsync));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
@@ -122,8 +122,6 @@ namespace Bot.Dialogs
                     default:
                         period = Period.AllTimes;
                         break;
-
-
                 }
             }
             return await stepContext.NextAsync(period, cancellationToken: cancellationToken);
@@ -131,7 +129,7 @@ namespace Bot.Dialogs
         
         private Task<DialogTurnResult> GetSeriesbyPeriod(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException();//ir a buscar las series y devolverselas al user        
         }
 
 

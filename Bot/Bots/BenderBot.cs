@@ -11,12 +11,14 @@ namespace Bot.Bots
         private readonly ConversationState _conversationState;
         private readonly CQADialog _cQADialog;
         private readonly TrendingDialog _trendingDialog;
+        private readonly MarkEpisodeAsWatched _markEpisodeAsWatched;
 
-        public BenderBot(ConversationState conversationState, CQADialog CQADialog, TrendingDialog trendingDialog)
+        public BenderBot(ConversationState conversationState, CQADialog CQADialog, TrendingDialog trendingDialog, MarkEpisodeAsWatched markEpisodeAsWatched)
         {
             this._conversationState = conversationState;
             _cQADialog = CQADialog;
             _trendingDialog = trendingDialog;
+            _markEpisodeAsWatched = markEpisodeAsWatched;
         }
         public override Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
@@ -44,6 +46,8 @@ namespace Bot.Bots
             {
                 case "MarkEpisodeAsWatched":
                     await turnContext.SendActivityAsync(topIntent, cancellationToken: cancellationToken);
+                    //Ejecuta el dialogo de Mark
+                    await _markEpisodeAsWatched.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                     break;
                 case "PendingEpisodes":
                     await turnContext.SendActivityAsync(topIntent, cancellationToken: cancellationToken);

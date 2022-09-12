@@ -49,6 +49,7 @@ builder.Services.AddSingleton<CLUMiddleware>();
 builder.Services.AddSingleton<CQADialog>();
 builder.Services.AddSingleton<TrendingDialog>();
 builder.Services.AddSingleton<SeriesClient>();
+builder.Services.AddSingleton<MarkEpisodeAsWatched>();
 WebApplication? app = builder.Build();
 
 app.MapGet("/",() =>"Hello World!");
