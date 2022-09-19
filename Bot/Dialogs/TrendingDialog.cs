@@ -1,6 +1,7 @@
 ﻿using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
+using Microsoft.Bot.Schema;
 using MockSeries;
 using MockSeries.Models;
 using System.Text.Json;
@@ -24,17 +25,17 @@ namespace Bot.Dialogs
                 GetSeriesbyPeriod
          };
 
-            AddDialog(new WaterfallDialog(nameof(WaterfallDialog) + nameof(TrendingDialog) , waterfallSteps));
+            AddDialog(new WaterfallDialog(nameof(WaterfallDialog) + nameof(TrendingDialog), waterfallSteps));
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             //AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>), AgePromptValidatorAsync));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
             //AddDialog(new AttachmentPrompt(nameof(AttachmentPrompt), PicturePromptValidatorAsync));
 
-            InitialDialogId = nameof(WaterfallDialog);
+            InitialDialogId = nameof(WaterfallDialog) + nameof(TrendingDialog);
         }
 
-       
+
         public record Resolution(string dateTimeSubKind, DateTime value, DateTime beguin, DateTime end);
 
         private async Task<DialogTurnResult> GetPeriodFromCLU(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -64,14 +65,17 @@ namespace Bot.Dialogs
                         if (IsThisMonth(resolution))
                         {
                             period = TrendingPeriod.LastMonth;
+                            break;
                         }
                         else if (IsThisWeek(resolution))
                         {
                             period = TrendingPeriod.LastWeek;
+                            break;
                         }
                         else if (IsToday(resolution))
                         {
                             period = TrendingPeriod.Today;
+                            break;
                         }
                     }
                 }
@@ -82,8 +86,8 @@ namespace Bot.Dialogs
 
         private static async Task<DialogTurnResult> AskForPeriodStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            if (stepContext.Result is not TrendingPeriod 
-                || stepContext.Result is TrendingPeriod period 
+            if (stepContext.Result is not TrendingPeriod
+                || stepContext.Result is TrendingPeriod period
                 && period is default(TrendingPeriod))
             {
                 return await stepContext.PromptAsync(nameof(ChoicePrompt),
@@ -120,12 +124,38 @@ namespace Bot.Dialogs
                 }
             }
             return await stepContext.NextAsync(period, cancellationToken: cancellationToken);
-        } 
-        
-        private Task<DialogTurnResult> GetSeriesbyPeriod(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();//ir a buscar las series y devolverselas al user        
         }
+
+        private async Task<DialogTurnResult> GetSeriesbyPeriod(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            if (stepContext.Result is TrendingPeriod period)
+            {
+                ICollection<ExploreShow>? seriesList = await _seriesClient.GetTrendingShowsAsync(period, cancellationToken: cancellationToken);
+                List<Attachment> attachments = new List<Attachment>();
+                foreach (var series in seriesList)
+                {
+                    HeroCard heroCard = new HeroCard()
+                    {
+                        Title = series.Name,
+                        Subtitle = $"Followers: {series.Followers} Status: {series.Status}",
+                        Text = series.Overview,
+                        Images = new List<CardImage>()
+                        {
+                            new CardImage()
+                            {
+                                Url = series.Image
+                            }
+                        },
+                    };
+                    attachments.Add(heroCard.ToAttachment());
+                }
+
+                var activity = MessageFactory.Carousel(attachments, "Aqui tienes.");
+                await stepContext.Context.SendActivityAsync(activity, cancellationToken: cancellationToken); 
+            }
+            return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
+        }
+
 
 
         private bool IsThisWeek(JsonElement resolution)

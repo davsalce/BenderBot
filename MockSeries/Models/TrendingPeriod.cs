@@ -8,17 +8,16 @@ namespace MockSeries.Models
 {
     public enum TrendingPeriod
     {
+        [System.Runtime.Serialization.EnumMember(Value = @"AllTimes")]
+        AllTimes = 0,
 
         [System.Runtime.Serialization.EnumMember(Value = @"Today")]
-        Today = 0,
+        Today = 1,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LastWeek")]
-        LastWeek = 1,
+        LastWeek = 2,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LastMonth")]
-        LastMonth = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"AllTimes")]
-        AllTimes = 3,
+        LastMonth = 3,
     }
 }
