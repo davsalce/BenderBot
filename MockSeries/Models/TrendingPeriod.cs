@@ -18,5 +18,7 @@ namespace MockSeries.Models
         [System.Runtime.Serialization.EnumMember(Value = @"LastMonth")]
         LastMonth = 2,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"AllTimes")]
+        AllTimes = 3,
     }
 }

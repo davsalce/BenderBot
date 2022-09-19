@@ -2,6 +2,7 @@
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using MockSeries;
+using MockSeries.Models;
 using System.Text.Json;
 
 namespace Bot.Dialogs
@@ -11,13 +12,6 @@ namespace Bot.Dialogs
         private readonly ConversationState _conversationState;
         private readonly SeriesClient _seriesClient;
 
-        enum Period
-        { 
-            AllTimes,
-            Today,
-            ThisWeek,
-            ThisMonth,
-        }
         public TrendingDialog(ConversationState conversationState, SeriesClient seriesClient)
         {
             _conversationState = conversationState;
@@ -56,7 +50,7 @@ namespace Bot.Dialogs
 
             JsonElement[] entities = JsonSerializer.Deserialize<JsonElement[]>(entitiesJson);
 
-            Period period = default;
+            MockSeries.Models.TrendingPeriod period = default;
 
             foreach (JsonElement entity in entities)
             {
@@ -69,15 +63,15 @@ namespace Bot.Dialogs
                     {
                         if (IsThisMonth(resolution))
                         {
-                            period = Period.ThisMonth;
+                            period = TrendingPeriod.LastMonth;
                         }
                         else if (IsThisWeek(resolution))
                         {
-                            period = Period.ThisWeek;
+                            period = TrendingPeriod.LastWeek;
                         }
                         else if (IsToday(resolution))
                         {
-                            period = Period.Today;
+                            period = TrendingPeriod.Today;
                         }
                     }
                 }
@@ -88,9 +82,10 @@ namespace Bot.Dialogs
 
         private static async Task<DialogTurnResult> AskForPeriodStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            if (stepContext.Result is not Period || stepContext.Result is Period period && period is not default(Period))
+            if (stepContext.Result is not TrendingPeriod 
+                || stepContext.Result is TrendingPeriod period 
+                && period is default(TrendingPeriod))
             {
-
                 return await stepContext.PromptAsync(nameof(ChoicePrompt),
                     new PromptOptions
                     {
@@ -103,24 +98,24 @@ namespace Bot.Dialogs
 
         private async Task<DialogTurnResult> AnswerToPeriod(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            Period period = default;
-            if (stepContext.Result is Period period1) period = period1;
+            TrendingPeriod period = default;
+            if (stepContext.Result is TrendingPeriod period1) period = period1;
             if (stepContext.Result is string periodStr)
             {
                 switch (periodStr)
                 {
                     case "Hoy":
-                        period = Period.Today;
+                        period = TrendingPeriod.Today;
                         break;
                     case "Semana":
-                        period = Period.ThisWeek;
+                        period = TrendingPeriod.LastWeek;
                         break;
                     case "Mes":
-                        period = Period.ThisMonth;
+                        period = TrendingPeriod.LastMonth;
                         break;
                     case "Por siempre":
                     default:
-                        period = Period.AllTimes;
+                        period = TrendingPeriod.AllTimes;
                         break;
 
 
@@ -129,9 +124,12 @@ namespace Bot.Dialogs
             return await stepContext.NextAsync(period, cancellationToken: cancellationToken);
         } 
         
-        private Task<DialogTurnResult> GetSeriesbyPeriod(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
+        private async Task<DialogTurnResult> GetSeriesbyPeriod(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {          
+            if (stepContext.Result is TrendingPeriod period) {  
+                var trendingSeries = await _seriesClient.GetTrendingShowsAsync(period);    
+            }
+            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
         }
 
 
