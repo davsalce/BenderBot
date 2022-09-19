@@ -24,7 +24,7 @@ namespace Bot.Dialogs
                 GetSeriesbyPeriod
          };
 
-            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
+            AddDialog(new WaterfallDialog(nameof(WaterfallDialog) + nameof(TrendingDialog) , waterfallSteps));
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             //AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>), AgePromptValidatorAsync));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
@@ -117,19 +117,14 @@ namespace Bot.Dialogs
                     default:
                         period = TrendingPeriod.AllTimes;
                         break;
-
-
                 }
             }
             return await stepContext.NextAsync(period, cancellationToken: cancellationToken);
         } 
         
-        private async Task<DialogTurnResult> GetSeriesbyPeriod(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {          
-            if (stepContext.Result is TrendingPeriod period) {  
-                var trendingSeries = await _seriesClient.GetTrendingShowsAsync(period);    
-            }
-            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
+        private Task<DialogTurnResult> GetSeriesbyPeriod(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();//ir a buscar las series y devolverselas al user        
         }
 
 
