@@ -22,7 +22,6 @@ namespace MockSeries.Models
             Name = name;
             Year = year;
             Overview = overview;
-            FirstAired = firstAired;
             AirDay = airDay;
             Status = status;
             Image = image;

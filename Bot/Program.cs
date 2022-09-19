@@ -6,9 +6,11 @@ using Bot.Bots;
 using Bot.CLU;
 using Bot.CQA;
 using Bot.Dialogs;
+using Bot.Dialogs.MarkEpisodeAsWatched;
 using Bot.Middleware;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using MockSeries;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +48,14 @@ builder.Services.AddSingleton<IStorage, MemoryStorage>();
 builder.Services.AddSingleton<ConversationState>();
 builder.Services.AddSingleton<CLUMiddleware>();
 builder.Services.AddSingleton<CQADialog>();
+builder.Services.AddSingleton<TrendingDialog>();
+builder.Services.AddSingleton<SeriesClient>();
+builder.Services.AddSingleton<MarkEpisodeAsWatchedDialog>();
+builder.Services.AddSingleton<PendingEpisodesDialog>();
+builder.Services.AddSingleton<RecomendSeriesDialog>();
+builder.Services.AddSingleton<GetSeriesNameDialog>();
+builder.Services.AddSingleton<GetSeasonDialog>();
+builder.Services.AddSingleton<GetEpisodeDialog>();
 WebApplication? app = builder.Build();
 
 app.MapGet("/",() =>"Hello World!");
