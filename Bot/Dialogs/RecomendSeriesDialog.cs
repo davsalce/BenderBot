@@ -1,27 +1,53 @@
 ﻿using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Schema;
 using MockSeries;
+using MockSeries.Models;
 
 namespace Bot.Dialogs
 {
     public class RecomendSeriesDialog : ComponentDialog
     {
-        private readonly ConversationState _conversationState;
         private readonly SeriesClient _seriesClient;
-        public RecomendSeriesDialog(ConversationState _conversationState, SeriesClient _seriesClient, ConversationState conversationState, SeriesClient seriesClient)
-        {
-            this._conversationState = conversationState;
-            this._seriesClient = seriesClient;
 
+        public RecomendSeriesDialog(SeriesClient seriesClient)
+        {
+            _seriesClient = seriesClient;
             var waterfallSteps = new WaterfallStep[]
-            {
-                GetRecomendedSeries
-            };
+         {
+             GetRecomendedSeries,
+         };
+
+            AddDialog(new WaterfallDialog(nameof(WaterfallDialog) + nameof(RecomendSeriesDialog), waterfallSteps));
+            AddDialog(new TextPrompt(nameof(TextPrompt)));
+
+            InitialDialogId = nameof(WaterfallDialog) + nameof(RecomendSeriesDialog);
         }
 
-        private Task<DialogTurnResult> GetRecomendedSeries(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> GetRecomendedSeries(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            ICollection<ExploreShow>? seriesList = await _seriesClient.GetRecomendSeriesAsync();
+            List<Attachment> attachments = new List<Attachment>();
+            foreach (var series in seriesList)
+            {
+                HeroCard heroCard = new HeroCard()
+                {
+                    Title = series.Name,
+                    Subtitle = $"Followers: {series.Followers} Status: {series.Status}",
+                    Text = series.Overview,
+                    Images = new List<CardImage>()
+                        {
+                            new CardImage()
+                            {
+                                Url = series.Image
+                            }
+                        },
+                };
+                attachments.Add(heroCard.ToAttachment());
+            }
+            var activity = MessageFactory.Carousel(attachments, "Estas son tus series recomendadas.");
+            await stepContext.Context.SendActivityAsync(activity, cancellationToken: cancellationToken);
+            return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
         }
     }
 }

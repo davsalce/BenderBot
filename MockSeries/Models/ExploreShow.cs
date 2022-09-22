@@ -11,17 +11,19 @@ namespace MockSeries.Models
         public string? Name { get; set; }
         public string? Year { get; set; }
         public string? Overview { get; set; }
+        public string? Subtitle { get; set; }
         public DayOfWeek? AirDay { get; set; }
         public ShowStatus? Status { get; set; }
         public string? Image { get; set; }
         public int? Followers { get; set; }
         public FollowStatus? UserFollowStatus { get; set; }
 
-        public ExploreShow(string name, string year, string overview, DateTimeOffset? firstAired, DayOfWeek? airDay, ShowStatus? status, string image, int followers, FollowStatus? userFollowStatus)
+        public ExploreShow(string name, string year, string overview, string subtitle, DateTimeOffset? firstAired, DayOfWeek? airDay, ShowStatus? status, string image, int followers, FollowStatus? userFollowStatus)
         {
             Name = name;
             Year = year;
             Overview = overview;
+            Subtitle = subtitle;
             AirDay = airDay;
             Status = status;
             Image = image;

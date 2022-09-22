@@ -202,9 +202,99 @@ namespace MockSeries
             return list;
         }
 
-        public async Task<bool> MarkEpisodeAsWatch(string user, string series , int season, int episode)
+        public async Task<bool> MarkEpisodeAsWatch(string user, string series, int season, int episode)
         {
             return true;
+        }
+       
+        public async Task<ICollection<ExploreShow>> GetPendingEpisodesAsync(string user, CancellationToken cancellationToken = default(CancellationToken)) 
+        {
+            return MockPendingEpisodes();
+        }
+        
+        public ICollection<ExploreShow> MockPendingEpisodes()
+        {
+            List<ExploreShow> list = new();
+
+            ExploreShow show = new ExploreShow()
+            {
+                Image = "https://static.trackseries.tv/banners/gKG5QGz5Ngf8fgWpBsWtlg5L2SF_medium.jpg",
+                Name = "Arrow",
+                Overview = "Nyssa believes that Malcolm killed Sara and goes after him to avenger her lover's murder. Oliver discovers that he has no choice but to stop her, despite Laurel insisting that he avenger her sister's death. Meanwhile, Thea returns to Starling City and settles in... until Nyssa discovers that she's Malcolm's daughter.",
+                Subtitle = "3x04 The Magician",
+            
+            };
+            list.Add(show);
+
+            show = new ExploreShow()
+            {
+               
+                Image = "https://static.trackseries.tv/banners/z2yahl2uefxDCl0nogcRBstwruJ_medium.jpg",
+                Name = "House of the Dragon",
+                Subtitle = "1x05 We Light the Way",
+                Overview = "Daemon visits his wife in the Vale. Viserys and Rhaenyra broker agreements with the Valeryons. Alicent seeks the truth about the princess.",           
+            };
+            list.Add(show);
+
+            show = new ExploreShow()
+            {
+                Image = "https://static.trackseries.tv/banners/49WJfeN0moxb9IPfGn8AIqMGskD_medium.jpg",
+                Name = "Stranger Things",
+                Subtitle = "2x01 MADMAX",
+                Overview = "As the town preps for Halloween, a high-scoring rival shakes things up at the arcade, and a skeptical Hopper inspects a field of rotting pumpkins.",
+            };
+            list.Add(show);
+            return list;
+        }
+      
+        public async Task<ICollection<ExploreShow>> GetRecomendSeriesAsync()
+        {
+            return MockRecomendSeries();
+        }
+
+        public ICollection<ExploreShow> MockRecomendSeries()
+        {
+            List<ExploreShow> list = new();
+
+            ExploreShow show = new ExploreShow()
+            {
+                AirDay = DayOfWeek.Monday,
+                Followers = 17258,
+                Image = "https://static.trackseries.tv/banners/gKG5QGz5Ngf8fgWpBsWtlg5L2SF_medium.jpg",
+                Name = "Arrow",
+                Overview = "Spoiled billionaire playboy Oliver Queen is missing and presumed dead when his yacht is lost at sea. He returns five years later a changed man, determined to clean up the city as a hooded vigilante armed with a bow.",
+                Status = ShowStatus.Ended,
+                UserFollowStatus = FollowStatus.WishList,
+                Year = "2012"
+            };
+            list.Add(show);
+
+            show = new ExploreShow()
+            {
+                AirDay = DayOfWeek.Tuesday,
+                Followers = 2896,
+                Image = "https://static.trackseries.tv/banners/z2yahl2uefxDCl0nogcRBstwruJ_medium.jpg",
+                Name = "House of the Dragon",
+                Overview = "The Targaryen dynasty is at the absolute apex of its power, with more than 15 dragons under their yoke. Most empires crumble from such heights. In the case of the Targaryens, their slow fall begins when King Viserys breaks with a century of tradition by naming his daughter Rhaenyra heir to the Iron Throne. But when Viserys later fathers a son, the court is shocked when Rhaenyra retains her status as his heir, and seeds of division sow friction across the realm.",
+                Status = ShowStatus.ReturningSeries,
+                UserFollowStatus = FollowStatus.NotFollowing,
+                Year = "2022"
+            };
+            list.Add(show);
+
+            show = new ExploreShow()
+            {
+                AirDay = DayOfWeek.Wednesday,
+                Followers = 20476,
+                Image = "https://static.trackseries.tv/banners/49WJfeN0moxb9IPfGn8AIqMGskD_medium.jpg",
+                Name = "Stranger Things",
+                Overview = "When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces, and one strange little girl.",
+                Status = ShowStatus.ReturningSeries,
+                UserFollowStatus = FollowStatus.Following,
+                Year = "2016"
+            };
+            list.Add(show);
+            return list;
         }
     }
 }
