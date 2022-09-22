@@ -69,6 +69,7 @@ namespace Bot.Bots
                         break;
                     case "PendingEpisodes":
                         await turnContext.SendActivityAsync(topIntent, cancellationToken: cancellationToken);
+                        await _pendingEpisodesDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                         break;
                     case "TrendingSeries":
                         // Envía Actividad de tipo texto, con el texto "TrendingSeries"
@@ -78,6 +79,7 @@ namespace Bot.Bots
                         break;
                     case "RecomendSeries":
                         await turnContext.SendActivityAsync(topIntent, cancellationToken: cancellationToken);
+                        await _recomendSeriesDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                         break;
                     case "None":
                     default:

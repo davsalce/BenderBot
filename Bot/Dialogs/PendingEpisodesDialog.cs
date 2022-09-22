@@ -1,28 +1,53 @@
 ﻿using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Schema;
 using MockSeries;
+using MockSeries.Models;
 
 namespace Bot.Dialogs
 {
     public class PendingEpisodesDialog : ComponentDialog
     {
-        private readonly ConversationState _conversationState;
         private readonly SeriesClient _seriesClient;
-        public PendingEpisodesDialog(ConversationState _conversationState, SeriesClient _seriesClient, ConversationState conversationState, SeriesClient seriesClient)
-        {
-            this._conversationState = conversationState;
-            this._seriesClient = seriesClient;
 
-            var waterfallSteps = new WaterfallStep[]
-            {
-                GetPendingSeries
-                //ir a algun sitio a mirar las series que sigue y no a terminado
-                //devolverselas
-            };
-        }
-        private Task<DialogTurnResult> GetPendingSeries(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        public PendingEpisodesDialog(SeriesClient seriesClient)
         {
-            throw new NotImplementedException();
+            _seriesClient = seriesClient;
+            var waterfallSteps = new WaterfallStep[]
+         {
+                GetPendingSeries,
+         };
+
+            AddDialog(new WaterfallDialog(nameof(WaterfallDialog) + nameof(PendingEpisodesDialog), waterfallSteps));
+            AddDialog(new TextPrompt(nameof(TextPrompt)));
+
+            InitialDialogId = nameof(WaterfallDialog) + nameof(PendingEpisodesDialog);
+        }
+        private async Task<DialogTurnResult> GetPendingSeries(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            ICollection<ExploreShow>? seriesList = await _seriesClient.GetPendingEpisodesAsync(stepContext.Context.Activity.From.Id, cancellationToken: cancellationToken);
+            List<Attachment> attachments = new List<Attachment>();
+            foreach (var series in seriesList)
+            {
+                HeroCard heroCard = new HeroCard()
+                {
+                    Title = series.Name,
+                    Subtitle = series.Subtitle,
+                    Text = series.Overview,
+                    Images = new List<CardImage>()
+                        {
+                            new CardImage()
+                            {
+                                Url = series.Image
+                            }
+                        },
+                };
+                attachments.Add(heroCard.ToAttachment());
+            }
+
+            var activity = MessageFactory.Carousel(attachments, "Estos son los capítulos pendientes que tienes.");
+            await stepContext.Context.SendActivityAsync(activity, cancellationToken: cancellationToken); 
+            return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
         }
     }
 }
