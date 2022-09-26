@@ -5,19 +5,18 @@ namespace System.Text.Json
 {
     public static class CLUExtensions
     {
-        public static bool TryGetSeriesNameFromEntities(this JsonElement entity, ref string seriesName)
-        {
+
+        public static MarkEpisodeAsWatchDTO GetSeriesNameFromEntities(this JsonElement entity, MarkEpisodeAsWatchDTO dto) //devuelve dto (SeriesName)
+        { 
             if (entity.GetProperty("category").GetString() is string category && category.Equals("Serie"))
             {
-                seriesName = entity.GetProperty("text").ToString();
-                return true;
+                dto.SeriesName = entity.GetProperty("text").ToString();
             }
-            return false;
+            return dto;
         }
 
-        public static bool TryGetSeasonEpisodeFromEntities(this JsonElement entity, MarkEpisodeAsWatchDTO markEpisodeAsWatchDTO)
+        public static bool TryGetSeasonEpisodeFromEntities(this JsonElement entity, MarkEpisodeAsWatchDTO markEpisodeAsWatchDTO)//devuelve true  (dto Episode Season)
         {
-
             if (entity.GetProperty("category").GetString() is string category && category.Equals("SeasonEpisode"))
             {
                 string? seasonEpisodeStr = entity.GetProperty("text").GetString();
@@ -25,8 +24,6 @@ namespace System.Text.Json
                 return TryGetSeasonEpisodeArray(seasonEpisodeArray, markEpisodeAsWatchDTO);
             }
             return default;
-
-
         }
 
         private static bool TryGetSeasonEpisodeArray(string[]? seasonEpisodeArray, MarkEpisodeAsWatchDTO markEpisodeAsWatchDTO)
@@ -38,55 +35,6 @@ namespace System.Text.Json
                 {
                     markEpisodeAsWatchDTO.Season = season;
                     markEpisodeAsWatchDTO.Episode = episode;
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static bool TryGetSeasonFromEntities(this JsonElement entity,ref int season)
-        {
-
-            if (entity.GetProperty("category").GetString() is string category && category.Equals("SeasonEpisode"))
-            {
-                string? seasonEpisodeStr = entity.GetProperty("text").GetString();
-                string[]? seasonEpisodeArray = seasonEpisodeStr?.Split("x");
-                return TryGetSeasonArray(seasonEpisodeArray, ref season);
-            }
-            return default;
-        }
-
-
-        private static bool TryGetSeasonArray(string[]? seasonEpisodeArray, ref int season)
-        {
-            if (seasonEpisodeArray is not null && seasonEpisodeArray.Length == 2)
-            {
-                if (int.TryParse(seasonEpisodeArray[0], out season))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        public static bool TryGetEpisodeFromEntities(this JsonElement entity, ref int episode)
-        {
-
-            if (entity.GetProperty("category").GetString() is string category && category.Equals("SeasonEpisode"))
-            {
-                string? seasonEpisodeStr = entity.GetProperty("text").GetString();
-                string[]? seasonEpisodeArray = seasonEpisodeStr?.Split("x");
-                return TryGetEpisodeArray(seasonEpisodeArray, ref episode);
-            }
-            return default;
-        }
-
-
-        private static bool TryGetEpisodeArray(string[]? seasonEpisodeArray, ref int episode)
-        {
-            if (seasonEpisodeArray is not null && seasonEpisodeArray.Length == 2)
-            {
-                if (int.TryParse(seasonEpisodeArray[1], out episode))
-                {
                     return true;
                 }
             }

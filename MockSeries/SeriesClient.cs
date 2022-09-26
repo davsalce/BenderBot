@@ -296,5 +296,15 @@ namespace MockSeries
             list.Add(show);
             return list;
         }
+
+        public int GetLastUnwatchedEpisode() 
+        {
+            return 9;
+        }
+        public int GetFirstUnwatchedEpisode() 
+        {
+            return 1;
+        }
+
     }
 }
