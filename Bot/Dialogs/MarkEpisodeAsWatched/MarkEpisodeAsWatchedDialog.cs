@@ -84,14 +84,12 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
                 if (!entity.TryGetSeasonEpisodeFromEntities(dto))
                 {
                     if (entity.GetProperty("category").GetString() is string categoryE 
-                        && categoryE.Equals("Episode")
-                        && !dto.IsCompleteEpisode())
+                        && categoryE.Equals("Episode")) // isCompleted delete xk sino solo entra el 1 valor 
                     {
                         dto.Episodes.Add(entity);
                     }
                     else if (entity.GetProperty("category").GetString() is string categoryS 
-                        && categoryS.Equals("Season")
-                        && !dto.IsCompleteSeason())
+                        && categoryS.Equals("Season"))
                     {
                         dto.Seasons.Add(entity);
                     }
@@ -122,7 +120,6 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
         {
             if (stepContext.Result is MarkEpisodeAsWatchDTO dto)
             {
-
                 if (!dto.IsCompleteSeason())
                 {
                     Console.WriteLine();
