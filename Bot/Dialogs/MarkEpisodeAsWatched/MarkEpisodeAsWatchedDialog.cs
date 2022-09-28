@@ -1,13 +1,10 @@
-﻿using Bot.CLU;
-using Bot.Models;
+﻿using Bot.Models;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Builder.Dialogs.Prompts;
-using Microsoft.Bot.Schema;
 using MockSeries;
 using System.Text.Json;
-using static Microsoft.Bot.Builder.Dialogs.Prompts.PromptCultureModels;
 
 namespace Bot.Dialogs.MarkEpisodeAsWatched
 {
@@ -125,8 +122,12 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
         {
             if (stepContext.Result is MarkEpisodeAsWatchDTO dto)
             {
+
                 if (!dto.IsCompleteSeason())
                 {
+                    Console.WriteLine();
+                    Console.WriteLine("!dto.IsCompleteSeason()");
+                    Console.WriteLine("StackTrace: '{0}'", Environment.StackTrace);
                     return await stepContext.BeginDialogAsync(_seasonDialog.Id, dto, cancellationToken: cancellationToken);
                 }
             }

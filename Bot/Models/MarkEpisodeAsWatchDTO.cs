@@ -13,28 +13,13 @@ namespace Bot.Models
                 if (_season != int.MinValue) return _season;
                 if (Seasons.Count > 0)
                 {
-                    int? seasonLength1 = Seasons.ElementAt(0).GetProperty("length").GetInt32();
-                    int? seasonLength2 = Seasons.ElementAt(1).GetProperty("length").GetInt32();
-                    int maxLength = Math.Max(seasonLength1 ?? 0, seasonLength2 ?? 0);
-
-                    JsonElement selectedJsonElementSeason = Seasons.FirstOrDefault(s => s.GetProperty("length").GetInt32() == maxLength);
-
-                    JsonElement resolutionsJson = selectedJsonElementSeason.GetProperty("resolutions");
-                    JsonElement[] resolutions = JsonSerializer.Deserialize<JsonElement[]>(resolutionsJson);
-                    int season = int.MinValue;
-                    JsonElement seasonValue = resolutions.FirstOrDefault().GetProperty("value");
-
-                    if (int.TryParse(seasonValue.GetRawText().Replace("\"", string.Empty), out season))
-                        _season = season;
-                    return _season;
+                    _season = GetValueFromJsonElementList(Seasons);
                 }
-                else
-                {
-                    return int.MinValue;
-                }
+                return _season;
             }
             set => _season = value;
         }
+
         public List<JsonElement> Episodes { get; set; }
 
         private int _episode;
@@ -45,26 +30,9 @@ namespace Bot.Models
                 if (_episode != int.MinValue) return _episode;
                 if (Episodes.Count > 0)
                 {
-                    int? episodeLength1 = Episodes.ElementAt(0).GetProperty("length").GetInt32();
-                    int? episodeLength2 = Episodes.ElementAt(1).GetProperty("length").GetInt32();
-                    int maxLength = Math.Max(episodeLength1 ?? 0, episodeLength2 ?? 0);
-
-                    JsonElement selectedJsonElementEpisode = Episodes.FirstOrDefault(s => s.GetProperty("length").GetInt32() == maxLength);
-
-                    JsonElement resolutionsJson = selectedJsonElementEpisode.GetProperty("resolutions");
-                    JsonElement[] resolutions = JsonSerializer.Deserialize<JsonElement[]>(resolutionsJson);
-
-
-                    int episode = int.MinValue;
-                    JsonElement episodeValue = resolutions.FirstOrDefault().GetProperty("value");
-                    if (int.TryParse(episodeValue.GetRawText().Replace("\"", string.Empty), out episode))
-                        _episode = episode;
-                    return _episode;
+                    _episode = GetValueFromJsonElementList(Episodes);
                 }
-                else
-                {
-                    return int.MinValue;
-                }
+                return _episode;
             }
             set => _episode = value;
         }
@@ -81,15 +49,33 @@ namespace Bot.Models
 
         public bool IsComplete()
         {
-            return _season != int.MinValue && _episode != int.MinValue && !string.IsNullOrEmpty(SeriesName);
+            return Season != int.MinValue && Episode != int.MinValue && !string.IsNullOrEmpty(SeriesName);
         }
         public bool IsCompleteSeason()
         {
-            return _season != int.MinValue;
+            return Season != int.MinValue;
         }
         public bool IsCompleteEpisode()
         {
-            return _episode != int.MinValue;
+            return Episode != int.MinValue;
         }
+
+        private int GetValueFromJsonElementList(List<JsonElement> list)
+        {
+            JsonElement selectedJsonElementSeason = list
+                            .Aggregate((element, nextElement) =>
+                            nextElement.GetProperty("length").GetInt32() > element.GetProperty("length").GetInt32()
+                            ? nextElement
+                            : element);
+
+            JsonElement resolutionsJson = selectedJsonElementSeason.GetProperty("resolutions");
+            JsonElement[] resolutions = JsonSerializer.Deserialize<JsonElement[]>(resolutionsJson);
+            JsonElement seasonValue = resolutions.FirstOrDefault().GetProperty("value");
+
+            int season = int.MinValue;
+            _ = int.TryParse(seasonValue.GetRawText().Replace("\"", string.Empty), out season);
+            return season;
+        }
+
     }
 }
