@@ -297,14 +297,9 @@ namespace MockSeries
             return list;
         }
 
-        public int GetLastUnwatchedEpisode() 
+        public (int episode, int season) GetLastOrFirstUnwatchedEpisode(string user, string serie) 
         {
-            return 9;
+            return new(2,2);
         }
-        public int GetFirstUnwatchedEpisode() 
-        {
-            return 1;
-        }
-
     }
 }

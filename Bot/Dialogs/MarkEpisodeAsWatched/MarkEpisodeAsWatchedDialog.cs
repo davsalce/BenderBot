@@ -4,6 +4,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Builder.Dialogs.Prompts;
 using MockSeries;
+using MockSeries.Models;
 using System.Text.Json;
 
 namespace Bot.Dialogs.MarkEpisodeAsWatched
@@ -24,6 +25,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             _episodeDialog = episodeDialog;
             var waterfallSteps = new WaterfallStep[]
             {
+                GetLastOrFirstUnwatchedEpisode,
                 InicialiceMarkEpisodeAsWatchDTO,
                 GetSeriesName,
                 StoreSeriesName,
@@ -62,10 +64,10 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt) + nameof(MarkEpisodeAsWatchedDialog), customDictionary, null, "es-ES"));
             AddDialog(_seriesNameDialog);
             AddDialog(_seasonDialog);
-            AddDialog(_episodeDialog);            
+            AddDialog(_episodeDialog);
         }
 
-        private async Task<DialogTurnResult> InicialiceMarkEpisodeAsWatchDTO(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> GetLastOrFirstUnwatchedEpisode(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             MarkEpisodeAsWatchDTO dto = new MarkEpisodeAsWatchDTO();
 
@@ -79,23 +81,54 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
 
             foreach (JsonElement entity in entities)
             {
-                entity.GetSeriesNameFromEntities(dto); //Guardamos serie.
-
-                if (!entity.TryGetSeasonEpisodeFromEntities(dto))
+                entity.GetSeriesNameFromEntities(dto);
+            }
+            foreach (JsonElement entity in entities)
+            {
+                entity.GetSeriesNameFromEntities(dto);
+                if (entity.TryGetFirstOrLastUnwatchedEpisode())
                 {
-                    if (entity.GetProperty("category").GetString() is string categoryE 
-                        && categoryE.Equals("Episode")) // isCompleted delete xk sino solo entra el 1 valor 
+                    dto.Season = _seriesClient.GetLastOrFirstUnwatchedEpisode(stepContext.Context.Activity.From.Id, dto.SeriesName).season; 
+                    dto.Episode = _seriesClient.GetLastOrFirstUnwatchedEpisode(stepContext.Context.Activity.From.Id, dto.SeriesName).episode;
+                }
+            }
+            return await stepContext.NextAsync(dto ,cancellationToken: cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> InicialiceMarkEpisodeAsWatchDTO(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            if (stepContext.Result is MarkEpisodeAsWatchDTO markEpisodeAsWatchDTO
+                && !markEpisodeAsWatchDTO.IsCompleteEpisode()) {
+                MarkEpisodeAsWatchDTO dto = new MarkEpisodeAsWatchDTO();
+
+                IStatePropertyAccessor<JsonElement> statePropertyAccessor = _conversationState.CreateProperty<JsonElement>("CLUPrediction");
+
+                JsonElement CLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
+
+                JsonElement entitiesJson = CLUPrediction.GetProperty("entities");
+
+                JsonElement[] entities = entitiesJson.Deserialize<JsonElement[]>();
+
+                foreach (JsonElement entity in entities)
+                {
+                    entity.GetSeriesNameFromEntities(dto); //Guardamos serie.
+
+                    if (!entity.TryGetSeasonEpisodeFromEntities(dto))
                     {
-                        dto.Episodes.Add(entity);
-                    }
-                    else if (entity.GetProperty("category").GetString() is string categoryS 
-                        && categoryS.Equals("Season"))
-                    {
-                        dto.Seasons.Add(entity);
+                        if (entity.GetProperty("category").GetString() is string categoryE
+                            && categoryE.Equals("Episode")) // isCompleted delete xk sino solo entra el 1 valor 
+                        {
+                            dto.Episodes.Add(entity);
+                        }
+                        else if (entity.GetProperty("category").GetString() is string categoryS
+                            && categoryS.Equals("Season"))
+                        {
+                            dto.Seasons.Add(entity);
+                        }
                     }
                 }
             }
-            return await stepContext.NextAsync(dto, cancellationToken: cancellationToken);
+            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
         }
 
         private async Task<DialogTurnResult> GetSeriesName(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -122,9 +155,6 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             {
                 if (!dto.IsCompleteSeason())
                 {
-                    Console.WriteLine();
-                    Console.WriteLine("!dto.IsCompleteSeason()");
-                    Console.WriteLine("StackTrace: '{0}'", Environment.StackTrace);
                     return await stepContext.BeginDialogAsync(_seasonDialog.Id, dto, cancellationToken: cancellationToken);
                 }
             }

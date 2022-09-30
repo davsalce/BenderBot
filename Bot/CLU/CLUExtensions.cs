@@ -1,4 +1,5 @@
 ﻿using Bot.Models;
+using MockSeries.Models;
 using System.Text.Json;
 
 namespace System.Text.Json
@@ -38,6 +39,28 @@ namespace System.Text.Json
                     return true;
                 }
             }
+            return false;
+        }
+        public static bool TryGetFirstOrLastUnwatchedEpisode(this JsonElement entity)
+        {
+            if (entity.GetProperty("category").GetString() is string categoryE
+                && categoryE.Equals("Episode")) 
+            {
+                JsonElement resolutionsJson = entity.GetProperty("resolutions");
+                JsonElement[] resolutions = JsonSerializer.Deserialize<JsonElement[]>(resolutionsJson);
+                JsonElement episodeValue = resolutions.FirstOrDefault().GetProperty("relativeTo");
+
+                string relativeTo = episodeValue.GetString();
+
+                if (relativeTo is not null && relativeTo.Equals("Start"))
+                {
+                    return true;
+                }
+                if (relativeTo is not null && relativeTo.Equals("End"))
+                {
+                    return true;
+                }
+            }            
             return false;
         }
     }
