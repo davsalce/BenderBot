@@ -41,6 +41,7 @@ namespace System.Text.Json
             }
             return false;
         }
+
         public static bool TryGetFirstOrLastUnwatchedEpisode(this JsonElement entity)
         {
             if (entity.GetProperty("category").GetString() is string categoryE
@@ -62,6 +63,12 @@ namespace System.Text.Json
                 }
             }            
             return false;
+        }
+
+        public static JsonElement[]? GetEntitiesFromCluPrediccion(this JsonElement CLUPrediction) 
+        {
+            JsonElement entitiesJson = CLUPrediction.GetProperty("entities");//CLU Extension
+            return entitiesJson.Deserialize<JsonElement[]>();
         }
     }
 }

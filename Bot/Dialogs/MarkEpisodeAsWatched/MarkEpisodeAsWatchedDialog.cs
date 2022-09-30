@@ -25,9 +25,9 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             _episodeDialog = episodeDialog;
             var waterfallSteps = new WaterfallStep[]
             {
-                GetLastOrFirstUnwatchedEpisode,
-                InicialiceMarkEpisodeAsWatchDTO,
                 GetSeriesName,
+                GetLastOrFirstUnwatchedEpisode,
+                GetSeasonEpisode,
                 StoreSeriesName,
                 GetSeason,
                 StoreSeason,
@@ -67,56 +67,66 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             AddDialog(_episodeDialog);
         }
 
-        private async Task<DialogTurnResult> GetLastOrFirstUnwatchedEpisode(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+
+        private async Task<DialogTurnResult> GetSeriesName(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             MarkEpisodeAsWatchDTO dto = new MarkEpisodeAsWatchDTO();
 
-            IStatePropertyAccessor<JsonElement> statePropertyAccessor = _conversationState.CreateProperty<JsonElement>("CLUPrediction");
-
-            JsonElement CLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
-
-            JsonElement entitiesJson = CLUPrediction.GetProperty("entities");
-
-            JsonElement[] entities = entitiesJson.Deserialize<JsonElement[]>();
+            JsonElement[] entities = await GetEntitiesFromContext(stepContext, cancellationToken);
 
             foreach (JsonElement entity in entities)
             {
                 entity.GetSeriesNameFromEntities(dto);
             }
+            if (string.IsNullOrEmpty(dto.SeriesName))
+            {
+                return await stepContext.BeginDialogAsync(_seriesNameDialog.Id, dto, cancellationToken: cancellationToken);
+            }
+            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> StoreSeriesName(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            if (stepContext.Result is MarkEpisodeAsWatchDTO dto
+                && string.IsNullOrEmpty(dto.SeriesName))
+            {
+                return await stepContext.NextAsync(dto, cancellationToken: cancellationToken);
+            }
+            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
+        }
+        private async Task<DialogTurnResult> GetLastOrFirstUnwatchedEpisode(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            MarkEpisodeAsWatchDTO dto = new MarkEpisodeAsWatchDTO();
+
+            JsonElement[] entities = await GetEntitiesFromContext(stepContext, cancellationToken);
+
             foreach (JsonElement entity in entities)
             {
                 entity.GetSeriesNameFromEntities(dto);
                 if (entity.TryGetFirstOrLastUnwatchedEpisode())
                 {
-                    dto.Season = _seriesClient.GetLastOrFirstUnwatchedEpisode(stepContext.Context.Activity.From.Id, dto.SeriesName).season; 
+                    dto.Season = _seriesClient.GetLastOrFirstUnwatchedEpisode(stepContext.Context.Activity.From.Id, dto.SeriesName).season;
                     dto.Episode = _seriesClient.GetLastOrFirstUnwatchedEpisode(stepContext.Context.Activity.From.Id, dto.SeriesName).episode;
                 }
             }
-            return await stepContext.NextAsync(dto ,cancellationToken: cancellationToken);
+            return await stepContext.NextAsync(dto, cancellationToken: cancellationToken);
         }
 
-        private async Task<DialogTurnResult> InicialiceMarkEpisodeAsWatchDTO(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> GetSeasonEpisode(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             if (stepContext.Result is MarkEpisodeAsWatchDTO markEpisodeAsWatchDTO
-                && !markEpisodeAsWatchDTO.IsCompleteEpisode()) {
+                && !markEpisodeAsWatchDTO.IsCompleteEpisode())
+            {
                 MarkEpisodeAsWatchDTO dto = new MarkEpisodeAsWatchDTO();
 
-                IStatePropertyAccessor<JsonElement> statePropertyAccessor = _conversationState.CreateProperty<JsonElement>("CLUPrediction");
-
-                JsonElement CLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
-
-                JsonElement entitiesJson = CLUPrediction.GetProperty("entities");
-
-                JsonElement[] entities = entitiesJson.Deserialize<JsonElement[]>();
+                JsonElement[] entities = await GetEntitiesFromContext(stepContext, cancellationToken);
 
                 foreach (JsonElement entity in entities)
                 {
-                    entity.GetSeriesNameFromEntities(dto); //Guardamos serie.
-
                     if (!entity.TryGetSeasonEpisodeFromEntities(dto))
                     {
                         if (entity.GetProperty("category").GetString() is string categoryE
-                            && categoryE.Equals("Episode")) // isCompleted delete xk sino solo entra el 1 valor 
+                            && categoryE.Equals("Episode")) 
                         {
                             dto.Episodes.Add(entity);
                         }
@@ -131,24 +141,6 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
         }
 
-        private async Task<DialogTurnResult> GetSeriesName(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            if (stepContext.Result is MarkEpisodeAsWatchDTO dto
-                && string.IsNullOrEmpty(dto.SeriesName))
-            {
-                return await stepContext.BeginDialogAsync(_seriesNameDialog.Id, dto, cancellationToken: cancellationToken);
-            }
-            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
-        }
-        private async Task<DialogTurnResult> StoreSeriesName(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            if (stepContext.Result is MarkEpisodeAsWatchDTO dto
-                && string.IsNullOrEmpty(dto.SeriesName))
-            {
-                return await stepContext.NextAsync(dto, cancellationToken: cancellationToken);
-            }
-            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
-        }
         private async Task<DialogTurnResult> GetSeason(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             if (stepContext.Result is MarkEpisodeAsWatchDTO dto)
@@ -223,5 +215,16 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             }
             return await stepContext.EndDialogAsync(stepContext.Result, cancellationToken: cancellationToken);
         }
+
+        private async Task<JsonElement[]> GetEntitiesFromContext(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            IStatePropertyAccessor<JsonElement> statePropertyAccessor = _conversationState.CreateProperty<JsonElement>("CLUPrediction");
+
+            JsonElement CLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
+
+            JsonElement[] entities = CLUPrediction.GetEntitiesFromCluPrediccion();
+            return entities;
+        }
+
     }
 }

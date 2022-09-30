@@ -13,6 +13,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             _conversationState = conversationState;
             var waterfallSteps = new WaterfallStep[]
             {
+                StoreMarkEpisodeAsWatchedDTO,
                 AskForSeason,
                 ConfirmationSeason
             };
@@ -21,7 +22,14 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             AddDialog(new TextPrompt(nameof(TextPrompt) + nameof(GetSeasonDialog)));
             InitialDialogId = nameof(WaterfallDialog) + nameof(GetSeasonDialog);
         }
-
+        private async Task<DialogTurnResult> StoreMarkEpisodeAsWatchedDTO(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            if (stepContext.Options is MarkEpisodeAsWatchDTO markEpisodeAsWatchDTO)
+            {
+                stepContext.Values.Add(nameof(MarkEpisodeAsWatchDTO), markEpisodeAsWatchDTO);
+            }
+            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
+        }
         private async Task<DialogTurnResult> AskForSeason(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var promptOptions = new PromptOptions
