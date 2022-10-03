@@ -1,14 +1,13 @@
 ﻿using Bot.Models;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
-using System.Text.Json;
 
 namespace Bot.Dialogs.MarkEpisodeAsWatched
 {
     public class GetSeriesNameDialog : ComponentDialog
     {
         private readonly ConversationState _conversationState;
-        public GetSeriesNameDialog(ConversationState conversationState):base(nameof(GetSeriesNameDialog))
+        public GetSeriesNameDialog(ConversationState conversationState) : base(nameof(GetSeriesNameDialog))
         {
 
             _conversationState = conversationState;
@@ -25,17 +24,16 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
 
         private async Task<DialogTurnResult> AskForSeriesName(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            return await stepContext.PromptAsync(nameof(TextPrompt) + nameof(GetSeriesNameDialog), new PromptOptions 
+            return await stepContext.PromptAsync(nameof(TextPrompt) + nameof(GetSeriesNameDialog), new PromptOptions
             { Prompt = MessageFactory.Text("Introduce el nombre de la serie.") }, cancellationToken);
         }
 
         private async Task<DialogTurnResult> ConfirmationSeriesName(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            MarkEpisodeAsWatchDTO dto = default;
+            MarkEpisodeAsWatchDTO dto = stepContext.Options as MarkEpisodeAsWatchDTO;
             if (stepContext.Result is string seriesName
                && !string.IsNullOrEmpty(seriesName))
             {
-                dto = stepContext.Options as MarkEpisodeAsWatchDTO ?? new MarkEpisodeAsWatchDTO();
                 dto.SeriesName = seriesName;
             }
             return await stepContext.EndDialogAsync(dto, cancellationToken);

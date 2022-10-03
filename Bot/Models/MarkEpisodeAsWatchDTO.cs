@@ -70,18 +70,24 @@ namespace Bot.Models
 
         private int GetValueFromJsonElementList(List<JsonElement> list)
         {
+            if (list == null || list.FirstOrDefault().ValueKind == JsonValueKind.Undefined) return int.MinValue;
+            int value = int.MinValue;
             JsonElement selectedJsonElementSeason = list
                             .Aggregate((element, nextElement) =>
                             nextElement.GetProperty("length").GetInt32() > element.GetProperty("length").GetInt32()
                             ? nextElement
                             : element);
 
-            JsonElement resolutionsJson = selectedJsonElementSeason.GetProperty("resolutions");
-            JsonElement[] resolutions = JsonSerializer.Deserialize<JsonElement[]>(resolutionsJson);
-            JsonElement seasonValue = resolutions.FirstOrDefault().GetProperty("value");
+            if (selectedJsonElementSeason.TryGetProperty("resolutions", out JsonElement resolutionsJson))
+            {
 
-            int value = int.MinValue;
+
+                JsonElement[] resolutions = JsonSerializer.Deserialize<JsonElement[]>(resolutionsJson);
+                JsonElement seasonValue = resolutions.FirstOrDefault().GetProperty("value");
+            
+            value = int.MinValue;
             _ = int.TryParse(seasonValue.GetRawText().Replace("\"", string.Empty), out value);
+            }
             return value;
         }
         private void SetEpisodeSeasonFromJsonElementLists(List<JsonElement> seasonslist, List<JsonElement> episodelist)

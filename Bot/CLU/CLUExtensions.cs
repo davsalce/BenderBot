@@ -8,7 +8,7 @@ namespace System.Text.Json
     {
 
         public static MarkEpisodeAsWatchDTO GetSeriesNameFromEntities(this JsonElement entity, MarkEpisodeAsWatchDTO dto) //devuelve dto (SeriesName)
-        { 
+        {
             if (entity.GetProperty("category").GetString() is string category && category.Equals("Serie"))
             {
                 dto.SeriesName = entity.GetProperty("text").ToString();
@@ -44,24 +44,36 @@ namespace System.Text.Json
         public static bool TryGetFirstOrLastUnwatchedEpisode(this JsonElement entity)
         {
             if (entity.GetProperty("category").GetString() is string categoryE
-                && categoryE.Equals("Episode")) 
+                && categoryE.Equals("Episode"))
             {
-                JsonElement resolutionsJson = entity.GetProperty("resolutions");
-                JsonElement[] resolutions = JsonSerializer.Deserialize<JsonElement[]>(resolutionsJson);
-                JsonElement episodeValue = resolutions.FirstOrDefault().GetProperty("relativeTo");
-
-                string relativeTo = episodeValue.GetString();
-
-                if (relativeTo is not null && relativeTo.Equals("Start"))
+                if (entity.TryGetProperty("resolutions", out JsonElement resolutionsJson))
                 {
-                    return true;
+                    JsonElement[] resolutions = JsonSerializer.Deserialize<JsonElement[]>(resolutionsJson);
+                    if (resolutions.FirstOrDefault().TryGetProperty("relativeTo", out JsonElement episodeValue))
+                    {
+                        string relativeTo = episodeValue.GetString();
+
+                        if (relativeTo is not null && relativeTo.Equals("Start"))
+                        {
+                            return true;
+                        }
+                        if (relativeTo is not null && relativeTo.Equals("End"))
+                        {
+                            return true;
+                        }
+                    }
                 }
-                if (relativeTo is not null && relativeTo.Equals("End"))
-                {
-                    return true;
-                }
-            }            
+            }
             return false;
+        }
+
+        public static JsonElement[] GetEntitiesFromCLU(this JsonElement CLUPrediction)
+        {
+            if ( CLUPrediction.ValueKind != JsonValueKind.Undefined && CLUPrediction.TryGetProperty("entities", out JsonElement entitiesJson)) 
+            { 
+                return entitiesJson.Deserialize<JsonElement[]>();
+            }
+            return default;
         }
     }
 }

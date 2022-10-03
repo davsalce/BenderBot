@@ -1,7 +1,6 @@
 ﻿using Bot.Models;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
-using System.Text.Json;
 
 namespace Bot.Dialogs.MarkEpisodeAsWatched
 {
@@ -33,11 +32,10 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
 
         private async Task<DialogTurnResult> ConfirmationEpisode(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            MarkEpisodeAsWatchDTO dto = default;
+            MarkEpisodeAsWatchDTO dto = stepContext.Options as MarkEpisodeAsWatchDTO;
             if (stepContext.Result is string episode
                && !string.IsNullOrEmpty(episode))
             {
-                dto = stepContext.Options as MarkEpisodeAsWatchDTO ?? new MarkEpisodeAsWatchDTO();
                 if (int.TryParse(episode, out int episodeInt))
                 {
                     dto.Episode = episodeInt;
