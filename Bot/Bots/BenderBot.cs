@@ -48,18 +48,17 @@ namespace Bot.Bots
             dialogSet.Add(_cQADialog);
 
             DialogContext dialogContext = await dialogSet.CreateContextAsync(turnContext, cancellationToken);
-            DialogTurnResult results = await dialogContext.ContinueDialogAsync(cancellationToken);
-            
-
-            IStatePropertyAccessor<JsonElement> statePropertyAccessor = _conversationState.CreateProperty<JsonElement>("CLUPrediction");
-            JsonElement CLUPrediction = await statePropertyAccessor.GetAsync(turnContext, cancellationToken: cancellationToken);
-
-
-            IStatePropertyAccessor<DialogState> dialogStatePropertyAccesor = _conversationState.CreateProperty<DialogState>("DialogState");
-            string? topIntent = CLUPrediction.GetProperty("topIntent").GetString();
+            DialogTurnResult results = await dialogContext.ContinueDialogAsync(cancellationToken);            
 
             if (results.Status == DialogTurnStatus.Empty)
             {
+                IStatePropertyAccessor<JsonElement> statePropertyAccessor = _conversationState.CreateProperty<JsonElement>("CLUPrediction");
+                JsonElement CLUPrediction = await statePropertyAccessor.GetAsync(turnContext, cancellationToken: cancellationToken);
+
+
+                IStatePropertyAccessor<DialogState> dialogStatePropertyAccesor = _conversationState.CreateProperty<DialogState>("DialogState");
+                string? topIntent = CLUPrediction.GetProperty("topIntent").GetString();
+
                 switch (topIntent)
                 {
                     case "MarkEpisodeAsWatched":
