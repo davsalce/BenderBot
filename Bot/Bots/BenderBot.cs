@@ -54,7 +54,7 @@ namespace Bot.Bots
             IStatePropertyAccessor<JsonElement> statePropertyAccessor = _conversationState.CreateProperty<JsonElement>("CLUPrediction");
             JsonElement CLUPrediction = await statePropertyAccessor.GetAsync(turnContext, cancellationToken: cancellationToken);
 
-
+             
             IStatePropertyAccessor<DialogState> dialogStatePropertyAccesor = _conversationState.CreateProperty<DialogState>("DialogState");
             string? topIntent = CLUPrediction.GetProperty("topIntent").GetString();
 

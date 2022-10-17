@@ -4,7 +4,6 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Builder.Dialogs.Prompts;
 using MockSeries;
-using MockSeries.Models;
 using System.Text.Json;
 
 namespace Bot.Dialogs.MarkEpisodeAsWatched
@@ -235,6 +234,5 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             await CLUFlagStatePropertyAccessor.SetAsync(stepContext.Context, false, cancellationToken: cancellationToken);
             return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
         }
-
     }
 }
