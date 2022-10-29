@@ -1,12 +1,13 @@
 ﻿using System.Text.Json;
+using static Bot.CLU.CLUPrediction;
 
 namespace Bot.Models
 {
     public class MarkEpisodeAsWatchDTO
     {
-        public List<JsonElement> Seasons { get; set; }
-        private int _season;
-        public int Season
+        public List<Entity> Seasons { get; set; }
+        private int? _season;
+        public int? Season
         {
             get
             {
@@ -24,10 +25,10 @@ namespace Bot.Models
             set => _season = value;
         }
 
-        public List<JsonElement> Episodes { get; set; }
+        public List<Entity> Episodes { get; set; }
 
-        private int _episode;
-        public int Episode
+        private int? _episode;
+        public int? Episode
         {
             get
             {
@@ -48,74 +49,53 @@ namespace Bot.Models
 
         public MarkEpisodeAsWatchDTO()
         {
-            Seasons = new List<JsonElement>();
-            Episodes = new List<JsonElement>();
+            Seasons = new List<Entity>();
+            Episodes = new List<Entity>();
             SeriesName = null;
-            _episode = int.MinValue;
-            _season = int.MinValue;
+            _episode = null;
+            _season = null;
         }
 
         public bool IsComplete()
         {
-            return Season != int.MinValue && Episode != int.MinValue && !string.IsNullOrEmpty(SeriesName);
+            return Season != null && Episode != null && !string.IsNullOrEmpty(SeriesName);
         }
         public bool IsCompleteSeason()
         {
-            return Season != int.MinValue;
+            return Season != null;
         }
         public bool IsCompleteEpisode()
         {
-            return Episode != int.MinValue;
+            return Episode != null;
         }
 
-        private int GetValueFromJsonElementList(List<JsonElement> list)
+        private int? GetValueFromJsonElementList(List<Entity> list)
         {
-            if (list == null || list.FirstOrDefault().ValueKind == JsonValueKind.Undefined) return int.MinValue;
-            int value = int.MinValue;
-            JsonElement selectedJsonElementSeason = list
-                            .Aggregate((element, nextElement) =>
-                            nextElement.GetProperty("length").GetInt32() > element.GetProperty("length").GetInt32()
-                            ? nextElement
-                            : element);
+            if (list is null || list.FirstOrDefault() is null) return null;
 
-            if (selectedJsonElementSeason.TryGetProperty("resolutions", out JsonElement resolutionsJson))
+            Entity entitySelected = list.OrderByDescending(entity => entity.Length).First();
+
+            return entitySelected.Resolutions.FirstOrDefault()?.Value as int?;
+        }
+        private void SetEpisodeSeasonFromJsonElementLists(List<Entity> seasonslist, List<Entity> episodelist)
+        {
+
+            if (seasonslist != default && seasonslist.Any()
+                && episodelist != default && episodelist.Any())
             {
 
 
-                JsonElement[] resolutions = JsonSerializer.Deserialize<JsonElement[]>(resolutionsJson);
-                JsonElement seasonValue = resolutions.FirstOrDefault().GetProperty("value");
-            
-            value = int.MinValue;
-            _ = int.TryParse(seasonValue.GetRawText().Replace("\"", string.Empty), out value);
-            }
-            return value;
-        }
-        private void SetEpisodeSeasonFromJsonElementLists(List<JsonElement> seasonslist, List<JsonElement> episodelist)
-        {
-            
-            if (seasonslist != default && seasonslist.Any() && seasonslist.FirstOrDefault().ValueKind != default(JsonValueKind)
-                && episodelist != default && episodelist.Any() && episodelist.FirstOrDefault().ValueKind != default(JsonValueKind))
-            {
-                int value = int.MinValue;
-                if (seasonslist.FirstOrDefault().GetProperty("length").GetInt32() > episodelist.FirstOrDefault().GetProperty("length").GetInt32())
+                Entity? season = seasonslist.FirstOrDefault();
+                Entity? episode = episodelist.FirstOrDefault();
+                if (season?.Length > episode?.Length)
                 {
-                    JsonElement resolutionsJson = seasonslist.FirstOrDefault().GetProperty("resolutions");
-                    JsonElement[] resolutions = JsonSerializer.Deserialize<JsonElement[]>(resolutionsJson);
-                    JsonElement seasonValue = resolutions.FirstOrDefault().GetProperty("value");
-                    value = int.MinValue;
-                    _episode = int.MinValue;
-                    _ = int.TryParse(seasonValue.GetRawText().Replace("\"", string.Empty), out value);
-                   _season = value;
+                    _season = season.Resolutions.FirstOrDefault()?.Value as int?;
+                    _episode = null;
                 }
-                else
+                else if (season?.Length < episode?.Length)
                 {
-                    JsonElement resolutionsJson = episodelist.FirstOrDefault().GetProperty("resolutions");
-                    JsonElement[] resolutions = JsonSerializer.Deserialize<JsonElement[]>(resolutionsJson);
-                    JsonElement episodeValue = resolutions.FirstOrDefault().GetProperty("value");
-                    value = int.MinValue;
-                    _season = int.MinValue;
-                    _ = int.TryParse(episodeValue.GetRawText().Replace("\"", string.Empty), out value);
-                    _episode = value;
+                    _episode = episode?.Resolutions.FirstOrDefault()?.Value as int?;
+                    _season = null;
                 }
             }
         }

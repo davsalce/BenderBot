@@ -1,27 +1,27 @@
 ﻿using Bot.Models;
 using MockSeries.Models;
 using System.Text.Json;
+using static Bot.CLU.CLUPrediction;
 
 namespace System.Text.Json
 {
     public static class CLUExtensions
     {
 
-        public static MarkEpisodeAsWatchDTO GetSeriesNameFromEntities(this JsonElement entity, MarkEpisodeAsWatchDTO dto) //devuelve dto (SeriesName)
+        public static MarkEpisodeAsWatchDTO GetSeriesNameFromEntities(this Entity entity, MarkEpisodeAsWatchDTO dto) //devuelve dto (SeriesName)
         {
-            if (entity.GetProperty("category").GetString() is string category && category.Equals("Serie"))
+            if (entity.Category.Equals("Serie"))
             {
-                dto.SeriesName = entity.GetProperty("text").ToString();
+                dto.SeriesName = entity.Text;
             }
             return dto;
         }
 
-        public static bool TryGetSeasonEpisodeFromEntities(this JsonElement entity, MarkEpisodeAsWatchDTO markEpisodeAsWatchDTO)//devuelve true  (dto Episode Season)
+        public static bool TryGetSeasonEpisodeFromEntities(this Entity entity, MarkEpisodeAsWatchDTO markEpisodeAsWatchDTO)//devuelve true  (dto Episode Season)
         {
-            if (entity.GetProperty("category").GetString() is string category && category.Equals("SeasonEpisode"))
+            if (entity.Category.Equals("SeasonEpisode"))
             {
-                string? seasonEpisodeStr = entity.GetProperty("text").GetString();
-                string[]? seasonEpisodeArray = seasonEpisodeStr?.Split("x");
+                string[]? seasonEpisodeArray = entity.Text.Split("x");
                 return TryGetSeasonEpisodeArray(seasonEpisodeArray, markEpisodeAsWatchDTO);
             }
             return default;
@@ -41,39 +41,21 @@ namespace System.Text.Json
             }
             return false;
         }
-        public static bool TryGetFirstOrLastUnwatchedEpisode(this JsonElement entity)
+        public static bool TryGetFirstOrLastUnwatchedEpisode(this Entity entity)
         {
-            if (entity.GetProperty("category").GetString() is string categoryE
-                && categoryE.Equals("Episode"))
+            if (entity.Category.Equals("Episode"))
             {
-                if (entity.TryGetProperty("resolutions", out JsonElement resolutionsJson))
+                string relativeTo = entity.Resolutions.FirstOrDefault().RelativeTo;
+                if (relativeTo is not null && relativeTo.Equals("Start"))
                 {
-                    JsonElement[] resolutions = JsonSerializer.Deserialize<JsonElement[]>(resolutionsJson);
-                    if (resolutions.FirstOrDefault().TryGetProperty("relativeTo", out JsonElement episodeValue))
-                    {
-                        string relativeTo = episodeValue.GetString();
-
-                        if (relativeTo is not null && relativeTo.Equals("Start"))
-                        {
-                            return true;
-                        }
-                        if (relativeTo is not null && relativeTo.Equals("End"))
-                        {
-                            return true;
-                        }
-                    }
+                    return true;
+                }
+                if (relativeTo is not null && relativeTo.Equals("End"))
+                {
+                    return true;
                 }
             }
             return false;
-        }
-
-        public static JsonElement[] GetEntitiesFromCLU(this JsonElement CLUPrediction)
-        {
-            if ( CLUPrediction.ValueKind != JsonValueKind.Undefined && CLUPrediction.TryGetProperty("entities", out JsonElement entitiesJson)) 
-            { 
-                return entitiesJson.Deserialize<JsonElement[]>();
-            }
-            return default;
         }
     }
 }

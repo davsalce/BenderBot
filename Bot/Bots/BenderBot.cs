@@ -4,6 +4,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Bot.Builder.Dialogs;
 using System.Text.Json;
 using Bot.Dialogs.MarkEpisodeAsWatched;
+using Bot.CLU;
 
 namespace Bot.Bots
 {
@@ -52,32 +53,29 @@ namespace Bot.Bots
 
             if (results.Status == DialogTurnStatus.Empty)
             {
-                IStatePropertyAccessor<JsonElement> statePropertyAccessor = _conversationState.CreateProperty<JsonElement>("CLUPrediction");
-                JsonElement CLUPrediction = await statePropertyAccessor.GetAsync(turnContext, cancellationToken: cancellationToken);
-
-
                 IStatePropertyAccessor<DialogState> dialogStatePropertyAccesor = _conversationState.CreateProperty<DialogState>("DialogState");
-                string? topIntent = CLUPrediction.GetProperty("topIntent").GetString();
+                IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
+                CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(turnContext, cancellationToken: cancellationToken);
 
-                switch (topIntent)
+                switch (cLUPrediction.TopIntent)
                 {
                     case "MarkEpisodeAsWatched":
-                        await turnContext.SendActivityAsync(topIntent, cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
                         //Ejecuta el dialogo de Mark
                         await _markEpisodeAsWatched.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                         break;
                     case "PendingEpisodes":
-                        await turnContext.SendActivityAsync(topIntent, cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
                         await _pendingEpisodesDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                         break;
                     case "TrendingSeries":
                         // Envía Actividad de tipo texto, con el texto "TrendingSeries"
-                        await turnContext.SendActivityAsync(topIntent, cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
                         // Ejecuta el diálogo de Trending
                         await _trendingDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                         break;
                     case "RecomendSeries":
-                        await turnContext.SendActivityAsync(topIntent, cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
                         await _recomendSeriesDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                         break;
                     case "None":

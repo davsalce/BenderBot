@@ -202,7 +202,7 @@ namespace MockSeries
             return list;
         }
 
-        public async Task<bool> MarkEpisodeAsWatch(string user, string series, int season, int episode)
+        public async Task<bool> MarkEpisodeAsWatch(string user, string series, int? season, int? episode)
         {
             return true;
         }

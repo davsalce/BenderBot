@@ -1,10 +1,11 @@
-﻿using Microsoft.Bot.Builder;
+﻿using Bot.CLU;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using MockSeries;
 using MockSeries.Models;
-using System.Text.Json;
+using Entity = Bot.CLU.CLUPrediction.Entity;
 
 namespace Bot.Dialogs
 {
@@ -40,27 +41,19 @@ namespace Bot.Dialogs
 
         private async Task<DialogTurnResult> GetPeriodFromCLU(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            // Crea propieddad para acceder al json que me ha dado el CLU. Este JSON está guardado en el conversationState
-            IStatePropertyAccessor<JsonElement> statePropertyAccessor = _conversationState.CreateProperty<JsonElement>("CLUPrediction");
+            // Crea propieddad para acceder al json que me ha dado el CLU. Este obejto está guardado en el conversationState
+            IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
 
-            // recuperamos el JSON de CLUPredicction
-            JsonElement CLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
-
-
-            JsonElement entitiesJson = CLUPrediction.GetProperty("entities");
-
-            JsonElement[] entities = JsonSerializer.Deserialize<JsonElement[]>(entitiesJson);
+            // recuperamos el objeto de CLUPredicction
+            CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
 
             MockSeries.Models.TrendingPeriod period = default;
 
-            foreach (JsonElement entity in entities)
+            foreach (Entity entity in cLUPrediction.Entities)
             {
-                if (entity.GetProperty("category").ToString().Equals("DateTime"))
+                if (entity.Category.Equals("DateTime"))
                 {
-
-                    JsonElement resolutionsJson = entity.GetProperty("resolutions");
-                    JsonElement[] resolutions = JsonSerializer.Deserialize<JsonElement[]>(resolutionsJson);
-                    foreach (JsonElement resolution in resolutions)
+                    foreach (CLUPrediction.Resolution resolution in entity.Resolutions)
                     {
                         if (IsThisMonth(resolution))
                         {
@@ -158,16 +151,14 @@ namespace Bot.Dialogs
 
 
 
-        private bool IsThisWeek(JsonElement resolution)
+        private bool IsThisWeek(CLUPrediction.Resolution resolution)
         {
-            if (resolution.TryGetProperty("begin", out JsonElement beginJson)
-               && resolution.TryGetProperty("end", out JsonElement endJson)
-               && beginJson.TryGetDateTime(out DateTime begin)
-               && endJson.TryGetDateTime(out DateTime end))
+
+            if (resolution.End != null && resolution.Begin != null)
             {
                 TimeSpan week = new TimeSpan(7, 0, 0, 0);
-                if (end >= DateTime.Now.Date && begin <= DateTime.Now.Date
-                    && (end - begin).Days == week.Days)
+                if (resolution.End >= DateTime.Now.Date && resolution.Begin <= DateTime.Now.Date
+                    && (resolution.End - resolution.Begin)?.Days == week.Days)
                 {
                     return true;
                 }
@@ -175,10 +166,9 @@ namespace Bot.Dialogs
             return false;
         }
 
-        private bool IsToday(JsonElement resolution)
+        private bool IsToday(CLUPrediction.Resolution resolution)
         {
-            if (resolution.TryGetProperty("value", out JsonElement todayJson)
-                && todayJson.TryGetDateTime(out DateTime today)
+            if (resolution.Value is DateTime today
                 && today.Date == DateTime.Now.Date)
             {
                 return true;
@@ -186,24 +176,19 @@ namespace Bot.Dialogs
             return false;
         }
 
-        private static bool IsThisMonth(JsonElement resolution)
+        private static bool IsThisMonth(CLUPrediction.Resolution resolution)
         {
-            if (resolution.TryGetProperty("begin", out JsonElement beginJson)
-                && resolution.TryGetProperty("end", out JsonElement endJson)
-                && beginJson.TryGetDateTime(out DateTime begin)
-                && endJson.TryGetDateTime(out DateTime end))
+            if (resolution.End != null && resolution.Begin != null)
             {
                 TimeSpan monthLower = new TimeSpan(28, 0, 0, 0);
                 TimeSpan monthFreater = new TimeSpan(31, 0, 0, 0);
 
-                if (end - begin >= monthLower && end - begin <= monthFreater)
+                if ((resolution.End - resolution.Begin >= monthLower && (resolution.End - resolution.Begin <= monthFreater)))
                 {
                     return true;
                 }
             }
             return false;
         }
-
-
     }
 }

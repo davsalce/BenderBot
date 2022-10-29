@@ -1,11 +1,12 @@
-﻿using Bot.Models;
+﻿using Bot.CLU;
+using Bot.Models;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Builder.Dialogs.Prompts;
 using MockSeries;
-using MockSeries.Models;
 using System.Text.Json;
+using static Bot.CLU.CLUPrediction;
 
 namespace Bot.Dialogs.MarkEpisodeAsWatched
 {
@@ -78,12 +79,11 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
         private async Task<DialogTurnResult> GetSeriesNameFromCLU(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             MarkEpisodeAsWatchDTO dto = new MarkEpisodeAsWatchDTO();
-            IStatePropertyAccessor<JsonElement> statePropertyAccessor = _conversationState.CreateProperty<JsonElement>("CLUPrediction");
-            JsonElement CLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
+            
+            IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
+            CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
 
-            JsonElement[] entities = CLUPrediction.GetEntitiesFromCLU();
-
-            foreach (JsonElement entity in entities)
+            foreach (Entity entity in cLUPrediction.Entities)
             {
                 entity.GetSeriesNameFromEntities(dto);
             }
@@ -109,21 +109,19 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
         {
             if (stepContext.Result is MarkEpisodeAsWatchDTO dto)
             {
-                IStatePropertyAccessor<JsonElement> statePropertyAccessor = _conversationState.CreateProperty<JsonElement>("CLUPrediction");
-                JsonElement CLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
-                JsonElement[] entities = CLUPrediction.GetEntitiesFromCLU();
+                IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
+                CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
+                
 
-                foreach (JsonElement entity in entities)
+                foreach (Entity entity in cLUPrediction.Entities)
                 {
                     if (!entity.TryGetSeasonEpisodeFromEntities(dto))
                     {
-                        if (entity.GetProperty("category").GetString() is string categoryE
-                            && categoryE.Equals("Episode"))
+                        if (entity.Category.Equals("Episode"))
                         {
                             dto.Episodes.Add(entity);
                         }
-                        else if (entity.GetProperty("category").GetString() is string categoryS
-                            && categoryS.Equals("Season"))
+                        else if (entity.Category.Equals("Season"))
                         {
                             dto.Seasons.Add(entity);
                         }
@@ -139,11 +137,10 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             if (stepContext.Result is MarkEpisodeAsWatchDTO dto
                 && (!dto.IsCompleteEpisode() || !dto.IsCompleteSeason()))
             {
-                IStatePropertyAccessor<JsonElement> statePropertyAccessor = _conversationState.CreateProperty<JsonElement>("CLUPrediction");
-                JsonElement CLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
-                JsonElement[] entities = CLUPrediction.GetEntitiesFromCLU();
+                IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
+                CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
 
-                foreach (JsonElement entity in entities)
+                foreach (Entity entity in cLUPrediction.Entities)
                 {
                     if (entity.TryGetFirstOrLastUnwatchedEpisode())
                     {
@@ -219,7 +216,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
                 MarkEpisodeAsWatchDTO dto = stepContext.Values[nameof(MarkEpisodeAsWatchDTO)] as MarkEpisodeAsWatchDTO;
                 if (await _seriesClient.MarkEpisodeAsWatch(stepContext.Context.Activity.From.Id, dto.SeriesName, dto.Season, dto.Episode))
                 {
-                    await stepContext.Context.SendActivityAsync($"{dto.Season}x{dto.Episode.ToString("D2")} de {dto.SeriesName} visto", cancellationToken: cancellationToken);
+                    await stepContext.Context.SendActivityAsync($"{dto.Season}x{dto.Episode?.ToString("D2")} de {dto.SeriesName} visto", cancellationToken: cancellationToken);
                 }
             }
             else
