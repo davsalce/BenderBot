@@ -1,7 +1,10 @@
-﻿namespace Bot.CLU
+﻿using System.Text.Json.Serialization;
+
+namespace Bot.CLU
 {
     public class CLUPrediction
     {
+        [JsonPropertyName("topIntent")]
         public string TopIntent { get; set; }
         public string ProjectKind { get; set; }
         public Intent[] Intents { get; set; }
@@ -32,6 +35,9 @@
             public DateTime? Begin { get; set; }
             public DateTime? End { get; set; }
             public object Value { get; set; }
+            public string dateTimeSubKind { get; set; }
+            public string timex { get; set; }
+            public string numberKind { get; set; }
         }
 
         public class Extrainformation
@@ -39,6 +45,5 @@
             public string ExtraInformationKind { get; set; }
             public string Value { get; set; }
         }
-
     }
 }
