@@ -232,6 +232,5 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             await CLUFlagStatePropertyAccessor.SetAsync(stepContext.Context, false, cancellationToken: cancellationToken);
             return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
         }
-
     }
 }
