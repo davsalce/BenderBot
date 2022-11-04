@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Azure.AI.Language.Conversations;
 using Azure.Core;
+using Bot.CLU;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using System.Text.Json;
@@ -21,6 +22,13 @@ namespace Bot.Middleware
         public async Task OnTurnAsync(ITurnContext turnContext, NextDelegate next, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
+
+            turnContext.OnSendActivities(async (newContext, activities, nextSend) =>
+            {
+                var a = 0;
+                return await nextSend();
+            });
+
 
             if (turnContext.Activity.Type == ActivityTypes.Message)
             {
@@ -57,15 +65,24 @@ namespace Bot.Middleware
                     {
                         using JsonDocument result = JsonDocument.Parse(response.ContentStream);
                         JsonElement conversationalTaskResult = result.RootElement;
-                        JsonElement conversationPrediction = conversationalTaskResult.GetProperty("result").GetProperty("prediction").Clone();
-                        IStatePropertyAccessor<JsonElement> statePropertyAccessor = _conversationState.CreateProperty<JsonElement>("CLUPrediction");
-                        await statePropertyAccessor.SetAsync(turnContext, conversationPrediction);
+                        JsonElement conversationPrediction = conversationalTaskResult.GetProperty("result").GetProperty("prediction");
+
+
+                        IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
+
+                        CLUPrediction? cluPrediction = conversationPrediction.Deserialize<CLUPrediction>();
+                        if (cluPrediction is not null)
+                            await statePropertyAccessor.SetAsync(turnContext, cluPrediction);
                     }
                 }
             }
             await next(cancellationToken);
-        }
 
+
+        }
     }
+
+
+
     public record Intent(string category, double confidenceScore);
 }
