@@ -45,7 +45,7 @@ namespace System.Text.Json
         {
             if (entity.Category.Equals("Episode"))
             {
-                string relativeTo = entity.Resolutions.FirstOrDefault().RelativeTo;
+                string relativeTo = entity.Resolutions?.FirstOrDefault().RelativeTo;
                 if (relativeTo is not null && relativeTo.Equals("Start"))
                 {
                     return true;

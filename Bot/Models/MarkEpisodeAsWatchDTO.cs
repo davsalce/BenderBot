@@ -11,12 +11,12 @@ namespace Bot.Models
         {
             get
             {
-                if (_season != int.MinValue) return _season;
-                if (Seasons.Count == 1)
+                if (_season != null) return _season;
+                if (_season == null && Seasons.Count == 1)
                 {
                     SetEpisodeSeasonFromJsonElementLists(Seasons, Episodes);
                 }
-                else if (Seasons.Count >= 2)
+                else if (_season == null && Seasons.Count >= 2)
                 {
                     _season = GetValueFromJsonElementList(Seasons);
                 }
@@ -32,12 +32,12 @@ namespace Bot.Models
         {
             get
             {
-                if (_episode != int.MinValue) return _episode;
-                if (Episodes.Count == 1)
+                if (_episode != null) return _episode;
+                if (_episode == null && Episodes.Count == 1)
                 {
                     SetEpisodeSeasonFromJsonElementLists(Seasons, Episodes);
                 }
-                else if (Episodes.Count >= 2)
+                else if (_episode == null && Episodes.Count >= 2)
                 {
                     _episode = GetValueFromJsonElementList(Episodes);
                 }
@@ -75,7 +75,11 @@ namespace Bot.Models
 
             Entity entitySelected = list.OrderByDescending(entity => entity.Length).First();
 
-            return entitySelected.Resolutions.FirstOrDefault()?.Value as int?;
+            if (int.TryParse(entitySelected.Resolutions?.FirstOrDefault()?.Value.ToString(), out int value))
+            {
+                return value;
+            }
+            return null;
         }
         private void SetEpisodeSeasonFromJsonElementLists(List<Entity> seasonslist, List<Entity> episodelist)
         {
@@ -89,13 +93,20 @@ namespace Bot.Models
                 Entity? episode = episodelist.FirstOrDefault();
                 if (season?.Length > episode?.Length)
                 {
-                    _season = season.Resolutions.FirstOrDefault()?.Value as int?;
-                    _episode = null;
+                    if (int.TryParse(season?.Resolutions?.FirstOrDefault()?.Value.ToString(), out int value))
+                    {
+                        _season = value;
+                        _episode = null;
+                    }
+
                 }
                 else if (season?.Length < episode?.Length)
                 {
-                    _episode = episode?.Resolutions.FirstOrDefault()?.Value as int?;
-                    _season = null;
+                    if (int.TryParse(episode?.Resolutions?.FirstOrDefault()?.Value.ToString(), out int value))
+                    {
+                        _episode = value;
+                        _season = null;
+                    }
                 }
             }
         }
