@@ -1,4 +1,5 @@
 ﻿using Bot.CLU;
+using Bot.Resorces;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
@@ -86,8 +87,8 @@ namespace Bot.Dialogs
                 return await stepContext.PromptAsync(nameof(ChoicePrompt),
                     new PromptOptions
                     {
-                        Prompt = MessageFactory.Text("¿Las trending de hoy, de la semana, del mes, o por siempre?"),
-                        Choices = ChoiceFactory.ToChoices(new List<string> { "Hoy", "Semana", "Mes", "Por siempre" }),
+                        Prompt = MessageFactory.Text(Trending.TrendingDialog_AskForPeriod),
+                        Choices = ChoiceFactory.ToChoices(new List<string> { Trending.TrendingDialog_Today, Trending.TrendingDialog_Week, Trending.TrendingDialog_Month, Trending.TrendingDialog_Forever}),
                     }, cancellationToken);
             }
             return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
@@ -130,7 +131,7 @@ namespace Bot.Dialogs
                     HeroCard heroCard = new HeroCard()
                     {
                         Title = series.Name,
-                        Subtitle = $"Followers: {series.Followers} Status: {series.Status}",
+                        Subtitle = Common.Dialogs_HeroCard_Subtitle(series.Followers,series.Status),
                         Text = series.Overview,
                         Images = new List<CardImage>()
                         {
@@ -143,7 +144,7 @@ namespace Bot.Dialogs
                     attachments.Add(heroCard.ToAttachment());
                 }
 
-                var activity = MessageFactory.Carousel(attachments, "Aqui tienes.");
+                var activity = MessageFactory.Carousel(attachments, Trending.TrendingDialog_Carusel);
                 await stepContext.Context.SendActivityAsync(activity, cancellationToken: cancellationToken); 
             }
             return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);

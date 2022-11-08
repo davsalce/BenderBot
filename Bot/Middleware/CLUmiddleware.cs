@@ -47,13 +47,13 @@ namespace Bot.Middleware
                                 text = textMessage,
                                 id = turnContext.Activity.Id,
                                 participantId = turnContext.Activity.From.Id,
-                                language = "en-US"//turnContext.Activity.Locale
+                                language = "es"//turnContext.Activity.Locale
                             }
                         },
                         parameters = new
                         {
                             projectName = "ts-bot-CLU",
-                            deploymentName = "TSbotCLUdeploymentV6",
+                            deploymentName = "TSbotCLUdeploymentV7",
 
                             // Use Utf16CodeUnit for strings in .NET.
                             stringIndexType = "Utf16CodeUnit",

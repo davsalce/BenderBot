@@ -1,5 +1,6 @@
 ﻿using Bot.CLU;
 using Bot.Models;
+using Bot.Resorces;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
@@ -42,12 +43,12 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
 
             var culture = new PromptCultureModel()
             {
-                InlineOr = " o ",
-                InlineOrMore = "",
-                Locale = "es-es",
-                Separator = ",",
-                NoInLanguage = "No",
-                YesInLanguage = "Sí",
+                InlineOr = MarkEpisodeAsWhatched.MarkEpisodeAsWatchedDialog_PromptCultureModel_InlineOr,
+                InlineOrMore = MarkEpisodeAsWhatched.MarkEpisodeAsWatchedDialog_PromptCultureModel_InlineOrMore,
+                Locale = Common.Locale,
+                Separator = MarkEpisodeAsWhatched.MarkEpisodeAsWatchedDialog_PromptCultureModel_Separator,
+                NoInLanguage = Common.No,
+                YesInLanguage = Common.Yes
             };
 
             var customDictionary = new Dictionary<string, (Choice, Choice, ChoiceFactoryOptions)>()
@@ -61,7 +62,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
                     }
             };
 
-            AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt) + nameof(MarkEpisodeAsWatchedDialog), customDictionary, null, "es-ES"));
+            AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt) + nameof(MarkEpisodeAsWatchedDialog), customDictionary, null, Common.Locale));
             AddDialog(_seriesNameDialog);
             AddDialog(_seasonDialog);
             AddDialog(_episodeDialog);
@@ -69,7 +70,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
 
         private async Task<DialogTurnResult> SetCLUFlag(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            IStatePropertyAccessor<bool> CLUFlagStatePropertyAccessor = _conversationState.CreateProperty<bool>("CLUFlag");
+            IStatePropertyAccessor<bool> CLUFlagStatePropertyAccessor = _conversationState.CreateProperty<bool>("CLUFlag");//mismo caso ingles que español asique no meto ?? 
             await CLUFlagStatePropertyAccessor.SetAsync(stepContext.Context, true, cancellationToken: cancellationToken);
             return await stepContext.NextAsync(cancellationToken: cancellationToken);
         }
@@ -78,7 +79,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
         {
             MarkEpisodeAsWatchDTO dto = new MarkEpisodeAsWatchDTO();
             
-            IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
+            IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");//mismo caso ingles que español asique no meto ?? 
             CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
 
             foreach (Entity entity in cLUPrediction.Entities)
@@ -107,7 +108,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
         {
             if (stepContext.Result is MarkEpisodeAsWatchDTO dto)
             {
-                IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
+                IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");//mismo caso ingles que español asique no meto ?? 
                 CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
                 
 
@@ -115,11 +116,11 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
                 {
                     if (!entity.TryGetSeasonEpisodeFromEntities(dto))
                     {
-                        if (entity.Category.Equals("Episode"))
+                        if (entity.Category.Equals("Episode"))//mismo caso ingles que español asique no meto ?? 
                         {
                             dto.Episodes.Add(entity);
                         }
-                        else if (entity.Category.Equals("Season"))
+                        else if (entity.Category.Equals("Season"))//mismo caso ingles que español asique no meto ?? 
                         {
                             dto.Seasons.Add(entity);
                         }
@@ -135,7 +136,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             if (stepContext.Result is MarkEpisodeAsWatchDTO dto
                 && (!dto.IsCompleteEpisode() && !dto.IsCompleteSeason()))
             {
-                IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
+                IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");//mismo caso ingles que español asique no meto ?? 
                 CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
 
                 foreach (Entity entity in cLUPrediction.Entities)
@@ -179,8 +180,9 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
                 stepContext.Values.Add(nameof(MarkEpisodeAsWatchDTO), markEpisodeAsWatchDTO);
                 PromptOptions promptOptions = new PromptOptions()
                 {
-                    Prompt = MessageFactory.Text($"¿Te refieres a la temporada {markEpisodeAsWatchDTO.Season} capítulo {markEpisodeAsWatchDTO.Episode} de {markEpisodeAsWatchDTO.SeriesName}?"),
-                    RetryPrompt = MessageFactory.Text("Responde sí o no."),
+                    
+                    Prompt = MessageFactory.Text(MarkEpisodeAsWhatched.MarkEpisodeAsWatchDTO_CheckConfirmation_Prompt(markEpisodeAsWatchDTO.Season,markEpisodeAsWatchDTO.Episode,markEpisodeAsWatchDTO.SeriesName)),
+                    RetryPrompt = MessageFactory.Text(MarkEpisodeAsWhatched.MarkEpisodeAsWatchDTO_CheckConfirmation_RetryPrompt),
                     Style = ListStyle.SuggestedAction,
                 };
                 return await stepContext.PromptAsync(nameof(ConfirmPrompt) + nameof(MarkEpisodeAsWatchedDialog), promptOptions, cancellationToken: cancellationToken);
@@ -196,12 +198,12 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
                 MarkEpisodeAsWatchDTO dto = stepContext.Values[nameof(MarkEpisodeAsWatchDTO)] as MarkEpisodeAsWatchDTO;
                 if (await _seriesClient.MarkEpisodeAsWatch(stepContext.Context.Activity.From.Id, dto.SeriesName, dto.Season, dto.Episode))
                 {
-                    await stepContext.Context.SendActivityAsync($"{dto.Season}x{dto.Episode?.ToString("D2")} de {dto.SeriesName} visto", cancellationToken: cancellationToken);
+                    await stepContext.Context.SendActivityAsync(MarkEpisodeAsWhatched.MarkEpisodeAsWatchedDialog_MarkEpisode_Enter(dto.Season, dto.Episode, dto.SeriesName), cancellationToken: cancellationToken);
                 }
             }
             else
             {
-                await stepContext.Context.SendActivityAsync($"Mucho texto. Vete a marcarlo a la web de TrackSeries", cancellationToken: cancellationToken);
+                await stepContext.Context.SendActivityAsync(MarkEpisodeAsWhatched.MarkEpisodeAsWatchedDialog_MarkEpisode_Skip, cancellationToken: cancellationToken);
             }
             return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
         }
@@ -210,7 +212,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
         {
             IStatePropertyAccessor<bool> CLUFlagStatePropertyAccessor = _conversationState.CreateProperty<bool>("CLUFlag");
             await CLUFlagStatePropertyAccessor.SetAsync(stepContext.Context, false, cancellationToken: cancellationToken);
-            return await stepContext.NextAsync(cancellationToken: cancellationToken);
+            return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
         }
     }
 }

@@ -16,7 +16,8 @@ namespace Bot.Bots
         private readonly MarkEpisodeAsWatchedDialog _markEpisodeAsWatched;
         private readonly PendingEpisodesDialog _pendingEpisodesDialog;
         private readonly RecomendSeriesDialog _recomendSeriesDialog;
-        public BenderBot(ConversationState conversationState, CQADialog CQADialog, TrendingDialog trendingDialog, MarkEpisodeAsWatchedDialog markEpisodeAsWatched, PendingEpisodesDialog pendingEpisodesDialog, RecomendSeriesDialog recomendSeriesDialog)
+        private readonly ChangeLanguageDialog _changeLanguageDialog;
+        public BenderBot(ConversationState conversationState, CQADialog CQADialog, TrendingDialog trendingDialog, MarkEpisodeAsWatchedDialog markEpisodeAsWatched, PendingEpisodesDialog pendingEpisodesDialog, RecomendSeriesDialog recomendSeriesDialog, ChangeLanguageDialog changeLanguageDialog)
         {
             this._conversationState = conversationState;
             _cQADialog = CQADialog;
@@ -24,6 +25,7 @@ namespace Bot.Bots
             _markEpisodeAsWatched = markEpisodeAsWatched;
             _pendingEpisodesDialog = pendingEpisodesDialog;
             _recomendSeriesDialog = recomendSeriesDialog;
+            _changeLanguageDialog = changeLanguageDialog;
         }
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
@@ -41,15 +43,16 @@ namespace Bot.Bots
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             DialogSet dialogSet = new DialogSet(_conversationState.CreateProperty<DialogState>("DialogState"));
-            
-            dialogSet.Add(_recomendSeriesDialog); 
+
+            dialogSet.Add(_recomendSeriesDialog);
             dialogSet.Add(_pendingEpisodesDialog);
             dialogSet.Add(_markEpisodeAsWatched);
             dialogSet.Add(_trendingDialog);
             dialogSet.Add(_cQADialog);
+            dialogSet.Add(_changeLanguageDialog);
 
             DialogContext dialogContext = await dialogSet.CreateContextAsync(turnContext, cancellationToken);
-            DialogTurnResult results = await dialogContext.ContinueDialogAsync(cancellationToken);            
+            DialogTurnResult results = await dialogContext.ContinueDialogAsync(cancellationToken);
 
             if (results.Status == DialogTurnStatus.Empty)
             {
@@ -77,6 +80,10 @@ namespace Bot.Bots
                     case "RecomendSeries":
                         await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
                         await _recomendSeriesDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
+                        break;
+                    case "ChangeLanguage":
+                        await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
+                        await _changeLanguageDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                         break;
                     case "None":
                     default:

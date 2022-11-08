@@ -1,4 +1,5 @@
-﻿using Microsoft.Bot.Builder;
+﻿using Bot.Resorces;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using MockSeries;
@@ -33,7 +34,7 @@ namespace Bot.Dialogs
                 HeroCard heroCard = new HeroCard()
                 {
                     Title = series.Name,
-                    Subtitle = $"Followers: {series.Followers} Status: {series.Status}",
+                    Subtitle = Common.Dialogs_HeroCard_Subtitle(series.Followers, series.Status),
                     Text = series.Overview,
                     Images = new List<CardImage>()
                         {
@@ -45,7 +46,7 @@ namespace Bot.Dialogs
                 };
                 attachments.Add(heroCard.ToAttachment());
             }
-            var activity = MessageFactory.Carousel(attachments, "Estas son tus series recomendadas.");
+            var activity = MessageFactory.Carousel(attachments, RecomendSeries.RecomendSeriesDialog_Carousel);
             await stepContext.Context.SendActivityAsync(activity, cancellationToken: cancellationToken);
             return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
         }

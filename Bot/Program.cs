@@ -56,6 +56,8 @@ builder.Services.AddSingleton<RecomendSeriesDialog>();
 builder.Services.AddSingleton<GetSeriesNameDialog>();
 builder.Services.AddSingleton<GetSeasonDialog>();
 builder.Services.AddSingleton<GetEpisodeDialog>();
+builder.Services.AddSingleton<ChangeLanguageDialog>();
+builder.Services.AddSingleton<LanguageMiddleware>();
 WebApplication? app = builder.Build();
 
 app.MapGet("/",() =>"Hello World!");

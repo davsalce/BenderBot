@@ -5,9 +5,10 @@ namespace Bot
 {
     public class BenderAdapter : CloudAdapter
     {
-        public BenderAdapter(CLUMiddleware CLUMiddleware) : base()
+        public BenderAdapter(CLUMiddleware CLUMiddleware, LanguageMiddleware languageMiddleware) : base()
         {
             Use(CLUMiddleware); 
+            Use(languageMiddleware);        
         }
 
     }

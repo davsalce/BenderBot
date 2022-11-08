@@ -8,6 +8,29 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="Resorces\MarkEpisodeAsWhatched.es.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Resorces\MarkEpisodeAsWhatched.es.resx" />
+    <None Include="Resorces\PendingEpisodes.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PendingEpisodes.tt</DependentUpon>
+    </None>
+    <None Include="Resorces\RecomendSeries.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RecomendSeries.tt</DependentUpon>
+    </None>
+    <None Include="Resorces\Trending.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Trending.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Azure.AI.Language.Conversations" Version="1.0.0" />
     <PackageReference Include="Azure.AI.Language.QuestionAnswering" Version="1.0.0" />
     <PackageReference Include="Microsoft.Bot.Builder" Version="4.17.1" />
@@ -17,6 +40,64 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MockSeries\MockSeries.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resorces\Common.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Common.cs</LastGenOutput>
+    </None>
+    <None Update="Resorces\MarkEpisodeAsWhatched.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MarkEpisodeAsWhatched.cs</LastGenOutput>
+    </None>
+    <None Update="Resorces\PendingEpisodes.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PendingEpisodes.cs</LastGenOutput>
+    </None>
+    <None Update="Resorces\RecomendSeries.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>RecomendSeries.cs</LastGenOutput>
+    </None>
+    <None Update="Resorces\ResourcesGenerator.tt">
+      <Generator></Generator>
+    </None>
+    <None Update="Resorces\Trending.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Trending.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resorces\Common.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Common.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Resorces\MarkEpisodeAsWhatched.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MarkEpisodeAsWhatched.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Resorces\PendingEpisodes.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PendingEpisodes.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Resorces\RecomendSeries.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RecomendSeries.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Resorces\Trending.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Trending.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>
