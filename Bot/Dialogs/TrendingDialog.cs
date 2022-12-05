@@ -6,7 +6,6 @@ using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using MockSeries;
 using MockSeries.Models;
-using System.Globalization;
 using Entity = Bot.CLU.CLUPrediction.Entity;
 
 namespace Bot.Dialogs
@@ -40,7 +39,7 @@ namespace Bot.Dialogs
 
         private async Task<DialogTurnResult> GetPeriodFromCLU(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-        
+
             IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
             CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
 
@@ -84,7 +83,7 @@ namespace Bot.Dialogs
                     new PromptOptions
                     {
                         Prompt = MessageFactory.Text(Trending.TrendingDialog_AskForPeriod),
-                        Choices = ChoiceFactory.ToChoices(new List<string> { Trending.TrendingDialog_Today, Trending.TrendingDialog_Week, Trending.TrendingDialog_Month, Trending.TrendingDialog_Forever}),
+                        Choices = ChoiceFactory.ToChoices(new List<string> { Trending.TrendingDialog_Today, Trending.TrendingDialog_Week, Trending.TrendingDialog_Month, Trending.TrendingDialog_Forever }),
                     }, cancellationToken);
             }
             return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
@@ -127,7 +126,7 @@ namespace Bot.Dialogs
                     HeroCard heroCard = new HeroCard()
                     {
                         Title = series.Name,
-                        Subtitle = Common.Dialogs_HeroCard_Subtitle(series.Followers,series.Status),
+                        Subtitle = Common.Dialogs_HeroCard_Subtitle(series.Followers, series.Status),
                         Text = series.Overview,
                         Images = new List<CardImage>()
                         {
@@ -141,7 +140,7 @@ namespace Bot.Dialogs
                 }
 
                 var activity = MessageFactory.Carousel(attachments, Trending.TrendingDialog_Carusel);
-                await stepContext.Context.SendActivityAsync(activity, cancellationToken: cancellationToken); 
+                await stepContext.Context.SendActivityAsync(activity, cancellationToken: cancellationToken);
             }
             return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
         }
