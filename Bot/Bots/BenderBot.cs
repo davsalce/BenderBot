@@ -65,7 +65,6 @@ namespace Bot.Bots
                 {
                     case "MarkEpisodeAsWatched":
                         await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
-                        //Ejecuta el dialogo de Mark
                         await _markEpisodeAsWatched.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                         break;
                     case "PendingEpisodes":
@@ -73,9 +72,7 @@ namespace Bot.Bots
                         await _pendingEpisodesDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                         break;
                     case "TrendingSeries":
-                        // Envía Actividad de tipo texto, con el texto "TrendingSeries"
                         await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
-                        // Ejecuta el diálogo de Trending
                         await _trendingDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                         break;
                     case "RecomendSeries":

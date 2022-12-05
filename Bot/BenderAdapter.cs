@@ -10,6 +10,5 @@ namespace Bot
             Use(languageMiddleware);
             Use(CLUMiddleware);        
         }
-
     }
 }
