@@ -8,22 +8,32 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="Resorces\MarkEpisodeAsWhatched.es.resx" />
+    <EmbeddedResource Remove="Resources\MarkEpisodeAsWhatched.es.resx" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Resorces\MarkEpisodeAsWhatched.es.resx" />
-    <None Include="Resorces\PendingEpisodes.cs">
+    <None Include="Resources\ChangeLanguage.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ChangeLanguage.tt</DependentUpon>
+    </None>
+    <None Include="Resources\Confirm.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Confirm.tt</DependentUpon>
+    </None>
+    <None Include="Resources\MarkEpisodeAsWhatched.es.resx" />
+    <None Include="Resources\PendingEpisodes.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>PendingEpisodes.tt</DependentUpon>
     </None>
-    <None Include="Resorces\RecomendSeries.cs">
+    <None Include="Resources\RecomendSeries.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>RecomendSeries.tt</DependentUpon>
     </None>
-    <None Include="Resorces\Trending.cs">
+    <None Include="Resources\Trending.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Trending.tt</DependentUpon>
@@ -43,26 +53,34 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Resorces\Common.tt">
+    <None Update="Resources\ChangeLanguage.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ChangeLanguage.cs</LastGenOutput>
+    </None>
+    <None Update="Resources\Common.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Common.cs</LastGenOutput>
     </None>
-    <None Update="Resorces\MarkEpisodeAsWhatched.tt">
+    <None Update="Resources\Confirm.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Confirm.cs</LastGenOutput>
+    </None>
+    <None Update="Resources\MarkEpisodeAsWhatched.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MarkEpisodeAsWhatched.cs</LastGenOutput>
     </None>
-    <None Update="Resorces\PendingEpisodes.tt">
+    <None Update="Resources\PendingEpisodes.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>PendingEpisodes.cs</LastGenOutput>
     </None>
-    <None Update="Resorces\RecomendSeries.tt">
+    <None Update="Resources\RecomendSeries.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>RecomendSeries.cs</LastGenOutput>
     </None>
-    <None Update="Resorces\ResourcesGenerator.tt">
+    <None Update="Resources\ResourcesGenerator.tt">
       <Generator></Generator>
     </None>
-    <None Update="Resorces\Trending.tt">
+    <None Update="Resources\Trending.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Trending.cs</LastGenOutput>
     </None>
@@ -73,27 +91,37 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resorces\Common.cs">
+    <Compile Update="Resources\ChangeLanguage.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ChangeLanguage.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Common.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Common.tt</DependentUpon>
     </Compile>
-    <Compile Update="Resorces\MarkEpisodeAsWhatched.cs">
+    <Compile Update="Resources\Confirm.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Confirm.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\MarkEpisodeAsWhatched.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>MarkEpisodeAsWhatched.tt</DependentUpon>
     </Compile>
-    <Compile Update="Resorces\PendingEpisodes.cs">
+    <Compile Update="Resources\PendingEpisodes.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>PendingEpisodes.tt</DependentUpon>
     </Compile>
-    <Compile Update="Resorces\RecomendSeries.cs">
+    <Compile Update="Resources\RecomendSeries.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>RecomendSeries.tt</DependentUpon>
     </Compile>
-    <Compile Update="Resorces\Trending.cs">
+    <Compile Update="Resources\Trending.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Trending.tt</DependentUpon>

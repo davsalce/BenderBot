@@ -1,6 +1,6 @@
 ﻿using Bot.CLU;
 using Bot.Models;
-using Bot.Resorces;
+using Bot.Resources;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
@@ -41,28 +41,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog) + nameof(MarkEpisodeAsWatchedDialog), waterfallSteps));
 
-            var culture = new PromptCultureModel()
-            {
-                InlineOr = MarkEpisodeAsWhatched.MarkEpisodeAsWatchedDialog_PromptCultureModel_InlineOr,
-                InlineOrMore = MarkEpisodeAsWhatched.MarkEpisodeAsWatchedDialog_PromptCultureModel_InlineOrMore,
-                Locale = Common.Locale,
-                Separator = MarkEpisodeAsWhatched.MarkEpisodeAsWatchedDialog_PromptCultureModel_Separator,
-                NoInLanguage = Common.No,
-                YesInLanguage = Common.Yes
-            };
-
-            var customDictionary = new Dictionary<string, (Choice, Choice, ChoiceFactoryOptions)>()
-            {
-                    { culture.Locale,
-                                        (
-                                        new Choice(culture.YesInLanguage),
-                                        new Choice(culture.NoInLanguage),
-                                        new ChoiceFactoryOptions(culture.Separator,culture.InlineOr, culture.InlineOrMore, true)
-                                        )
-                    }
-            };
-
-            AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt) + nameof(MarkEpisodeAsWatchedDialog), customDictionary, null, Common.Locale));
+            AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt) + nameof(MarkEpisodeAsWatchedDialog), DialogHelper.InitializeConfirmChoiceDictionary(), null, Common.Spanish));
             AddDialog(_seriesNameDialog);
             AddDialog(_seasonDialog);
             AddDialog(_episodeDialog);
@@ -182,7 +161,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
                 {
                     
                     Prompt = MessageFactory.Text(MarkEpisodeAsWhatched.MarkEpisodeAsWatchDTO_CheckConfirmation_Prompt(markEpisodeAsWatchDTO.Season,markEpisodeAsWatchDTO.Episode,markEpisodeAsWatchDTO.SeriesName)),
-                    RetryPrompt = MessageFactory.Text(MarkEpisodeAsWhatched.MarkEpisodeAsWatchDTO_CheckConfirmation_RetryPrompt),
+                    RetryPrompt = MessageFactory.Text(Common.CheckConfirmation_RetryPrompt),
                     Style = ListStyle.SuggestedAction,
                 };
                 return await stepContext.PromptAsync(nameof(ConfirmPrompt) + nameof(MarkEpisodeAsWatchedDialog), promptOptions, cancellationToken: cancellationToken);

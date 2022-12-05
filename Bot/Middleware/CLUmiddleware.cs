@@ -23,13 +23,6 @@ namespace Bot.Middleware
         {
             BotAssert.ContextNotNull(turnContext);
 
-            turnContext.OnSendActivities(async (newContext, activities, nextSend) =>
-            {
-                var a = 0;
-                return await nextSend();
-            });
-
-
             if (turnContext.Activity.Type == ActivityTypes.Message)
             {
                 IStatePropertyAccessor<bool> CLUFlagStatePropertyAccessor = _conversationState.CreateProperty<bool>("CLUFlag");
@@ -37,23 +30,22 @@ namespace Bot.Middleware
 
                 if (!doNotOverrideCLU)
                 {
-                    string textMessage = turnContext.Activity.Text;
                     var CLUrequestBody = new
                     {
                         analysisInput = new
                         {
                             conversationItem = new
                             {
-                                text = textMessage,
+                                text = turnContext.Activity.Text,
                                 id = turnContext.Activity.Id,
                                 participantId = turnContext.Activity.From.Id,
-                                language = "es"//turnContext.Activity.Locale
+                                language = turnContext.Activity.Locale
                             }
                         },
                         parameters = new
                         {
                             projectName = "ts-bot-CLU",
-                            deploymentName = "TSbotCLUdeploymentV7",
+                            deploymentName = "TSbotCLUdeploymentV9",
 
                             // Use Utf16CodeUnit for strings in .NET.
                             stringIndexType = "Utf16CodeUnit",

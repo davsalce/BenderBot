@@ -6,12 +6,18 @@ using System.Resources;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 
-namespace Bot.Resorces
+namespace Bot.Resources
 {
     internal static class Common
     {
         private static readonly ResourceManager _resourceManager
-            = new ResourceManager("Bot.Resorces.Common", typeof(Common).GetTypeInfo().Assembly);
+            = new ResourceManager("Bot.Resources.Common", typeof(Common).GetTypeInfo().Assembly);
+
+        /// <summary>
+        ///     Answer yes or no.
+        /// </summary>
+        public static string CheckConfirmation_RetryPrompt
+            => GetString("CheckConfirmation_RetryPrompt");
 
         /// <summary>
         ///     Followers: {followers} Status: {status}
@@ -22,22 +28,16 @@ namespace Bot.Resorces
                 followers, status);
 
         /// <summary>
-        ///     en-en
+        ///     en-US
         /// </summary>
-        public static string Locale
-            => GetString("Locale");
+        public static string English
+            => GetString("English");
 
         /// <summary>
-        ///     No
+        ///     es-ES
         /// </summary>
-        public static string No
-            => GetString("No");
-
-        /// <summary>
-        ///     Yes
-        /// </summary>
-        public static string Yes
-            => GetString("Yes");
+        public static string Spanish
+            => GetString("Spanish");
 
         private static string GetString(string name, params string[] formatterNames)
         {
@@ -52,11 +52,11 @@ namespace Bot.Resorces
     }
 }
 
-namespace Bot.Resorces.Internal
+namespace Bot.Resources.Internal
 {
     internal static class Common
     {
         private static readonly ResourceManager _resourceManager
-            = new ResourceManager("Bot.Resorces.Common", typeof(Common).GetTypeInfo().Assembly);
+            = new ResourceManager("Bot.Resources.Common", typeof(Common).GetTypeInfo().Assembly);
     }
 }

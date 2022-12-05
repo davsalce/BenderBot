@@ -6,12 +6,12 @@ using System.Resources;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 
-namespace Bot.Resorces
+namespace Bot.Resources
 {
     internal static class MarkEpisodeAsWhatched
     {
         private static readonly ResourceManager _resourceManager
-            = new ResourceManager("Bot.Resorces.MarkEpisodeAsWhatched", typeof(MarkEpisodeAsWhatched).GetTypeInfo().Assembly);
+            = new ResourceManager("Bot.Resources.MarkEpisodeAsWhatched", typeof(MarkEpisodeAsWhatched).GetTypeInfo().Assembly);
 
         /// <summary>
         ///     Do you mean the season {season} episode {episode} of {seriesName}?
@@ -20,12 +20,6 @@ namespace Bot.Resorces
             => string.Format(
                 GetString("MarkEpisodeAsWatchDTO_CheckConfirmation_Prompt", nameof(season), nameof(episode), nameof(seriesName)),
                 season, episode, seriesName);
-
-        /// <summary>
-        ///     Answer yes or no.
-        /// </summary>
-        public static string MarkEpisodeAsWatchDTO_CheckConfirmation_RetryPrompt
-            => GetString("MarkEpisodeAsWatchDTO_CheckConfirmation_RetryPrompt");
 
         /// <summary>
         ///     {season}x{episode} of {seriesName} watched.
@@ -41,24 +35,6 @@ namespace Bot.Resorces
         public static string MarkEpisodeAsWatchedDialog_MarkEpisode_Skip
             => GetString("MarkEpisodeAsWatchedDialog_MarkEpisode_Skip");
 
-        /// <summary>
-        ///      o 
-        /// </summary>
-        public static string MarkEpisodeAsWatchedDialog_PromptCultureModel_InlineOr
-            => GetString("MarkEpisodeAsWatchedDialog_PromptCultureModel_InlineOr");
-
-        /// <summary>
-        ///     
-        /// </summary>
-        public static string MarkEpisodeAsWatchedDialog_PromptCultureModel_InlineOrMore
-            => GetString("MarkEpisodeAsWatchedDialog_PromptCultureModel_InlineOrMore");
-
-        /// <summary>
-        ///     ,
-        /// </summary>
-        public static string MarkEpisodeAsWatchedDialog_PromptCultureModel_Separator
-            => GetString("MarkEpisodeAsWatchedDialog_PromptCultureModel_Separator");
-
         private static string GetString(string name, params string[] formatterNames)
         {
             var value = _resourceManager.GetString(name);
@@ -72,11 +48,11 @@ namespace Bot.Resorces
     }
 }
 
-namespace Bot.Resorces.Internal
+namespace Bot.Resources.Internal
 {
     internal static class MarkEpisodeAsWhatched
     {
         private static readonly ResourceManager _resourceManager
-            = new ResourceManager("Bot.Resorces.MarkEpisodeAsWhatched", typeof(MarkEpisodeAsWhatched).GetTypeInfo().Assembly);
+            = new ResourceManager("Bot.Resources.MarkEpisodeAsWhatched", typeof(MarkEpisodeAsWhatched).GetTypeInfo().Assembly);
     }
 }

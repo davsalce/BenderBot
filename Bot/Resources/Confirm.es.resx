@@ -117,16 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Dialogs_HeroCard_Subtitle" xml:space="preserve">
-    <value>Followers: {followers} Status: {status}</value>
-  </data>
-  <data name="Locale" xml:space="preserve">
-    <value>es-es</value>
-  </data>
   <data name="No" xml:space="preserve">
     <value>No</value>
   </data>
+  <data name="PromptCultureModel_InlineOr" xml:space="preserve">
+    <value> o </value>
+  </data>
+  <data name="PromptCultureModel_InlineOrMore" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PromptCultureModel_Separator" xml:space="preserve">
+    <value>,</value>
+  </data>
   <data name="Yes" xml:space="preserve">
-    <value>Si</value>
+    <value>Sí</value>
   </data>
 </root>

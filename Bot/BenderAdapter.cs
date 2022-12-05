@@ -7,8 +7,8 @@ namespace Bot
     {
         public BenderAdapter(CLUMiddleware CLUMiddleware, LanguageMiddleware languageMiddleware) : base()
         {
-            Use(CLUMiddleware); 
-            Use(languageMiddleware);        
+            Use(languageMiddleware);
+            Use(CLUMiddleware);        
         }
 
     }

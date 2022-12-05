@@ -117,16 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Dialogs_HeroCard_Subtitle" xml:space="preserve">
-    <value>Followers: {followers} Status: {status}</value>
+  <data name="ChangeLanguage_AskForLanguage" xml:space="preserve">
+    <value>Enter the language in which you want to speak.</value>
   </data>
-  <data name="Locale" xml:space="preserve">
-    <value>en-en</value>
+  <data name="ChangeLanguage_ConfirmChange" xml:space="preserve">
+    <value>Vale hablamos en español</value>
   </data>
-  <data name="No" xml:space="preserve">
-    <value>No</value>
+  <data name="ChangeLanguage_Question" xml:space="preserve">
+    <value>Do you want to change language to {language}?</value>
   </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Yes</value>
+  <data name="CurrentLanguage" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="GetLanguage_ChoiceEnglish" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="GetLanguage_ChoiceSpanish" xml:space="preserve">
+    <value>Spanish</value>
   </data>
 </root>

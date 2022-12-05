@@ -19,7 +19,7 @@ namespace Bot.CLU
             [JsonPropertyName("category")]
             public string Category { get; set; }
             [JsonPropertyName("confidenceScore")]
-            public float ConfidenceScore { get; set; }        
+            public float ConfidenceScore { get; set; }
         }
 
         public class Entity
@@ -44,7 +44,6 @@ namespace Bot.CLU
 
             [JsonPropertyName("extraInformation")]
             public Extrainformation[] ExtraInformation { get; set; }
-            
         }
 
         public class Resolution
@@ -81,6 +80,10 @@ namespace Bot.CLU
 
             [JsonPropertyName("value")]
             public string Value { get; set; }
+
+            [JsonPropertyName("key")]
+            public string Key { get; set; }
+
         }
     }
 }

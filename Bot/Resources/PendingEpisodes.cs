@@ -6,12 +6,12 @@ using System.Resources;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 
-namespace Bot.Resorces
+namespace Bot.Resources
 {
     internal static class PendingEpisodes
     {
         private static readonly ResourceManager _resourceManager
-            = new ResourceManager("Bot.Resorces.PendingEpisodes", typeof(PendingEpisodes).GetTypeInfo().Assembly);
+            = new ResourceManager("Bot.Resources.PendingEpisodes", typeof(PendingEpisodes).GetTypeInfo().Assembly);
 
         /// <summary>
         ///     These are the pending chapters you have.
@@ -32,11 +32,11 @@ namespace Bot.Resorces
     }
 }
 
-namespace Bot.Resorces.Internal
+namespace Bot.Resources.Internal
 {
     internal static class PendingEpisodes
     {
         private static readonly ResourceManager _resourceManager
-            = new ResourceManager("Bot.Resorces.PendingEpisodes", typeof(PendingEpisodes).GetTypeInfo().Assembly);
+            = new ResourceManager("Bot.Resources.PendingEpisodes", typeof(PendingEpisodes).GetTypeInfo().Assembly);
     }
 }

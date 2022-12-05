@@ -8,6 +8,15 @@ namespace System.Text.Json
     public static class CLUExtensions
     {
 
+        public static string GetLanguageFromEntities(this Entity entity) {
+            string? language = null;
+            if (entity.Category.Equals("Language"))
+            {
+                language = entity.ExtraInformation.FirstOrDefault()?.Key;
+            }
+            return language;
+        }
+
         public static MarkEpisodeAsWatchDTO GetSeriesNameFromEntities(this Entity entity, MarkEpisodeAsWatchDTO dto) //devuelve dto (SeriesName)
         {
             if (entity.Category.Equals("Serie"))

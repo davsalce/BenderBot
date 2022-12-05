@@ -6,12 +6,12 @@ using System.Resources;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 
-namespace Bot.Resorces
+namespace Bot.Resources
 {
     internal static class Trending
     {
         private static readonly ResourceManager _resourceManager
-            = new ResourceManager("Bot.Resorces.Trending", typeof(Trending).GetTypeInfo().Assembly);
+            = new ResourceManager("Bot.Resources.Trending", typeof(Trending).GetTypeInfo().Assembly);
 
         /// <summary>
         ///     Trending today, this week, this month, or forever?
@@ -62,11 +62,11 @@ namespace Bot.Resorces
     }
 }
 
-namespace Bot.Resorces.Internal
+namespace Bot.Resources.Internal
 {
     internal static class Trending
     {
         private static readonly ResourceManager _resourceManager
-            = new ResourceManager("Bot.Resorces.Trending", typeof(Trending).GetTypeInfo().Assembly);
+            = new ResourceManager("Bot.Resources.Trending", typeof(Trending).GetTypeInfo().Assembly);
     }
 }

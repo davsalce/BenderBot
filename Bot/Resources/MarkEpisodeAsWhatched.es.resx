@@ -118,24 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MarkEpisodeAsWatchDTO_CheckConfirmation_Prompt" xml:space="preserve">
-    <value>Do you mean the season {season} episode {episode} of {seriesName}?</value>
-  </data>
-  <data name="MarkEpisodeAsWatchDTO_CheckConfirmation_RetryPrompt" xml:space="preserve">
-    <value>Answer yes or no.</value>
+    <value>¿Te refieres a la temporada {season} capítulo {episode} de {seriesName}?</value>
   </data>
   <data name="MarkEpisodeAsWatchedDialog_MarkEpisode_Enter" xml:space="preserve">
-    <value>{season}x{episode} of {seriesName} watched.</value>
+    <value>{season}x{episode} de {seriesName} visto.</value>
   </data>
   <data name="MarkEpisodeAsWatchedDialog_MarkEpisode_Skip" xml:space="preserve">
-    <value>A lot of text. Go bookmark it on the TrackSeries website.</value>
-  </data>
-  <data name="MarkEpisodeAsWatchedDialog_PromptCultureModel_InlineOr" xml:space="preserve">
-    <value> o </value>
-  </data>
-  <data name="MarkEpisodeAsWatchedDialog_PromptCultureModel_InlineOrMore" xml:space="preserve">
-    <value />
-  </data>
-  <data name="MarkEpisodeAsWatchedDialog_PromptCultureModel_Separator" xml:space="preserve">
-    <value>,</value>
+    <value>Mucho texto. Vete a marcarlo a la web de TrackSeries.</value>
   </data>
 </root>

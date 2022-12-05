@@ -1,5 +1,5 @@
 ﻿using Bot.CLU;
-using Bot.Resorces;
+using Bot.Resources;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;

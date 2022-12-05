@@ -6,12 +6,12 @@ using System.Resources;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 
-namespace Bot.Resorces
+namespace Bot.Resources
 {
     internal static class RecomendSeries
     {
         private static readonly ResourceManager _resourceManager
-            = new ResourceManager("Bot.Resorces.RecomendSeries", typeof(RecomendSeries).GetTypeInfo().Assembly);
+            = new ResourceManager("Bot.Resources.RecomendSeries", typeof(RecomendSeries).GetTypeInfo().Assembly);
 
         /// <summary>
         ///     These are your recommended series.
@@ -32,11 +32,11 @@ namespace Bot.Resorces
     }
 }
 
-namespace Bot.Resorces.Internal
+namespace Bot.Resources.Internal
 {
     internal static class RecomendSeries
     {
         private static readonly ResourceManager _resourceManager
-            = new ResourceManager("Bot.Resorces.RecomendSeries", typeof(RecomendSeries).GetTypeInfo().Assembly);
+            = new ResourceManager("Bot.Resources.RecomendSeries", typeof(RecomendSeries).GetTypeInfo().Assembly);
     }
 }

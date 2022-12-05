@@ -5,6 +5,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using System.Text.Json;
 using Bot.Dialogs.MarkEpisodeAsWatched;
 using Bot.CLU;
+using Bot.Dialogs.ChangeLanguage;
 
 namespace Bot.Bots
 {
