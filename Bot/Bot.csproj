@@ -4,7 +4,41 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>ee0cda5d-1fc1-4d11-b55c-496778b2a43d</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Resources\MarkEpisodeAsWhatched.es.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Resources\ChangeLanguage.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ChangeLanguage.tt</DependentUpon>
+    </None>
+    <None Include="Resources\Confirm.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Confirm.tt</DependentUpon>
+    </None>
+    <None Include="Resources\MarkEpisodeAsWhatched.es.resx" />
+    <None Include="Resources\PendingEpisodes.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PendingEpisodes.tt</DependentUpon>
+    </None>
+    <None Include="Resources\RecomendSeries.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RecomendSeries.tt</DependentUpon>
+    </None>
+    <None Include="Resources\Trending.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Trending.tt</DependentUpon>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Azure.AI.Language.Conversations" Version="1.0.0" />
@@ -16,6 +50,82 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MockSeries\MockSeries.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\ChangeLanguage.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ChangeLanguage.cs</LastGenOutput>
+    </None>
+    <None Update="Resources\Common.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Common.cs</LastGenOutput>
+    </None>
+    <None Update="Resources\Confirm.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Confirm.cs</LastGenOutput>
+    </None>
+    <None Update="Resources\MarkEpisodeAsWhatched.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MarkEpisodeAsWhatched.cs</LastGenOutput>
+    </None>
+    <None Update="Resources\PendingEpisodes.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PendingEpisodes.cs</LastGenOutput>
+    </None>
+    <None Update="Resources\RecomendSeries.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>RecomendSeries.cs</LastGenOutput>
+    </None>
+    <None Update="Resources\ResourcesGenerator.tt">
+      <Generator></Generator>
+    </None>
+    <None Update="Resources\Trending.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Trending.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\ChangeLanguage.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ChangeLanguage.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Common.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Common.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Confirm.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Confirm.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\MarkEpisodeAsWhatched.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MarkEpisodeAsWhatched.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\PendingEpisodes.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PendingEpisodes.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\RecomendSeries.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RecomendSeries.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Trending.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Trending.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

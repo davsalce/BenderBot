@@ -1,0 +1,5 @@
+﻿<#
+    Session["ResourceFile"] = "MarkEpisodeAsWhatched.resx";
+    Session["LoggingDefinitionsClass"] = "LoggingDefinitions";
+#>
+<#@ include file="ResourcesGenerator.tt" #>

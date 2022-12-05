@@ -1,13 +1,13 @@
 ﻿using Bot.CLU;
 using Bot.Models;
+using Bot.Resources;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Builder.Dialogs.Prompts;
-using Microsoft.Bot.Schema;
 using MockSeries;
 using System.Text.Json;
-using static Microsoft.Bot.Builder.Dialogs.Prompts.PromptCultureModels;
+using static Bot.CLU.CLUPrediction;
 
 namespace Bot.Dialogs.MarkEpisodeAsWatched
 {
@@ -27,92 +27,128 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             _episodeDialog = episodeDialog;
             var waterfallSteps = new WaterfallStep[]
             {
-                InicialiceMarkEpisodeAsWatchDTO,
-                GetSeriesName,
-                StoreSeriesName,
-                GetSeason,
-                StoreSeason,
-                GetEpisode,
-                StoreEpisode,
+                SetCLUFlag,
+                GetSeriesNameFromCLU,
+                GetSeriesNameFromDialog,
+                GetSeasonAndEpisodeFromCLU,
+                GetLastOrFirstUnwatchedEpisodeFromCLU,
+                GetSeasonFromDialog,
+                GetEpisodeFromDialog,
                 CheckConfirmation,
-
-                MarkEpisode
+                MarkEpisode,
+                CleanCLUFlag
             };
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog) + nameof(MarkEpisodeAsWatchedDialog), waterfallSteps));
 
-            var culture = new PromptCultureModel()
-            {
-                InlineOr = " o ",
-                InlineOrMore = "",
-                Locale = "es-es",
-                Separator = ",",
-                NoInLanguage = "No",
-                YesInLanguage = "Sí",
-            };
-
-            var customDictionary = new Dictionary<string, (Choice, Choice, ChoiceFactoryOptions)>()
-            {
-                    { culture.Locale,
-                                        (
-                                        new Choice(culture.YesInLanguage),
-                                        new Choice(culture.NoInLanguage),
-                                        new ChoiceFactoryOptions(culture.Separator,culture.InlineOr, culture.InlineOrMore, true)
-                                        )
-                    }
-            };
-
-            AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt) + nameof(MarkEpisodeAsWatchedDialog), customDictionary, null, "es-ES"));
+            AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt) + nameof(MarkEpisodeAsWatchedDialog), DialogHelper.InitializeConfirmChoiceDictionary(), null, Common.Spanish));
             AddDialog(_seriesNameDialog);
-            AddDialog(_episodeDialog);
             AddDialog(_seasonDialog);
+            AddDialog(_episodeDialog);
         }
 
-        private async Task<DialogTurnResult> InicialiceMarkEpisodeAsWatchDTO(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> SetCLUFlag(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            stepContext.Values.Add(nameof(MarkEpisodeAsWatchDTO), new MarkEpisodeAsWatchDTO());
+            IStatePropertyAccessor<bool> CLUFlagStatePropertyAccessor = _conversationState.CreateProperty<bool>("CLUFlag");//mismo caso ingles que español asique no meto ?? 
+            await CLUFlagStatePropertyAccessor.SetAsync(stepContext.Context, true, cancellationToken: cancellationToken);
             return await stepContext.NextAsync(cancellationToken: cancellationToken);
         }
 
-        private async Task<DialogTurnResult> GetSeriesName(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> GetSeriesNameFromCLU(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            return await stepContext.BeginDialogAsync(_seriesNameDialog.Id, stepContext.Values[nameof(MarkEpisodeAsWatchDTO)], cancellationToken: cancellationToken);
-        }
-        private async Task<DialogTurnResult> StoreSeriesName(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            if (stepContext.Result is string seriesName
-                && stepContext.Values[nameof(MarkEpisodeAsWatchDTO)] is MarkEpisodeAsWatchDTO dto)
+            MarkEpisodeAsWatchDTO dto = new MarkEpisodeAsWatchDTO();
+            
+            IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");//mismo caso ingles que español asique no meto ?? 
+            CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
+
+            foreach (Entity entity in cLUPrediction.Entities)
             {
-                dto.SeriesName = seriesName;
+                entity.GetSeriesNameFromEntities(dto);
             }
-            return await stepContext.NextAsync(cancellationToken: cancellationToken);
-        }
-        private async Task<DialogTurnResult> GetSeason(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            return await stepContext.BeginDialogAsync(_seasonDialog.Id, stepContext.Values[nameof(MarkEpisodeAsWatchDTO)], cancellationToken: cancellationToken);
-        }
 
-        private async Task<DialogTurnResult> StoreSeason(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            if (stepContext.Result is MarkEpisodeAsWatchDTO dto)
+            if (string.IsNullOrEmpty(dto.SeriesName))
             {
-                return await stepContext.NextAsync(dto, cancellationToken: cancellationToken);
+                return await stepContext.BeginDialogAsync(_seriesNameDialog.Id, dto, cancellationToken: cancellationToken);
             }
-            return await stepContext.NextAsync(cancellationToken: cancellationToken);
+            return await stepContext.NextAsync(dto, cancellationToken: cancellationToken);
         }
 
-        private async Task<DialogTurnResult> GetEpisode(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> GetSeriesNameFromDialog(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            return await stepContext.BeginDialogAsync(_episodeDialog.Id, stepContext.Values[nameof(MarkEpisodeAsWatchDTO)], cancellationToken: cancellationToken);
-        }
-
-        private async Task<DialogTurnResult> StoreEpisode(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            if (stepContext.Result is MarkEpisodeAsWatchDTO dto)
+            if (stepContext.Result is MarkEpisodeAsWatchDTO dto
+                && !string.IsNullOrEmpty(dto.SeriesName))
             {
                 return await stepContext.NextAsync(dto, cancellationToken: cancellationToken);
             }
-            return await stepContext.NextAsync(cancellationToken: cancellationToken);
+            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> GetSeasonAndEpisodeFromCLU(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            if (stepContext.Result is MarkEpisodeAsWatchDTO dto)
+            {
+                IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");//mismo caso ingles que español asique no meto ?? 
+                CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
+                
+
+                foreach (Entity entity in cLUPrediction.Entities)
+                {
+                    if (!entity.TryGetSeasonEpisodeFromEntities(dto))
+                    {
+                        if (entity.Category.Equals("Episode"))//mismo caso ingles que español asique no meto ?? 
+                        {
+                            dto.Episodes.Add(entity);
+                        }
+                        else if (entity.Category.Equals("Season"))//mismo caso ingles que español asique no meto ?? 
+                        {
+                            dto.Seasons.Add(entity);
+                        }
+                    }
+                }
+                return await stepContext.NextAsync(dto, cancellationToken: cancellationToken);
+            }
+            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> GetLastOrFirstUnwatchedEpisodeFromCLU(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            if (stepContext.Result is MarkEpisodeAsWatchDTO dto
+                && (!dto.IsCompleteEpisode() && !dto.IsCompleteSeason()))
+            {
+                IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");//mismo caso ingles que español asique no meto ?? 
+                CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
+
+                foreach (Entity entity in cLUPrediction.Entities)
+                {
+                    if (entity.TryGetFirstOrLastUnwatchedEpisode())
+                    {
+                        dto.Season = _seriesClient.GetLastOrFirstUnwatchedEpisode(stepContext.Context.Activity.From.Id, dto.SeriesName).season;
+                        dto.Episode = _seriesClient.GetLastOrFirstUnwatchedEpisode(stepContext.Context.Activity.From.Id, dto.SeriesName).episode;
+                    }
+                }
+                return await stepContext.NextAsync(dto, cancellationToken: cancellationToken);
+            }
+            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> GetSeasonFromDialog(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            if (stepContext.Result is MarkEpisodeAsWatchDTO dto
+                && !dto.IsCompleteSeason())
+            {
+                return await stepContext.BeginDialogAsync(_seasonDialog.Id, dto, cancellationToken: cancellationToken);
+            }
+            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> GetEpisodeFromDialog(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            if (stepContext.Result is MarkEpisodeAsWatchDTO dto
+                && !dto.IsCompleteEpisode())
+            {
+                return await stepContext.BeginDialogAsync(_episodeDialog.Id, dto, cancellationToken: cancellationToken);
+            }
+            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
         }
 
         private async Task<DialogTurnResult> CheckConfirmation(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -120,11 +156,12 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             if (stepContext.Result is MarkEpisodeAsWatchDTO markEpisodeAsWatchDTO
                && markEpisodeAsWatchDTO.IsComplete())
             {
-
+                stepContext.Values.Add(nameof(MarkEpisodeAsWatchDTO), markEpisodeAsWatchDTO);
                 PromptOptions promptOptions = new PromptOptions()
                 {
-                    Prompt = MessageFactory.Text($"¿Te refieres a la temporada {markEpisodeAsWatchDTO.Season} capítulo {markEpisodeAsWatchDTO.Episode} de {markEpisodeAsWatchDTO.SeriesName}?"),
-                    RetryPrompt = MessageFactory.Text("Responde sí o no."),
+                    
+                    Prompt = MessageFactory.Text(MarkEpisodeAsWhatched.MarkEpisodeAsWatchDTO_CheckConfirmation_Prompt(markEpisodeAsWatchDTO.Season,markEpisodeAsWatchDTO.Episode,markEpisodeAsWatchDTO.SeriesName)),
+                    RetryPrompt = MessageFactory.Text(Common.CheckConfirmation_RetryPrompt),
                     Style = ListStyle.SuggestedAction,
                 };
                 return await stepContext.PromptAsync(nameof(ConfirmPrompt) + nameof(MarkEpisodeAsWatchedDialog), promptOptions, cancellationToken: cancellationToken);
@@ -134,19 +171,27 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
 
         private async Task<DialogTurnResult> MarkEpisode(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            if (stepContext.Result is bool confirmation)
+            if (stepContext.Result is bool confirmation
+                && confirmation)
             {
                 MarkEpisodeAsWatchDTO dto = stepContext.Values[nameof(MarkEpisodeAsWatchDTO)] as MarkEpisodeAsWatchDTO;
                 if (await _seriesClient.MarkEpisodeAsWatch(stepContext.Context.Activity.From.Id, dto.SeriesName, dto.Season, dto.Episode))
                 {
-                    await stepContext.Context.SendActivityAsync($"{dto.Season}x{dto.Episode.ToString("D2")} de {dto.SeriesName} visto", cancellationToken: cancellationToken);
-                }
-                else
-                {
-                    await stepContext.Context.SendActivityAsync($"Mucho texto. Vete a marcarlo a la web de TrackSeries", cancellationToken: cancellationToken);
+                    await stepContext.Context.SendActivityAsync(MarkEpisodeAsWhatched.MarkEpisodeAsWatchedDialog_MarkEpisode_Enter(dto.Season, dto.Episode, dto.SeriesName), cancellationToken: cancellationToken);
                 }
             }
-            return await stepContext.EndDialogAsync(stepContext.Result, cancellationToken: cancellationToken);
+            else
+            {
+                await stepContext.Context.SendActivityAsync(MarkEpisodeAsWhatched.MarkEpisodeAsWatchedDialog_MarkEpisode_Skip, cancellationToken: cancellationToken);
+            }
+            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> CleanCLUFlag(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            IStatePropertyAccessor<bool> CLUFlagStatePropertyAccessor = _conversationState.CreateProperty<bool>("CLUFlag");
+            await CLUFlagStatePropertyAccessor.SetAsync(stepContext.Context, false, cancellationToken: cancellationToken);
+            return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
         }
     }
 }

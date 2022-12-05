@@ -202,7 +202,7 @@ namespace MockSeries
             return list;
         }
 
-        public async Task<bool> MarkEpisodeAsWatch(string user, string series, int season, int episode)
+        public async Task<bool> MarkEpisodeAsWatch(string user, string series, int? season, int? episode)
         {
             return true;
         }
@@ -295,6 +295,11 @@ namespace MockSeries
             };
             list.Add(show);
             return list;
+        }
+
+        public (int episode, int season) GetLastOrFirstUnwatchedEpisode(string user, string serie) 
+        {
+            return new(2,2);
         }
     }
 }

@@ -4,6 +4,8 @@ using Microsoft.Bot.Schema;
 using Microsoft.Bot.Builder.Dialogs;
 using System.Text.Json;
 using Bot.Dialogs.MarkEpisodeAsWatched;
+using Bot.CLU;
+using Bot.Dialogs.ChangeLanguage;
 
 namespace Bot.Bots
 {
@@ -15,7 +17,8 @@ namespace Bot.Bots
         private readonly MarkEpisodeAsWatchedDialog _markEpisodeAsWatched;
         private readonly PendingEpisodesDialog _pendingEpisodesDialog;
         private readonly RecomendSeriesDialog _recomendSeriesDialog;
-        public BenderBot(ConversationState conversationState, CQADialog CQADialog, TrendingDialog trendingDialog, MarkEpisodeAsWatchedDialog markEpisodeAsWatched, PendingEpisodesDialog pendingEpisodesDialog, RecomendSeriesDialog recomendSeriesDialog)
+        private readonly ChangeLanguageDialog _changeLanguageDialog;
+        public BenderBot(ConversationState conversationState, CQADialog CQADialog, TrendingDialog trendingDialog, MarkEpisodeAsWatchedDialog markEpisodeAsWatched, PendingEpisodesDialog pendingEpisodesDialog, RecomendSeriesDialog recomendSeriesDialog, ChangeLanguageDialog changeLanguageDialog)
         {
             this._conversationState = conversationState;
             _cQADialog = CQADialog;
@@ -23,6 +26,7 @@ namespace Bot.Bots
             _markEpisodeAsWatched = markEpisodeAsWatched;
             _pendingEpisodesDialog = pendingEpisodesDialog;
             _recomendSeriesDialog = recomendSeriesDialog;
+            _changeLanguageDialog = changeLanguageDialog;
         }
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
@@ -40,46 +44,47 @@ namespace Bot.Bots
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             DialogSet dialogSet = new DialogSet(_conversationState.CreateProperty<DialogState>("DialogState"));
-            
-            dialogSet.Add(_recomendSeriesDialog); 
+
+            dialogSet.Add(_recomendSeriesDialog);
             dialogSet.Add(_pendingEpisodesDialog);
             dialogSet.Add(_markEpisodeAsWatched);
             dialogSet.Add(_trendingDialog);
             dialogSet.Add(_cQADialog);
+            dialogSet.Add(_changeLanguageDialog);
 
             DialogContext dialogContext = await dialogSet.CreateContextAsync(turnContext, cancellationToken);
             DialogTurnResult results = await dialogContext.ContinueDialogAsync(cancellationToken);
-            
-
-            IStatePropertyAccessor<JsonElement> statePropertyAccessor = _conversationState.CreateProperty<JsonElement>("CLUPrediction");
-            JsonElement CLUPrediction = await statePropertyAccessor.GetAsync(turnContext, cancellationToken: cancellationToken);
-
-
-            IStatePropertyAccessor<DialogState> dialogStatePropertyAccesor = _conversationState.CreateProperty<DialogState>("DialogState");
-            string? topIntent = CLUPrediction.GetProperty("topIntent").GetString();
 
             if (results.Status == DialogTurnStatus.Empty)
             {
-                switch (topIntent)
+                IStatePropertyAccessor<DialogState> dialogStatePropertyAccesor = _conversationState.CreateProperty<DialogState>("DialogState");
+                IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
+                CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(turnContext, cancellationToken: cancellationToken);
+
+                switch (cLUPrediction.TopIntent)
                 {
                     case "MarkEpisodeAsWatched":
-                        await turnContext.SendActivityAsync(topIntent, cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
                         //Ejecuta el dialogo de Mark
                         await _markEpisodeAsWatched.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                         break;
                     case "PendingEpisodes":
-                        await turnContext.SendActivityAsync(topIntent, cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
                         await _pendingEpisodesDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                         break;
                     case "TrendingSeries":
                         // Envía Actividad de tipo texto, con el texto "TrendingSeries"
-                        await turnContext.SendActivityAsync(topIntent, cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
                         // Ejecuta el diálogo de Trending
                         await _trendingDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                         break;
                     case "RecomendSeries":
-                        await turnContext.SendActivityAsync(topIntent, cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
                         await _recomendSeriesDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
+                        break;
+                    case "ChangeLanguage":
+                        await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
+                        await _changeLanguageDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
                         break;
                     case "None":
                     default:

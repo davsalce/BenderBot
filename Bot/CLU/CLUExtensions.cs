@@ -1,32 +1,39 @@
 ﻿using Bot.Models;
+using MockSeries.Models;
 using System.Text.Json;
+using static Bot.CLU.CLUPrediction;
 
 namespace System.Text.Json
 {
     public static class CLUExtensions
     {
-        public static bool TryGetSeriesNameFromEntities(this JsonElement entity, ref string seriesName)
-        {
-            if (entity.GetProperty("category").GetString() is string category && category.Equals("Serie"))
+
+        public static string GetLanguageFromEntities(this Entity entity) {
+            string? language = null;
+            if (entity.Category.Equals("Language"))
             {
-                seriesName = entity.GetProperty("text").ToString();
-                return true;
+                language = entity.ExtraInformation.FirstOrDefault()?.Key;
             }
-            return false;
+            return language;
         }
 
-        public static bool TryGetSeasonEpisodeFromEntities(this JsonElement entity, MarkEpisodeAsWatchDTO markEpisodeAsWatchDTO)
+        public static MarkEpisodeAsWatchDTO GetSeriesNameFromEntities(this Entity entity, MarkEpisodeAsWatchDTO dto) //devuelve dto (SeriesName)
         {
-
-            if (entity.GetProperty("category").GetString() is string category && category.Equals("SeasonEpisode"))
+            if (entity.Category.Equals("Serie"))
             {
-                string? seasonEpisodeStr = entity.GetProperty("text").GetString();
-                string[]? seasonEpisodeArray = seasonEpisodeStr?.Split("x");
+                dto.SeriesName = entity.Text;
+            }
+            return dto;
+        }
+
+        public static bool TryGetSeasonEpisodeFromEntities(this Entity entity, MarkEpisodeAsWatchDTO markEpisodeAsWatchDTO)//devuelve true  (dto Episode Season)
+        {
+            if (entity.Category.Equals("SeasonEpisode"))
+            {
+                string[]? seasonEpisodeArray = entity.Text.Split("x");
                 return TryGetSeasonEpisodeArray(seasonEpisodeArray, markEpisodeAsWatchDTO);
             }
             return default;
-
-
         }
 
         private static bool TryGetSeasonEpisodeArray(string[]? seasonEpisodeArray, MarkEpisodeAsWatchDTO markEpisodeAsWatchDTO)
@@ -43,49 +50,16 @@ namespace System.Text.Json
             }
             return false;
         }
-
-        public static bool TryGetSeasonFromEntities(this JsonElement entity,ref int season)
+        public static bool TryGetFirstOrLastUnwatchedEpisode(this Entity entity)
         {
-
-            if (entity.GetProperty("category").GetString() is string category && category.Equals("SeasonEpisode"))
+            if (entity.Category.Equals("Episode"))
             {
-                string? seasonEpisodeStr = entity.GetProperty("text").GetString();
-                string[]? seasonEpisodeArray = seasonEpisodeStr?.Split("x");
-                return TryGetSeasonArray(seasonEpisodeArray, ref season);
-            }
-            return default;
-        }
-
-
-        private static bool TryGetSeasonArray(string[]? seasonEpisodeArray, ref int season)
-        {
-            if (seasonEpisodeArray is not null && seasonEpisodeArray.Length == 2)
-            {
-                if (int.TryParse(seasonEpisodeArray[0], out season))
+                string relativeTo = entity.Resolutions?.FirstOrDefault().RelativeTo;
+                if (relativeTo is not null && relativeTo.Equals("Start"))
                 {
                     return true;
                 }
-            }
-            return false;
-        }
-        public static bool TryGetEpisodeFromEntities(this JsonElement entity, ref int episode)
-        {
-
-            if (entity.GetProperty("category").GetString() is string category && category.Equals("SeasonEpisode"))
-            {
-                string? seasonEpisodeStr = entity.GetProperty("text").GetString();
-                string[]? seasonEpisodeArray = seasonEpisodeStr?.Split("x");
-                return TryGetEpisodeArray(seasonEpisodeArray, ref episode);
-            }
-            return default;
-        }
-
-
-        private static bool TryGetEpisodeArray(string[]? seasonEpisodeArray, ref int episode)
-        {
-            if (seasonEpisodeArray is not null && seasonEpisodeArray.Length == 2)
-            {
-                if (int.TryParse(seasonEpisodeArray[1], out episode))
+                if (relativeTo is not null && relativeTo.Equals("End"))
                 {
                     return true;
                 }

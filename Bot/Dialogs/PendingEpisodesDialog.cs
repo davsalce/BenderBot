@@ -1,4 +1,5 @@
-﻿using Microsoft.Bot.Builder;
+﻿using Bot.Resources;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using MockSeries;
@@ -45,7 +46,7 @@ namespace Bot.Dialogs
                 attachments.Add(heroCard.ToAttachment());
             }
 
-            var activity = MessageFactory.Carousel(attachments, "Estos son los capítulos pendientes que tienes.");
+            var activity = MessageFactory.Carousel(attachments, PendingEpisodes.PendingEpisodesDialog_Carousel);
             await stepContext.Context.SendActivityAsync(activity, cancellationToken: cancellationToken); 
             return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
         }
