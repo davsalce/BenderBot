@@ -6,6 +6,7 @@ using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using MockSeries;
 using MockSeries.Models;
+using System.Globalization;
 using Entity = Bot.CLU.CLUPrediction.Entity;
 
 namespace Bot.Dialogs
@@ -29,11 +30,8 @@ namespace Bot.Dialogs
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog) + nameof(TrendingDialog), waterfallSteps));
             AddDialog(new TextPrompt(nameof(TextPrompt)));
-            //AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>), AgePromptValidatorAsync));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
-            //AddDialog(new AttachmentPrompt(nameof(AttachmentPrompt), PicturePromptValidatorAsync));
-
             InitialDialogId = nameof(WaterfallDialog) + nameof(TrendingDialog);
         }
 
@@ -42,10 +40,8 @@ namespace Bot.Dialogs
 
         private async Task<DialogTurnResult> GetPeriodFromCLU(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            // Crea propieddad para acceder al json que me ha dado el CLU. Este obejto está guardado en el conversationState
+        
             IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
-
-            // recuperamos el objeto de CLUPredicction
             CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
 
             MockSeries.Models.TrendingPeriod period = default;
@@ -169,7 +165,7 @@ namespace Bot.Dialogs
 
         private bool IsToday(CLUPrediction.Resolution resolution)
         {
-            if (resolution.Value is DateTime today
+            if (DateTime.TryParse(resolution.Value.ToString(), out DateTime today)
                 && today.Date == DateTime.Now.Date)
             {
                 return true;
