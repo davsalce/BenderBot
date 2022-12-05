@@ -48,7 +48,7 @@ namespace Bot.Dialogs
 
             foreach (Entity entity in cLUPrediction.Entities)
             {
-                if (entity.Category.Equals("DateTime"))
+                if (entity.Category.Equals("DateTime") && entity.Resolutions is not null)
                 {
                     foreach (CLUPrediction.Resolution resolution in entity.Resolutions)
                     {
