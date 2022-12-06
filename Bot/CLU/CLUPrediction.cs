@@ -64,6 +64,7 @@ namespace Bot.CLU
             public DateTime? End { get; set; }
 
             [JsonPropertyName("value")]
+            [JsonConverter(typeof(ValueCustomJsonConverter))]
             public object Value { get; set; }
 
             [JsonPropertyName("dateTimeSubKind")]

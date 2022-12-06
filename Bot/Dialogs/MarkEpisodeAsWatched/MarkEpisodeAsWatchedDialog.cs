@@ -177,7 +177,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
                 MarkEpisodeAsWatchDTO dto = stepContext.Values[nameof(MarkEpisodeAsWatchDTO)] as MarkEpisodeAsWatchDTO;
                 if (await _seriesClient.MarkEpisodeAsWatch(stepContext.Context.Activity.From.Id, dto.SeriesName, dto.Season, dto.Episode))
                 {
-                    await stepContext.Context.SendActivityAsync(MarkEpisodeAsWhatched.MarkEpisodeAsWatchedDialog_MarkEpisode_Enter(dto.Season, dto.Episode, dto.SeriesName), cancellationToken: cancellationToken);
+                    await stepContext.Context.SendActivityAsync(Resources.MarkEpisodeAsWhatched.MarkEpisodeAsWatchedDialog_MarkEpisode_Enter(dto.Season, dto.Episode, dto.SeriesName), cancellationToken: cancellationToken);
                 }
             }
             else

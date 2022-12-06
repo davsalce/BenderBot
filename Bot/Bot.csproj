@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="Resources\MarkEpisodeAsWhatched.es.resx" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="Resources\ChangeLanguage.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -22,7 +18,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Confirm.tt</DependentUpon>
     </None>
-    <None Include="Resources\MarkEpisodeAsWhatched.es.resx" />
     <None Include="Resources\PendingEpisodes.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

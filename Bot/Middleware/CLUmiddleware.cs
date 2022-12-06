@@ -63,7 +63,12 @@ namespace Bot.Middleware
 
                         IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
 
-                        CLUPrediction? cluPrediction = conversationPrediction.Deserialize<CLUPrediction>();
+                        CLUPrediction? cluPrediction = conversationPrediction.Deserialize<CLUPrediction>(
+                            new JsonSerializerOptions() 
+                            { 
+                                Converters = 
+                                { new ValueCustomJsonConverter() }
+                            });
                         if (cluPrediction is not null)
                             await statePropertyAccessor.SetAsync(turnContext, cluPrediction);
                     }
