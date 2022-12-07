@@ -6,21 +6,24 @@ using System.Text.Json;
 using Bot.Dialogs.MarkEpisodeAsWatched;
 using Bot.CLU;
 using Bot.Dialogs.ChangeLanguage;
+using Bot.IntentHandlers;
 
 namespace Bot.Bots
 {
     public class BenderBot : ActivityHandler
     {
         private readonly ConversationState _conversationState;
+        private readonly IEnumerable<IIntentHandler> _intentHandlers;
         private readonly CQADialog _cQADialog;
         private readonly TrendingDialog _trendingDialog;
         private readonly MarkEpisodeAsWatchedDialog _markEpisodeAsWatched;
         private readonly PendingEpisodesDialog _pendingEpisodesDialog;
         private readonly RecomendSeriesDialog _recomendSeriesDialog;
         private readonly ChangeLanguageDialog _changeLanguageDialog;
-        public BenderBot(ConversationState conversationState, CQADialog CQADialog, TrendingDialog trendingDialog, MarkEpisodeAsWatchedDialog markEpisodeAsWatched, PendingEpisodesDialog pendingEpisodesDialog, RecomendSeriesDialog recomendSeriesDialog, ChangeLanguageDialog changeLanguageDialog)
+        public BenderBot(ConversationState conversationState, IEnumerable<IIntentHandler> intentHandlers, CQADialog CQADialog, TrendingDialog trendingDialog, MarkEpisodeAsWatchedDialog markEpisodeAsWatched, PendingEpisodesDialog pendingEpisodesDialog, RecomendSeriesDialog recomendSeriesDialog, ChangeLanguageDialog changeLanguageDialog)
         {
             this._conversationState = conversationState;
+            _intentHandlers = intentHandlers;
             _cQADialog = CQADialog;
             _trendingDialog = trendingDialog;
             _markEpisodeAsWatched = markEpisodeAsWatched;
@@ -57,37 +60,19 @@ namespace Bot.Bots
 
             if (results.Status == DialogTurnStatus.Empty)
             {
-                IStatePropertyAccessor<DialogState> dialogStatePropertyAccesor = _conversationState.CreateProperty<DialogState>("DialogState");
-                IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
-                CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(turnContext, cancellationToken: cancellationToken);
 
-                switch (cLUPrediction.TopIntent)
+                IIntentHandler intentHandler = default;
+
+                foreach (var handler in _intentHandlers)
                 {
-                    case "MarkEpisodeAsWatched":
-                        await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
-                        await _markEpisodeAsWatched.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
+                    if (await handler.IsValidAsync(turnContext, cancellationToken))
+                    {
+                        intentHandler = handler;                     
                         break;
-                    case "PendingEpisodes":
-                        await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
-                        await _pendingEpisodesDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
-                        break;
-                    case "TrendingSeries":
-                        await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
-                        await _trendingDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
-                        break;
-                    case "RecomendSeries":
-                        await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
-                        await _recomendSeriesDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
-                        break;
-                    case "ChangeLanguage":
-                        await turnContext.SendActivityAsync(cLUPrediction.TopIntent, cancellationToken: cancellationToken);
-                        await _changeLanguageDialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
-                        break;
-                    case "None":
-                    default:
-                        await _cQADialog.RunAsync(turnContext, dialogStatePropertyAccesor, cancellationToken);
-                        break;
+                    }
                 }
+                if (intentHandler == null) intentHandler = _intentHandlers.FirstOrDefault(ih => ih.IsDefault());
+                await intentHandler.Handle(turnContext, cancellationToken);
             }
         }
     }

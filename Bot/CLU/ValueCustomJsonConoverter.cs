@@ -21,12 +21,7 @@ namespace Bot.CLU
             if (Utf8Parser.TryParse(span, out long number, out var bytesConsumed) && span.Length == bytesConsumed)
                 return number;
 
-            var data = reader.GetString();
-
-            throw new InvalidOperationException($"'{data}' is not a correct expected value!")
-            {
-                Source = "LongToStringJsonConverter"
-            };
+            return reader.GetString();
         }
 
         public override void Write(

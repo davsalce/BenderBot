@@ -8,6 +8,7 @@ using Bot.CQA;
 using Bot.Dialogs;
 using Bot.Dialogs.ChangeLanguage;
 using Bot.Dialogs.MarkEpisodeAsWatched;
+using Bot.IntentHandlers;
 using Bot.Middleware;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
@@ -61,6 +62,14 @@ builder.Services.AddTransient<ChangeLanguageDialog>();
 builder.Services.AddSingleton<LanguageMiddleware>();
 builder.Services.AddSingleton<GetLanguageDialog>();
 builder.Services.AddSingleton<DialogHelper>();
+
+builder.Services.AddTransient<IIntentHandler, MarkEpisodeAsWatchedIntentHandler>();
+builder.Services.AddTransient<IIntentHandler, ChangeLanguageIntentHandler>();
+builder.Services.AddTransient<IIntentHandler, PendingEpisodeIntentHandler>();
+builder.Services.AddTransient<IIntentHandler, RecomendSeriesIntentHandler>();
+builder.Services.AddTransient<IIntentHandler, TrendingIntentHander>();
+builder.Services.AddTransient<IIntentHandler, CQAIntentHandler>();
+
 WebApplication? app = builder.Build();
 
 app.MapGet("/",() =>"Hello World!");

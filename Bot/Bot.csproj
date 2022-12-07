@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Handlers\**" />
+    <Content Remove="Handlers\**" />
+    <EmbeddedResource Remove="Handlers\**" />
+    <None Remove="Handlers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Resources\ChangeLanguage.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -121,10 +128,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Trending.tt</DependentUpon>
     </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Handlers\" />
   </ItemGroup>
 
 </Project>
