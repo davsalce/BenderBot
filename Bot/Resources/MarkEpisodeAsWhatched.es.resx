@@ -123,6 +123,21 @@
   <data name="MarkEpisodeAsWatchDTO_CheckConfirmation_PromptSeason" xml:space="preserve">
     <value>¿Es la temporada {season} de {seriesName} la que quieres marcar como vista?</value>
   </data>
+  <data name="MarkEpisodeAsWatchedDialog_EpisodeDialog_AskForChapter" xml:space="preserve">
+    <value>Introduce el capitulo.</value>
+  </data>
+  <data name="MarkEpisodeAsWatchedDialog_EpisodeDialog_AskForSeason" xml:space="preserve">
+    <value>Introduce la temporada.</value>
+  </data>
+  <data name="MarkEpisodeAsWatchedDialog_EpisodeDialog_AskForSeriesName" xml:space="preserve">
+    <value>Introduce el nombre de la serie.</value>
+  </data>
+  <data name="MarkEpisodeAsWatchedDialog_EpisodeDialog_RetryPrompt" xml:space="preserve">
+    <value>Necesito el nombre exacto de la serie en inglés</value>
+  </data>
+  <data name="MarkEpisodeAsWatchedDialog_EpisodeDialog_Text" xml:space="preserve">
+    <value>¿Te refieres a alguna de estas series?</value>
+  </data>
   <data name="MarkEpisodeAsWatchedDialog_MarkEpisode_Enter" xml:space="preserve">
     <value>{season}x{episode} de {seriesName} visto.</value>
   </data>

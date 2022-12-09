@@ -36,8 +36,6 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
                 Style = ListStyle.SuggestedAction,
             };
             return await stepContext.PromptAsync(nameof(ConfirmPrompt) + nameof(MarkAsWatchedRootDialog), promptOptions, cancellationToken: cancellationToken);
-
-            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
         }
 
         private async Task<DialogTurnResult> MarkSeasonDialog(WaterfallStepContext stepContext, CancellationToken cancellationToken)

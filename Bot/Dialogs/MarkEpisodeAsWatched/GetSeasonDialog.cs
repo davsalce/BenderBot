@@ -23,7 +23,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
         {
             var promptOptions = new PromptOptions
             {
-                Prompt = MessageFactory.Text("Introduce la temporada de la serie.")
+                Prompt = MessageFactory.Text(Resources.MarkEpisodeAsWhatched.MarkEpisodeAsWatchedDialog_EpisodeDialog_AskForSeason)
             };
             return await stepContext.PromptAsync(nameof(TextPrompt) + nameof(GetSeasonDialog), promptOptions, cancellationToken);
         }
