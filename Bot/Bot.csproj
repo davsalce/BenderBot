@@ -8,7 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="Resources\MarkEpisodeAsWhatched.es.resx" />
+    <Compile Remove="Handlers\**" />
+    <Content Remove="Handlers\**" />
+    <EmbeddedResource Remove="Handlers\**" />
+    <None Remove="Handlers\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,7 +25,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Confirm.tt</DependentUpon>
     </None>
-    <None Include="Resources\MarkEpisodeAsWhatched.es.resx" />
     <None Include="Resources\PendingEpisodes.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -126,10 +128,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Trending.tt</DependentUpon>
     </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Handlers\" />
   </ItemGroup>
 
 </Project>

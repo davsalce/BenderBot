@@ -120,8 +120,14 @@
   <data name="MarkEpisodeAsWatchDTO_CheckConfirmation_Prompt" xml:space="preserve">
     <value>Do you mean the season {season} episode {episode} of {seriesName}?</value>
   </data>
+  <data name="MarkEpisodeAsWatchDTO_CheckConfirmation_PromptSeason" xml:space="preserve">
+    <value>Is the season {season} of {seriesName} the one that you want to mark as watched?</value>
+  </data>
   <data name="MarkEpisodeAsWatchedDialog_MarkEpisode_Enter" xml:space="preserve">
     <value>{season}x{episode} of {seriesName} watched.</value>
+  </data>
+  <data name="MarkEpisodeAsWatchedDialog_MarkEpisode_EnterSeason" xml:space="preserve">
+    <value>Marked the entire season {season} of {seriesName} as watched.</value>
   </data>
   <data name="MarkEpisodeAsWatchedDialog_MarkEpisode_Skip" xml:space="preserve">
     <value>A lot of text. Go bookmark it on the TrackSeries website.</value>

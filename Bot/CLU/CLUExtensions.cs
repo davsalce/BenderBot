@@ -1,6 +1,4 @@
 ﻿using Bot.Models;
-using MockSeries.Models;
-using System.Text.Json;
 using static Bot.CLU.CLUPrediction;
 
 namespace System.Text.Json
@@ -50,20 +48,36 @@ namespace System.Text.Json
             }
             return false;
         }
-        public static bool TryGetFirstOrLastUnwatchedEpisode(this Entity entity)
+        public static bool TryGetLastUnwatchedEpisode(this Entity entity)
         {
             if (entity.Category.Equals("Episode"))
             {
                 string relativeTo = entity.Resolutions?.FirstOrDefault().RelativeTo;
-                if (relativeTo is not null && relativeTo.Equals("Start"))
+                if (relativeTo is not null && relativeTo.Equals("End") && entity.Length > 7)//6 = numero de letras de Episode
                 {
                     return true;
                 }
-                if (relativeTo is not null && relativeTo.Equals("End"))
+                if (relativeTo is not null && relativeTo.Equals("Current") && entity.Length > 7)
                 {
                     return true;
                 }
             }
+            return false;
+        }
+        public static bool TryGetSeason(this Entity entity)
+        {
+            if (entity.Category.Equals("Season"))
+            {
+                string relativeTo = entity.Resolutions?.FirstOrDefault().RelativeTo;
+                if (relativeTo is not null && relativeTo.Equals("End") && entity.Length > 6)//6 = numero de letras de Season
+                {
+                    return true;
+                }
+                if (relativeTo is not null && relativeTo.Equals("Current") && entity.Length > 6)
+                {
+                    return true;
+                }
+            } 
             return false;
         }
     }

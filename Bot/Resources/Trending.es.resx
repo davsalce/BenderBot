@@ -121,7 +121,7 @@
     <value>¿Las trending de hoy, de la semana, del mes, o por siempre?</value>
   </data>
   <data name="TrendingDialog_Carusel" xml:space="preserve">
-    <value>Here you go.</value>
+    <value>Aqui tienes.</value>
   </data>
   <data name="TrendingDialog_Forever" xml:space="preserve">
     <value>Por Siempre</value>
