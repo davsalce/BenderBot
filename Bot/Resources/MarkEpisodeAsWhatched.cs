@@ -22,12 +22,28 @@ namespace Bot.Resources
                 season, episode, seriesName);
 
         /// <summary>
+        ///     Is the season {season} of {seriesName} the one that you want to mark as watched?
+        /// </summary>
+        public static string MarkEpisodeAsWatchDTO_CheckConfirmation_PromptSeason(object season, object seriesName)
+            => string.Format(
+                GetString("MarkEpisodeAsWatchDTO_CheckConfirmation_PromptSeason", nameof(season), nameof(seriesName)),
+                season, seriesName);
+
+        /// <summary>
         ///     {season}x{episode} of {seriesName} watched.
         /// </summary>
         public static string MarkEpisodeAsWatchedDialog_MarkEpisode_Enter(object season, object episode, object seriesName)
             => string.Format(
                 GetString("MarkEpisodeAsWatchedDialog_MarkEpisode_Enter", nameof(season), nameof(episode), nameof(seriesName)),
                 season, episode, seriesName);
+
+        /// <summary>
+        ///     Marked the entire season {season} of {seriesName} as watched.
+        /// </summary>
+        public static string MarkEpisodeAsWatchedDialog_MarkEpisode_EnterSeason(object season, object seriesName)
+            => string.Format(
+                GetString("MarkEpisodeAsWatchedDialog_MarkEpisode_EnterSeason", nameof(season), nameof(seriesName)),
+                season, seriesName);
 
         /// <summary>
         ///     A lot of text. Go bookmark it on the TrackSeries website.

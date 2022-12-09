@@ -8,9 +8,9 @@ namespace Bot.IntentHandlers
     public class MarkEpisodeAsWatchedIntentHandler : IntentHandlerBase
     {
         private readonly ConversationState _conversationState;
-        private MarkEpisodeAsWatchedDialog _markEpisodeAsWatched;
+        private MarkAsWatchedRootDialog _markEpisodeAsWatched;
 
-        public MarkEpisodeAsWatchedIntentHandler(ConversationState conversationState, MarkEpisodeAsWatchedDialog markEpisodeAsWatched) : base(conversationState)
+        public MarkEpisodeAsWatchedIntentHandler(ConversationState conversationState, MarkAsWatchedRootDialog markEpisodeAsWatched) : base(conversationState)
         {
             _conversationState = conversationState;
             _markEpisodeAsWatched = markEpisodeAsWatched;

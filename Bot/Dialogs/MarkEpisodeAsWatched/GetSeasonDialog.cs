@@ -6,10 +6,8 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
 {
     public class GetSeasonDialog : ComponentDialog
     {
-        private readonly ConversationState _conversationState;
-        public GetSeasonDialog(ConversationState conversationState) : base(nameof(GetSeasonDialog))
+        public GetSeasonDialog() : base(nameof(GetSeasonDialog))
         {
-            _conversationState = conversationState;
             var waterfallSteps = new WaterfallStep[]
             {
                 AskForSeason,

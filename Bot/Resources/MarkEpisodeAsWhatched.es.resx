@@ -120,8 +120,14 @@
   <data name="MarkEpisodeAsWatchDTO_CheckConfirmation_Prompt" xml:space="preserve">
     <value>¿Te refieres a la temporada {season} capítulo {episode} de {seriesName}?</value>
   </data>
+  <data name="MarkEpisodeAsWatchDTO_CheckConfirmation_PromptSeason" xml:space="preserve">
+    <value>¿Es la temporada {season} de {seriesName} la que quieres marcar como vista?</value>
+  </data>
   <data name="MarkEpisodeAsWatchedDialog_MarkEpisode_Enter" xml:space="preserve">
     <value>{season}x{episode} de {seriesName} visto.</value>
+  </data>
+  <data name="MarkEpisodeAsWatchedDialog_MarkEpisode_EnterSeason" xml:space="preserve">
+    <value>Marcada la temporda {season} entera como vista de {seriesName}.</value>
   </data>
   <data name="MarkEpisodeAsWatchedDialog_MarkEpisode_Skip" xml:space="preserve">
     <value>Mucho texto. Vete a marcarlo a la web de TrackSeries.</value>

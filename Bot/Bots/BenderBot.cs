@@ -2,9 +2,7 @@
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Microsoft.Bot.Builder.Dialogs;
-using System.Text.Json;
 using Bot.Dialogs.MarkEpisodeAsWatched;
-using Bot.CLU;
 using Bot.Dialogs.ChangeLanguage;
 using Bot.IntentHandlers;
 
@@ -16,11 +14,11 @@ namespace Bot.Bots
         private readonly IEnumerable<IIntentHandler> _intentHandlers;
         private readonly CQADialog _cQADialog;
         private readonly TrendingDialog _trendingDialog;
-        private readonly MarkEpisodeAsWatchedDialog _markEpisodeAsWatched;
+        private readonly MarkAsWatchedRootDialog _markEpisodeAsWatched;
         private readonly PendingEpisodesDialog _pendingEpisodesDialog;
         private readonly RecomendSeriesDialog _recomendSeriesDialog;
         private readonly ChangeLanguageDialog _changeLanguageDialog;
-        public BenderBot(ConversationState conversationState, IEnumerable<IIntentHandler> intentHandlers, CQADialog CQADialog, TrendingDialog trendingDialog, MarkEpisodeAsWatchedDialog markEpisodeAsWatched, PendingEpisodesDialog pendingEpisodesDialog, RecomendSeriesDialog recomendSeriesDialog, ChangeLanguageDialog changeLanguageDialog)
+        public BenderBot(ConversationState conversationState, IEnumerable<IIntentHandler> intentHandlers, CQADialog CQADialog, TrendingDialog trendingDialog, MarkAsWatchedRootDialog markEpisodeAsWatched, PendingEpisodesDialog pendingEpisodesDialog, RecomendSeriesDialog recomendSeriesDialog, ChangeLanguageDialog changeLanguageDialog)
         {
             this._conversationState = conversationState;
             _intentHandlers = intentHandlers;

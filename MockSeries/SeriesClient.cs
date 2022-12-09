@@ -301,5 +301,9 @@ namespace MockSeries
         {
             return new(2,2);
         }
+        public int GetUnwatchedSeason(string user, string serie)
+        {
+            return 3;
+        }
     }
 }

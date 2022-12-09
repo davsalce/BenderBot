@@ -45,7 +45,7 @@ namespace Bot.Middleware
                         parameters = new
                         {
                             projectName = "ts-bot-CLU",
-                            deploymentName = "TSbotCLUdeploymentV9",
+                            deploymentName = "TSbotCLUdeploymentV10",
 
                             // Use Utf16CodeUnit for strings in .NET.
                             stringIndexType = "Utf16CodeUnit",
