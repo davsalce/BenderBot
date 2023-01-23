@@ -23,7 +23,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
         {
             var promptOptions = new PromptOptions
             {
-                Prompt = MessageFactory.Text("Introduce el capítulo.")
+                Prompt = MessageFactory.Text(Resources.MarkEpisodeAsWhatched.MarkEpisodeAsWatchedDialog_EpisodeDialog_AskForChapter)
             };
             return await stepContext.PromptAsync(nameof(TextPrompt) + nameof(GetEpisodeDialog), promptOptions, cancellationToken);
         }

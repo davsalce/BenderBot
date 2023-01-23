@@ -30,6 +30,36 @@ namespace Bot.Resources
                 season, seriesName);
 
         /// <summary>
+        ///     Insert chapter.
+        /// </summary>
+        public static string MarkEpisodeAsWatchedDialog_EpisodeDialog_AskForChapter
+            => GetString("MarkEpisodeAsWatchedDialog_EpisodeDialog_AskForChapter");
+
+        /// <summary>
+        ///     Insert season.
+        /// </summary>
+        public static string MarkEpisodeAsWatchedDialog_EpisodeDialog_AskForSeason
+            => GetString("MarkEpisodeAsWatchedDialog_EpisodeDialog_AskForSeason");
+
+        /// <summary>
+        ///     Insert series name.
+        /// </summary>
+        public static string MarkEpisodeAsWatchedDialog_EpisodeDialog_AskForSeriesName
+            => GetString("MarkEpisodeAsWatchedDialog_EpisodeDialog_AskForSeriesName");
+
+        /// <summary>
+        ///     I need the exact name of the series in English
+        /// </summary>
+        public static string MarkEpisodeAsWatchedDialog_EpisodeDialog_RetryPrompt
+            => GetString("MarkEpisodeAsWatchedDialog_EpisodeDialog_RetryPrompt");
+
+        /// <summary>
+        ///     Do you mean any of these?
+        /// </summary>
+        public static string MarkEpisodeAsWatchedDialog_EpisodeDialog_Text
+            => GetString("MarkEpisodeAsWatchedDialog_EpisodeDialog_Text");
+
+        /// <summary>
         ///     {season}x{episode} of {seriesName} watched.
         /// </summary>
         public static string MarkEpisodeAsWatchedDialog_MarkEpisode_Enter(object season, object episode, object seriesName)

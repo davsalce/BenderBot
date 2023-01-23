@@ -305,5 +305,9 @@ namespace MockSeries
         {
             return 3;
         }
+        public IList<string> GetSeriesNames(string user, string serie) 
+        {
+            return  new List<string> {"Friends", "Fringe", "Florence", "My Friends"};
+        }
     }
 }

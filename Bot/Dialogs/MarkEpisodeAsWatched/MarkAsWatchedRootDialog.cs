@@ -64,7 +64,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
         {
             MarkEpisodeAsWatchDTO dto = new MarkEpisodeAsWatchDTO();
 
-            IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");//mismo caso ingles que español asique no meto ?? 
+            IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
             CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
 
             foreach (Entity entity in cLUPrediction.Entities)
@@ -76,13 +76,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
 
         private async Task<DialogTurnResult> GetSeriesNameFromDialog(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            if (stepContext.Result is MarkEpisodeAsWatchDTO dto
-            && string.IsNullOrEmpty(dto.SeriesName))
-            {
-                return await stepContext.BeginDialogAsync(_seriesNameDialog.Id, dto, cancellationToken: cancellationToken);
-
-            }
-            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
+                return await stepContext.BeginDialogAsync(_seriesNameDialog.Id, stepContext.Result, cancellationToken: cancellationToken);
         }
 
         private async Task<DialogTurnResult> GetSeasonAndEpisodeFromCLU(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -119,7 +113,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             {
                 IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");//mismo caso ingles que español asique no meto ?? 
                 CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
-
+                stepContext.Values.Add(nameof(MarkEpisodeAsWatchDTO), dto);//2
                 foreach (Entity entity in cLUPrediction.Entities)
                 {
                     if (entity.TryGetLastUnwatchedEpisode())
@@ -136,11 +130,10 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
         private async Task<DialogTurnResult> GetSeasonCompleteFromCLU(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             if (stepContext.Result is MarkEpisodeAsWatchDTO dto
-                && (!dto.IsCompleteEpisode()))//quito dy.iscompleteseasos
+                && (!dto.IsCompleteEpisode()))
             {
-                IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");//mismo caso ingles que español asique no meto ?? 
+                IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
                 CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
-
                 foreach (Entity entity in cLUPrediction.Entities)
                 {
                     if (dto.Episode == null && dto.Season != null)
@@ -172,12 +165,16 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
         private async Task<DialogTurnResult> GetEpisodeFromDialog(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             if ((stepContext.Result is MarkEpisodeAsWatchDTO dto
-                && !dto.IsCompleteEpisode() ) || (stepContext.Result is bool confirmacion && !confirmacion))
+                && !dto.IsCompleteEpisode()))
+            {
+                return await stepContext.BeginDialogAsync(_episodeDialog.Id, dto, cancellationToken: cancellationToken);
+            }
+            if (stepContext.Result is bool confirmacion && !confirmacion) 
             {
                 MarkEpisodeAsWatchDTO dto1 = stepContext.Values[nameof(MarkEpisodeAsWatchDTO)] as MarkEpisodeAsWatchDTO;
                 return await stepContext.BeginDialogAsync(_episodeDialog.Id, dto1, cancellationToken: cancellationToken);
             }
-            return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
+                return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);
         }
 
         private async Task<DialogTurnResult> MarkEpisodeDialog(WaterfallStepContext stepContext, CancellationToken cancellationToken)
