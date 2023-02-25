@@ -15,6 +15,10 @@ namespace Bot.IntentHandlers
             _conversationState = conversationState;
             _markEpisodeAsWatched = markEpisodeAsWatched;
         }
+        public override async Task<DialogTurnResult> Handle(DialogContext dialogContext, CancellationToken cancellationToken)
+        {
+            return await dialogContext.BeginDialogAsync(_markEpisodeAsWatched.Id, cancellationToken: cancellationToken);
+        }
 
         public override async Task Handle(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {

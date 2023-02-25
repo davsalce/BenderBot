@@ -15,7 +15,11 @@ namespace Bot.IntentHandlers
             _conversationState = conversationState;
             _trendingDialog = trendingDialog;
         }
-
+        public override async Task<DialogTurnResult> Handle(DialogContext dialogContext, CancellationToken cancellationToken)
+        {
+            return await dialogContext.BeginDialogAsync(_trendingDialog.Id, cancellationToken: cancellationToken);
+        }
+        
         public override async Task Handle(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             await _trendingDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);

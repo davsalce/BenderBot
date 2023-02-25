@@ -15,6 +15,11 @@ namespace Bot.IntentHandlers
             _cQADialog = cQADialog;
         }
 
+        public override async Task<DialogTurnResult> Handle(DialogContext dialogContext, CancellationToken cancellationToken)
+        {
+            return await dialogContext.BeginDialogAsync(_cQADialog.Id, cancellationToken: cancellationToken);
+        }
+
         public override async Task Handle(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             await _cQADialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);

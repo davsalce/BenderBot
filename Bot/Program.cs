@@ -66,7 +66,6 @@ builder.Services.AddSingleton<GetLanguageDialog>();
 builder.Services.AddSingleton<DialogHelper>();
 builder.Services.AddSingleton<HelpDialog>();
 builder.Services.AddSingleton<MoreDialog>();
-builder.Services.AddSingleton<CancelMiddleware>();
 
 builder.Services.AddTransient<IIntentHandler, MarkEpisodeAsWatchedIntentHandler>();
 builder.Services.AddTransient<IIntentHandler, ChangeLanguageIntentHandler>();
@@ -76,7 +75,7 @@ builder.Services.AddTransient<IIntentHandler, TrendingIntentHander>();
 builder.Services.AddTransient<IIntentHandler, CQAIntentHandler>();
 builder.Services.AddTransient<IIntentHandler, HelpIntentHandler>();
 builder.Services.AddTransient<IIntentHandler, MoreIntentHandler>();
-
+builder.Services.AddTransient<IIntentHandler, CancelntentHandler>();
 
 WebApplication? app = builder.Build();
 

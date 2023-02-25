@@ -5,6 +5,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Bot.Dialogs.MarkEpisodeAsWatched;
 using Bot.Dialogs.ChangeLanguage;
 using Bot.IntentHandlers;
+using Bot.CLU;
 
 namespace Bot.Bots
 {
@@ -57,8 +58,18 @@ namespace Bot.Bots
             dialogSet.Add(_moreDialog);
 
             DialogContext dialogContext = await dialogSet.CreateContextAsync(turnContext, cancellationToken);
-            DialogTurnResult results = await dialogContext.ContinueDialogAsync(cancellationToken);
+            IStatePropertyAccessor<CLUPrediction> statePropertyAccessor = _conversationState.CreateProperty<CLUPrediction>("CLUPrediction");
+            CLUPrediction cLUPrediction = await statePropertyAccessor.GetAsync(turnContext, cancellationToken: cancellationToken);
+            DialogTurnResult results = default;
 
+            if (cLUPrediction.TopIntent == "Cancel" ||
+                cLUPrediction.TopIntent == "Help")
+            {
+                results = new DialogTurnResult(DialogTurnStatus.Empty);               
+            }
+            else { 
+                results = await dialogContext.ContinueDialogAsync(cancellationToken);
+            }          
             if (results.Status == DialogTurnStatus.Empty)
             {
 

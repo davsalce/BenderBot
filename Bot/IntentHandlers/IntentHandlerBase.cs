@@ -1,5 +1,6 @@
 ﻿using Bot.CLU;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 
 namespace Bot.IntentHandlers
@@ -12,6 +13,7 @@ namespace Bot.IntentHandlers
         {
             _conversationState = conversationState;
         }
+        public  abstract Task<DialogTurnResult> Handle(DialogContext dialogContext, CancellationToken cancellationToken);
         public abstract Task Handle(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken);
         public abstract Task<bool> IsValidAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken);
 
