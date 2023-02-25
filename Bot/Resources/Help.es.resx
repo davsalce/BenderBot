@@ -117,28 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ChangeLanguage_AskForLanguage" xml:space="preserve">
-    <value>Introduce el idioma en el que quieres hablar.</value>
+  <data name="Help_ButtonAll" xml:space="preserve">
+    <value>Más</value>
   </data>
-  <data name="ChangeLanguage_AskForLanguageRetryPrompt" xml:space="preserve">
-    <value>Solo hablo inglés y castellano.</value>
+  <data name="Help_ButtonChangeLanguage" xml:space="preserve">
+    <value>Cambiar idioma</value>
   </data>
-  <data name="ChangeLanguage_ConfirmChange" xml:space="preserve">
-    <value>Let´s talk in English</value>
+  <data name="Help_ButtonMarkEpisodeAsWatched" xml:space="preserve">
+    <value>Marcar episodio</value>
   </data>
-  <data name="ChangeLanguage_Question" xml:space="preserve">
-    <value>¿Quieres cambiar de idioma al {language}?</value>
+  <data name="Help_ButtonPendingEpisodes" xml:space="preserve">
+    <value>Episodios pendientes</value>
   </data>
-  <data name="CurrentLanguage" xml:space="preserve">
-    <value>español</value>
+  <data name="Help_ButtonRecomendSeries" xml:space="preserve">
+    <value>Recomiendame series</value>
   </data>
-  <data name="GetLanguage_Cancel" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="Help_ButtonTrending" xml:space="preserve">
+    <value>Series mas vistas</value>
   </data>
-  <data name="GetLanguage_ChoiceEnglish" xml:space="preserve">
-    <value>Inglés</value>
+  <data name="Help_ChangeLanguage" xml:space="preserve">
+    <value>y me dices en que idioma quieres hablar conmigo, cambiaré a inglés o español.</value>
   </data>
-  <data name="GetLanguage_ChoiceSpanish" xml:space="preserve">
-    <value>Español</value>
+  <data name="Help_MarkEpisodeAsWatched" xml:space="preserve">
+    <value>y me dices la serie, la temporada y capítulo que te acabas de ver te lo marcare como visto. Tambien puedo marcar la temporada entera como vista. </value>
+  </data>
+  <data name="Help_PendingEpisodes" xml:space="preserve">
+    <value>te mostrare las series que sigues y tienen capítulos disponibles para ver.</value>
+  </data>
+  <data name="Help_PromptSchema" xml:space="preserve">
+    <value>Si marcas [{button}] {desc}.</value>
+  </data>
+  <data name="Help_RecomendSeries" xml:space="preserve">
+    <value>te recomendare series.</value>
+  </data>
+  <data name="Help_Trending" xml:space="preserve">
+    <value>te mostrare las series mas populares de nuestra plataforma.</value>
   </data>
 </root>

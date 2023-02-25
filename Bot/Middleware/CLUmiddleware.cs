@@ -29,7 +29,7 @@ namespace Bot.Middleware
                 bool doNotOverrideCLU = await CLUFlagStatePropertyAccessor.GetAsync(turnContext, cancellationToken: cancellationToken);
 
                 if (!doNotOverrideCLU)
-                {
+                {                   
                     var CLUrequestBody = new
                     {
                         analysisInput = new
@@ -45,7 +45,7 @@ namespace Bot.Middleware
                         parameters = new
                         {
                             projectName = "ts-bot-CLU",
-                            deploymentName = "TSbotCLUdeploymentV10",
+                            deploymentName = "TSbotCLUdeploymentV5",
 
                             // Use Utf16CodeUnit for strings in .NET.
                             stringIndexType = "Utf16CodeUnit",
@@ -79,8 +79,6 @@ namespace Bot.Middleware
 
         }
     }
-
-
 
     public record Intent(string category, double confidenceScore);
 }

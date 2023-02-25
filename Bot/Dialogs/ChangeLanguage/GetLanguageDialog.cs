@@ -1,6 +1,7 @@
 ﻿using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
+using Microsoft.Bot.Schema;
 
 namespace Bot.Dialogs.ChangeLanguage
 {
@@ -15,7 +16,7 @@ namespace Bot.Dialogs.ChangeLanguage
             };
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog) + nameof(GetLanguageDialog), waterfallSteps));
-            AddDialog(new TextPrompt(nameof(TextPrompt) + nameof(GetLanguageDialog)));
+            AddDialog(new ChoicePrompt(nameof(ChoicePrompt) + nameof(GetLanguageDialog)));
             InitialDialogId = nameof(WaterfallDialog) + nameof(GetLanguageDialog);
         }
 
@@ -24,9 +25,51 @@ namespace Bot.Dialogs.ChangeLanguage
             var promptOptions = new PromptOptions
             {
                 Prompt = MessageFactory.Text(Resources.ChangeLanguage.ChangeLanguage_AskForLanguage),
-                Choices = new List<Choice>() { new Choice() { Value = Resources.ChangeLanguage.GetLanguage_ChoiceSpanish } , new Choice() { Value = Resources.ChangeLanguage.GetLanguage_ChoiceEnglish } },
+                RetryPrompt = MessageFactory.Text(Resources.ChangeLanguage.ChangeLanguage_AskForLanguageRetryPrompt),
+                Choices = new List<Choice>() {
+                
+                    new Choice()
+                    {
+                        Synonyms = new List<string>(){"ingles", "español", "espanol", "espanyol", "english", "English", "Ingles", "inglés", "Inglés"},
+                        Value = Resources.ChangeLanguage.GetLanguage_ChoiceSpanish,
+                        Action = new CardAction()
+                        {
+                            Type = ActionTypes.ImBack,
+                            Value = Resources.ChangeLanguage.GetLanguage_ChoiceSpanish,
+                            DisplayText = Resources.ChangeLanguage.GetLanguage_ChoiceSpanish,
+                            Title = Resources.ChangeLanguage.GetLanguage_ChoiceSpanish,
+                            Text = Resources.ChangeLanguage.GetLanguage_ChoiceSpanish
+                        }
+                    },
+                    new Choice()
+                    {
+                        Synonyms = new List<string>(){"ingles", "español", "espanol", "espanyol", "english", "English", "Ingles", "inglés", "Inglés"},
+                        Value = Resources.ChangeLanguage.GetLanguage_ChoiceEnglish,
+                         Action = new CardAction()
+                         {
+                            Type = ActionTypes.ImBack,
+                            Value =  Resources.ChangeLanguage.GetLanguage_ChoiceEnglish,
+                            DisplayText =  Resources.ChangeLanguage.GetLanguage_ChoiceEnglish,
+                            Title =  Resources.ChangeLanguage.GetLanguage_ChoiceEnglish,
+                            Text =  Resources.ChangeLanguage.GetLanguage_ChoiceEnglish
+                         }
+                    },
+                    new Choice()
+                    {
+                        Synonyms = new List<string>(){"cancelar", "Cancela", "cancela", "No", "no", "salir", "exit", "Cancel", "cancel", "Salir"},
+                        Value = Resources.ChangeLanguage.GetLanguage_Cancel,
+                        Action = new CardAction()
+                         {
+                            Type = ActionTypes.ImBack,
+                            Value =  Resources.ChangeLanguage.GetLanguage_Cancel,
+                            DisplayText =  Resources.ChangeLanguage.GetLanguage_Cancel,
+                            Title =  Resources.ChangeLanguage.GetLanguage_Cancel,
+                            Text =  Resources.ChangeLanguage.GetLanguage_Cancel
+                         }
+                    }
+                },
             };
-            return await stepContext.PromptAsync(nameof(TextPrompt) + nameof(GetLanguageDialog), promptOptions, cancellationToken);
+            return await stepContext.PromptAsync(nameof(ChoicePrompt) + nameof(GetLanguageDialog), promptOptions, cancellationToken);
         }
 
         private async Task<DialogTurnResult> ConfirmationLanguage(WaterfallStepContext stepContext, CancellationToken cancellationToken)

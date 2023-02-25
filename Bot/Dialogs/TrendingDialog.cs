@@ -83,7 +83,7 @@ namespace Bot.Dialogs
                     new PromptOptions
                     {
                         Prompt = MessageFactory.Text(Trending.TrendingDialog_AskForPeriod),
-                        Choices = ChoiceFactory.ToChoices(new List<string> { Trending.TrendingDialog_Today, Trending.TrendingDialog_Week, Trending.TrendingDialog_Month, Trending.TrendingDialog_Forever }),
+                        Choices = ChoiceFactory.ToChoices(new List<string> { Trending.TrendingDialog_Today, Trending.TrendingDialog_Week, Trending.TrendingDialog_Month, Trending.TrendingDialog_Forever, Resources.ChangeLanguage.GetLanguage_Cancel }),
                     }, cancellationToken);
             }
             return await stepContext.NextAsync(stepContext.Result, cancellationToken: cancellationToken);

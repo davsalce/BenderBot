@@ -1,6 +1,5 @@
 ﻿using Bot.CLU;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 
 namespace Bot.IntentHandlers

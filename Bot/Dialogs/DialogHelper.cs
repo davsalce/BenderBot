@@ -1,6 +1,5 @@
 ﻿using Bot.Resources;
 using Microsoft.Bot.Builder.Dialogs.Choices;
-using Microsoft.Bot.Builder.Dialogs.Prompts;
 using System.Globalization;
 using System.Reflection;
 

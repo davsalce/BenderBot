@@ -26,7 +26,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
 
         private async Task<DialogTurnResult> CheckConfirmation(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            MarkEpisodeAsWatchDTO dto = stepContext.Options as MarkEpisodeAsWatchDTO;
+            MarkEpisodeAsWatchDTO? dto = stepContext.Options as MarkEpisodeAsWatchDTO;
             PromptOptions promptOptions = new PromptOptions()
             {
 
@@ -42,7 +42,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
             if (stepContext.Result is bool confirmation
                  && confirmation)
             {
-                MarkEpisodeAsWatchDTO dto = stepContext.Options as MarkEpisodeAsWatchDTO;
+                MarkEpisodeAsWatchDTO? dto = stepContext.Options as MarkEpisodeAsWatchDTO;
                 if (await _seriesClient.MarkEpisodeAsWatch(stepContext.Context.Activity.From.Id, dto.SeriesName, dto.Season, dto.Episode))
                 {
                     await stepContext.Context.SendActivityAsync(Resources.MarkEpisodeAsWhatched.MarkEpisodeAsWatchedDialog_MarkEpisode_Enter(dto.Season, dto.Episode, dto.SeriesName), cancellationToken: cancellationToken);

@@ -120,6 +120,9 @@
   <data name="ChangeLanguage_AskForLanguage" xml:space="preserve">
     <value>Enter the language in which you want to speak.</value>
   </data>
+  <data name="ChangeLanguage_AskForLanguageRetryPrompt" xml:space="preserve">
+    <value>I'm able to speak English and Spanish.</value>
+  </data>
   <data name="ChangeLanguage_ConfirmChange" xml:space="preserve">
     <value>Vale hablamos en español</value>
   </data>
@@ -128,6 +131,9 @@
   </data>
   <data name="CurrentLanguage" xml:space="preserve">
     <value>English</value>
+  </data>
+  <data name="GetLanguage_Cancel" xml:space="preserve">
+    <value>Cancel</value>
   </data>
   <data name="GetLanguage_ChoiceEnglish" xml:space="preserve">
     <value>English</value>

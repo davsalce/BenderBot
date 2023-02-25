@@ -18,7 +18,9 @@ namespace Bot.Bots
         private readonly PendingEpisodesDialog _pendingEpisodesDialog;
         private readonly RecomendSeriesDialog _recomendSeriesDialog;
         private readonly ChangeLanguageDialog _changeLanguageDialog;
-        public BenderBot(ConversationState conversationState, IEnumerable<IIntentHandler> intentHandlers, CQADialog CQADialog, TrendingDialog trendingDialog, MarkAsWatchedRootDialog markEpisodeAsWatched, PendingEpisodesDialog pendingEpisodesDialog, RecomendSeriesDialog recomendSeriesDialog, ChangeLanguageDialog changeLanguageDialog)
+        private readonly HelpDialog _helperDialog; 
+        private readonly MoreDialog _moreDialog;
+        public BenderBot(ConversationState conversationState, IEnumerable<IIntentHandler> intentHandlers, CQADialog CQADialog, TrendingDialog trendingDialog, MarkAsWatchedRootDialog markEpisodeAsWatched, PendingEpisodesDialog pendingEpisodesDialog, RecomendSeriesDialog recomendSeriesDialog, ChangeLanguageDialog changeLanguageDialog, HelpDialog helperDialog, MoreDialog moreDialog)
         {
             this._conversationState = conversationState;
             _intentHandlers = intentHandlers;
@@ -28,30 +30,31 @@ namespace Bot.Bots
             _pendingEpisodesDialog = pendingEpisodesDialog;
             _recomendSeriesDialog = recomendSeriesDialog;
             _changeLanguageDialog = changeLanguageDialog;
+            _helperDialog = helperDialog;
+            _moreDialog = moreDialog;
+
         }
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
             await base.OnTurnAsync(turnContext, cancellationToken);
             await _conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
-
         }
-        protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded,
-            ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
+        protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
-            await turnContext.SendActivityAsync("Hola", cancellationToken: cancellationToken);
-
+            await _helperDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
         }
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             DialogSet dialogSet = new DialogSet(_conversationState.CreateProperty<DialogState>("DialogState"));
-
             dialogSet.Add(_recomendSeriesDialog);
             dialogSet.Add(_pendingEpisodesDialog);
             dialogSet.Add(_markEpisodeAsWatched);
             dialogSet.Add(_trendingDialog);
             dialogSet.Add(_cQADialog);
             dialogSet.Add(_changeLanguageDialog);
+            dialogSet.Add(_helperDialog); 
+            dialogSet.Add(_moreDialog);
 
             DialogContext dialogContext = await dialogSet.CreateContextAsync(turnContext, cancellationToken);
             DialogTurnResult results = await dialogContext.ContinueDialogAsync(cancellationToken);

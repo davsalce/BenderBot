@@ -117,28 +117,41 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ChangeLanguage_AskForLanguage" xml:space="preserve">
-    <value>Introduce el idioma en el que quieres hablar.</value>
+  <data name="Help_ButtonAll" xml:space="preserve">
+    <value>Tell me more</value>
   </data>
-  <data name="ChangeLanguage_AskForLanguageRetryPrompt" xml:space="preserve">
-    <value>Solo hablo inglés y castellano.</value>
+  <data name="Help_ButtonChangeLanguage" xml:space="preserve">
+    <value>Change language</value>
   </data>
-  <data name="ChangeLanguage_ConfirmChange" xml:space="preserve">
-    <value>Let´s talk in English</value>
+  <data name="Help_ButtonMarkEpisodeAsWatched" xml:space="preserve">
+    <value>Mark episode</value>
   </data>
-  <data name="ChangeLanguage_Question" xml:space="preserve">
-    <value>¿Quieres cambiar de idioma al {language}?</value>
+  <data name="Help_ButtonPendingEpisodes" xml:space="preserve">
+    <value>Pending episodes</value>
   </data>
-  <data name="CurrentLanguage" xml:space="preserve">
-    <value>español</value>
+  <data name="Help_ButtonRecomendSeries" xml:space="preserve">
+    <value>Recomend series</value>
   </data>
-  <data name="GetLanguage_Cancel" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="Help_ButtonTrending" xml:space="preserve">
+    <value>Trending series</value>
   </data>
-  <data name="GetLanguage_ChoiceEnglish" xml:space="preserve">
-    <value>Inglés</value>
+  <data name="Help_ChangeLanguage" xml:space="preserve">
+    <value>I'll swap language inmediately between Spanish and English. </value>
   </data>
-  <data name="GetLanguage_ChoiceSpanish" xml:space="preserve">
-    <value>Español</value>
+  <data name="Help_MarkEpisodeAsWatched" xml:space="preserve">
+    <value>and I'm inform about the series name, the season and chapter number you have just watched i'll mark it in TrackSeries.
+Also i can mark the whole season you already watched.</value>
+  </data>
+  <data name="Help_PendingEpisodes" xml:space="preserve">
+    <value>I'll display your pending episodes.</value>
+  </data>
+  <data name="Help_PromptSchema" xml:space="preserve">
+    <value>If [{button}] button is selected{desc}.</value>
+  </data>
+  <data name="Help_RecomendSeries" xml:space="preserve">
+    <value>I'll recomend you some series.</value>
+  </data>
+  <data name="Help_Trending" xml:space="preserve">
+    <value>I'll show you the trending series of the day/week/month.</value>
   </data>
 </root>

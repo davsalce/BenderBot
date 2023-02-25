@@ -55,7 +55,7 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
 
         private async Task<DialogTurnResult> SetCLUFlag(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            IStatePropertyAccessor<bool> CLUFlagStatePropertyAccessor = _conversationState.CreateProperty<bool>("CLUFlag");//mismo caso ingles que español asique no meto ?? 
+            IStatePropertyAccessor<bool> CLUFlagStatePropertyAccessor = _conversationState.CreateProperty<bool>("CLUFlag");
             await CLUFlagStatePropertyAccessor.SetAsync(stepContext.Context, true, cancellationToken: cancellationToken);
             return await stepContext.NextAsync(cancellationToken: cancellationToken);
         }
@@ -164,8 +164,8 @@ namespace Bot.Dialogs.MarkEpisodeAsWatched
 
         private async Task<DialogTurnResult> GetEpisodeFromDialog(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            if ((stepContext.Result is MarkEpisodeAsWatchDTO dto
-                && !dto.IsCompleteEpisode()))
+            if (stepContext.Result is MarkEpisodeAsWatchDTO dto
+                && !dto.IsCompleteEpisode())
             {
                 return await stepContext.BeginDialogAsync(_episodeDialog.Id, dto, cancellationToken: cancellationToken);
             }

@@ -20,6 +20,12 @@ namespace Bot.Resources
             => GetString("ChangeLanguage_AskForLanguage");
 
         /// <summary>
+        ///     I'm able to speak English and Spanish.
+        /// </summary>
+        public static string ChangeLanguage_AskForLanguageRetryPrompt
+            => GetString("ChangeLanguage_AskForLanguageRetryPrompt");
+
+        /// <summary>
         ///     Vale hablamos en español
         /// </summary>
         public static string ChangeLanguage_ConfirmChange
@@ -38,6 +44,12 @@ namespace Bot.Resources
         /// </summary>
         public static string CurrentLanguage
             => GetString("CurrentLanguage");
+
+        /// <summary>
+        ///     Cancel
+        /// </summary>
+        public static string GetLanguage_Cancel
+            => GetString("GetLanguage_Cancel");
 
         /// <summary>
         ///     English

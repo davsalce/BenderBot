@@ -25,6 +25,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Confirm.tt</DependentUpon>
     </None>
+    <None Include="Resources\Help.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Help.tt</DependentUpon>
+    </None>
     <None Include="Resources\PendingEpisodes.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -67,6 +72,10 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Confirm.cs</LastGenOutput>
     </None>
+    <None Update="Resources\Help.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Help.cs</LastGenOutput>
+    </None>
     <None Update="Resources\MarkEpisodeAsWhatched.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MarkEpisodeAsWhatched.cs</LastGenOutput>
@@ -107,6 +116,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Confirm.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Help.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Help.tt</DependentUpon>
     </Compile>
     <Compile Update="Resources\MarkEpisodeAsWhatched.cs">
       <DesignTime>True</DesignTime>
