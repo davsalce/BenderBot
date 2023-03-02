@@ -8,12 +8,12 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddIntentHandlers(this IServiceCollection services)
         {
 
-            builder.Services.AddTransient<IIntentHandler, MarkEpisodeAsWatchedIntentHandler>();
-            builder.Services.AddTransient<IIntentHandler, ChangeLanguageIntentHandler>();
-            builder.Services.AddTransient<IIntentHandler, PendingEpisodeIntentHandler>();
-            builder.Services.AddTransient<IIntentHandler, RecomendSeriesIntentHandler>();
-            builder.Services.AddTransient<IIntentHandler, TrendingIntentHander>();
-            builder.Services.AddTransient<IIntentHandler, CQAIntentHandler>();
+            services.AddTransient<IIntentHandler, MarkEpisodeAsWatchedIntentHandler>();
+            services.AddTransient<IIntentHandler, ChangeLanguageIntentHandler>();
+            services.AddTransient<IIntentHandler, PendingEpisodeIntentHandler>();
+            services.AddTransient<IIntentHandler, RecomendSeriesIntentHandler>();
+            services.AddTransient<IIntentHandler, TrendingIntentHander>();
+            services.AddTransient<IIntentHandler, CQAIntentHandler>();
 
             return services;
         }
