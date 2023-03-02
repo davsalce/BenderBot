@@ -1,7 +1,8 @@
-﻿using Microsoft.Bot.Builder.Dialogs;
+﻿using Bot.DirectLine;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Extensions.Options;
 
-namespace Bot.DirectLine
+namespace Bot.Dialogs
 {
     public class GetTokenDialog : ComponentDialog
     {

@@ -16,9 +16,9 @@ namespace Bot.Bots
         private readonly TrendingDialog _trendingDialog;
         private readonly MarkAsWatchedRootDialog _markEpisodeAsWatched;
         private readonly PendingEpisodesDialog _pendingEpisodesDialog;
-        private readonly RecomendSeriesDialog _recomendSeriesDialog;
+        private readonly RecommendSeriesDialog _recomendSeriesDialog;
         private readonly ChangeLanguageDialog _changeLanguageDialog;
-        public BenderBot(ConversationState conversationState, IEnumerable<IIntentHandler> intentHandlers, CQADialog CQADialog, TrendingDialog trendingDialog, MarkAsWatchedRootDialog markEpisodeAsWatched, PendingEpisodesDialog pendingEpisodesDialog, RecomendSeriesDialog recomendSeriesDialog, ChangeLanguageDialog changeLanguageDialog)
+        public BenderBot(ConversationState conversationState, IEnumerable<IIntentHandler> intentHandlers, CQADialog CQADialog, TrendingDialog trendingDialog, MarkAsWatchedRootDialog markEpisodeAsWatched, PendingEpisodesDialog pendingEpisodesDialog, RecommendSeriesDialog recomendSeriesDialog, ChangeLanguageDialog changeLanguageDialog)
         {
             this._conversationState = conversationState;
             _intentHandlers = intentHandlers;

@@ -8,8 +8,8 @@ namespace Bot.IntentHandlers
     public class RecomendSeriesIntentHandler : IntentHandlerBase
     {
         private readonly ConversationState _conversationState;
-        RecomendSeriesDialog _recomendSeriesDialog;
-        public RecomendSeriesIntentHandler(ConversationState conversationState , RecomendSeriesDialog recomendSeriesDialog) : base(conversationState)
+        RecommendSeriesDialog _recomendSeriesDialog;
+        public RecomendSeriesIntentHandler(ConversationState conversationState , RecommendSeriesDialog recomendSeriesDialog) : base(conversationState)
         {
             _conversationState = conversationState;
             _recomendSeriesDialog = recomendSeriesDialog;

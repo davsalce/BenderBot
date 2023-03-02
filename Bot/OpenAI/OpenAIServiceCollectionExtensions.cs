@@ -15,7 +15,7 @@ namespace Bot.OpenAI
                 var options = sp.GetRequiredService<IOptions<OpenAIOptions>>().Value;
                 client.BaseAddress = new Uri(options.Endpoint);
 
-                client.DefaultRequestHeaders.Add("api-key", options.ApiKey);
+                client.DefaultRequestHeaders.Add("api-key", options.Credential);
                 client.DefaultRequestHeaders.Add("Content-Type", "application/json");
             });
             return services;
@@ -31,8 +31,7 @@ namespace Bot.OpenAI
                 var options = sp.GetRequiredService<IOptions<OpenAIOptions>>().Value;
                 client.BaseAddress = new Uri(options.Endpoint);
 
-                client.DefaultRequestHeaders.Add("api-key", options.ApiKey);
-                client.DefaultRequestHeaders.Add("Content-Type", "application/json");
+                client.DefaultRequestHeaders.Add("api-key", options.Credential);
             });
             return services;
         }

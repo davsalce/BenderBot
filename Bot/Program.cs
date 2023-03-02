@@ -5,11 +5,7 @@ using Bot;
 using Bot.Bots;
 using Bot.CLU;
 using Bot.CQA;
-using Bot.Dialogs;
-using Bot.Dialogs.ChangeLanguage;
-using Bot.Dialogs.MarkEpisodeAsWatched;
 using Bot.DirectLine;
-using Bot.IntentHandlers;
 using Bot.Middleware;
 using Bot.OpenAI;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +14,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
 using MockSeries;
 using System.Net.Http.Headers;
+using TrackSeries.Core.Client;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
@@ -55,31 +52,16 @@ builder.Services.AddSingleton<ConversationAnalysisClient>(servicesProvider =>
     AzureKeyCredential credential = new AzureKeyCredential(CLUOptions.Credential); 
     return new ConversationAnalysisClient(endpoint, credential);
 });
+builder.Services.AddOpenAIClient(builder.Configuration);
+
 builder.Services.AddSingleton<IStorage, MemoryStorage>();
 builder.Services.AddSingleton<ConversationState>();
-builder.Services.AddSingleton<CLUMiddleware>();
-builder.Services.AddSingleton<CQADialog>();
-builder.Services.AddSingleton<TrendingDialog>();
-builder.Services.AddSingleton<SeriesClient>();
-builder.Services.AddTransient<MarkAsWatchedRootDialog>();
-builder.Services.AddSingleton<PendingEpisodesDialog>();
-builder.Services.AddSingleton<RecomendSeriesDialog>();
-builder.Services.AddSingleton<MarkSeasonAsWatchedDialog>();
-builder.Services.AddSingleton<MarkEpisodeAsWatchedDialog>();
-builder.Services.AddSingleton<GetSeriesNameDialog>();
-builder.Services.AddSingleton<GetSeasonDialog>();
-builder.Services.AddSingleton<GetEpisodeDialog>();
-builder.Services.AddTransient<ChangeLanguageDialog>();
-builder.Services.AddSingleton<LanguageMiddleware>();
-builder.Services.AddSingleton<GetLanguageDialog>();
-builder.Services.AddSingleton<DialogHelper>();
 
-builder.Services.AddTransient<IIntentHandler, MarkEpisodeAsWatchedIntentHandler>();
-builder.Services.AddTransient<IIntentHandler, ChangeLanguageIntentHandler>();
-builder.Services.AddTransient<IIntentHandler, PendingEpisodeIntentHandler>();
-builder.Services.AddTransient<IIntentHandler, RecomendSeriesIntentHandler>();
-builder.Services.AddTransient<IIntentHandler, TrendingIntentHander>();
-builder.Services.AddTransient<IIntentHandler, CQAIntentHandler>();
+builder.Services.AddSingleton<CLUMiddleware>();
+builder.Services.AddSingleton<LanguageMiddleware>();
+
+builder.Services.AddIntentHandlers();
+builder.Services.AddDialogs(builder.Configuration);
 
 builder.Services.AddHttpClient<DirectLineClient>(client =>
 {
@@ -88,7 +70,12 @@ builder.Services.AddHttpClient<DirectLineClient>(client =>
     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", directLineOptions.SecretKey);
 });
 
-builder.Services.AddOpenAIClient(builder.Configuration);
+
+builder.Services.AddSingleton<SeriesClient>();
+builder.Services.AddHttpClient<ITrackSeriesClient, TrackSeriesClient>(client =>
+{
+    client.BaseAddress = new Uri("https://api.trackseries.tv/v2/");
+});
 
 WebApplication? app = builder.Build();
 
