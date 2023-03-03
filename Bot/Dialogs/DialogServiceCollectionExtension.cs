@@ -23,6 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<ChangeLanguageDialog>();
             services.AddSingleton<GetLanguageDialog>();
             services.AddSingleton<DialogHelper>();
+            services.AddSingleton<OpenAiCompleteDialog>();
 
             services.AddSingleton<GetTokenDialog>();
             services.Configure<OAuthOptions>(configuration.GetSection(nameof(OAuthOptions)));
