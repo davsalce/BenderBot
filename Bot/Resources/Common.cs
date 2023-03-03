@@ -28,13 +28,13 @@ namespace Bot.Resources
                 followers, status);
 
         /// <summary>
-        ///     en-US
+        ///     en-us
         /// </summary>
         public static string English
             => GetString("English");
 
         /// <summary>
-        ///     es-ES
+        ///     es-es
         /// </summary>
         public static string Spanish
             => GetString("Spanish");

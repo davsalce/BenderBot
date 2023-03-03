@@ -1,8 +1,7 @@
-﻿using Bot.Dialogs;
+﻿using Bot.Bot.Channels.DirectLine;
+using Bot.Dialogs;
 using Bot.Dialogs.ChangeLanguage;
 using Bot.Dialogs.MarkEpisodeAsWatched;
-using Bot.DirectLine;
-using Bot.Middleware;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

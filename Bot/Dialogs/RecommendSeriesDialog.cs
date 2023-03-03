@@ -1,10 +1,10 @@
-﻿using Bot.DirectLine;
-using Bot.OpenAI;
-using Bot.Resources;
+﻿using Bot.Resources;
+using Bot.CognitiveServices.OpenAI;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using TrackSeries.Core.Client;
+using Bot.Bot.Channels.DirectLine;
 
 namespace Bot.Dialogs
 {
@@ -20,11 +20,12 @@ namespace Bot.Dialogs
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog) + nameof(RecommendSeriesDialog), new WaterfallStep[]
              {
-                LogIn,
-                 GetFollowingSeries,
-                 GenerateRecomendations,
-                 SearchRecommendedSeries,
-                 DisplayRecommendations
+                GetToken,
+                GetFollowingSeries,
+                GenerateRecomendations,
+                GetToken,
+                SearchRecommendedSeries,
+                DisplayRecommendations
              }));
             AddDialog(getTokenDialog);
 
@@ -33,9 +34,8 @@ namespace Bot.Dialogs
             InitialDialogId = nameof(WaterfallDialog) + nameof(RecommendSeriesDialog);
         }
 
-        private async Task<DialogTurnResult> LogIn(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> GetToken(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text("Sign in is needed to check your pending episodes!"), cancellationToken);
             return await stepContext.BeginDialogAsync(nameof(GetTokenDialog), cancellationToken: cancellationToken);
         }
 
@@ -45,7 +45,8 @@ namespace Bot.Dialogs
             ICollection<FollowedShowViewModel>? series = default;
             if (!string.IsNullOrEmpty(tokenResponse?.Token))
             {
-                series = await _trackseriesClient.GetFollowedShowsAsync(FollowType.Following, cancellationToken);                
+                _trackseriesClient.SetCurrentUserToken(tokenResponse.Token);
+                series = await _trackseriesClient.GetFollowedShowsAsync(FollowType.Following, cancellationToken);
             }
             return await stepContext.NextAsync(series, cancellationToken);
         }
@@ -53,25 +54,31 @@ namespace Bot.Dialogs
         private async Task<DialogTurnResult> GenerateRecomendations(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var series = stepContext.Result as ICollection<FollowedShowViewModel>;
-            string[]? recommendedSeriesNames = await _openAiClient.GetSeriesRecommendationAsync(series.Select(s=>s.Name));
+            string[]? recommendedSeriesNames = await _openAiClient.GetSeriesRecommendationAsync(series.Select(s => s.Name));
             return await stepContext.NextAsync(recommendedSeriesNames, cancellationToken);
         }
 
         private async Task<DialogTurnResult> SearchRecommendedSeries(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var recommendedSeriesNames = stepContext.Result as string[];
-            var series = new List<SearchShowViewModel>();
+            ICollection<SearchShowModel> series = default;
+            ChannelData channelData = stepContext.Context.Activity.GetChannelData<ChannelData>();
+            if (!string.IsNullOrEmpty(channelData.TokenResponse?.Token))
+            {
+                _trackseriesClient.SetCurrentUserToken(channelData.TokenResponse.Token);
+                series = await _trackseriesClient.SearchShowsByNameAsync(recommendedSeriesNames, cancellationToken);
+            }
             return await stepContext.NextAsync(series, cancellationToken);
         }
 
         private async Task<DialogTurnResult> DisplayRecommendations(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var recommendedSeries = stepContext.Result as ICollection<SearchShowViewModel>;
+            var recommendedSeries = stepContext.Result as ICollection<SearchShowModel>;
             IEnumerable<Attachment>? attachments = recommendedSeries?.Select(s => s.ToAttachment());
 
             var activity = MessageFactory.Carousel(attachments, RecomendSeries.RecomendSeriesDialog_Carousel);
             await stepContext.Context.SendActivityAsync(activity, cancellationToken: cancellationToken);
-            
+
             return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
         }
     }

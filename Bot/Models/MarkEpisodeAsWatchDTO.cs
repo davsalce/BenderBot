@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using static Bot.CLU.CLUPrediction;
+using static Bot.CognitiveServices.CLU.CLUPrediction;
 
 namespace Bot.Models
 {

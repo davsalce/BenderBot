@@ -1,12 +1,11 @@
-﻿using Bot.CLU;
+﻿using Bot.CognitiveServices.CLU;
 using Bot.Resources;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using System.Globalization;
 using System.Reflection;
-using System.Text.Json;
-using static Bot.CLU.CLUPrediction;
+using static Bot.CognitiveServices.CLU.CLUPrediction;
 
 namespace Bot.Dialogs.ChangeLanguage
 {

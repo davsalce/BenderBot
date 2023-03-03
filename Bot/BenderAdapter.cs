@@ -1,4 +1,4 @@
-﻿using Bot.Middleware;
+﻿using Bot.Bot.Middleware;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
 

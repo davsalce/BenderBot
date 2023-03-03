@@ -1,5 +1,5 @@
-﻿using Bot.Models;
-using Bot.Resources;
+﻿using Bot.Resources;
+using Bot.Models;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;

@@ -1,7 +1,7 @@
-﻿using Bot.CLU;
+﻿using Bot.CognitiveServices.CLU;
 using Bot.Dialogs.ChangeLanguage;
+using Bot.Dialogs.IntentHandlers;
 using Bot.Dialogs.MarkEpisodeAsWatched;
-using Bot.IntentHandlers;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 

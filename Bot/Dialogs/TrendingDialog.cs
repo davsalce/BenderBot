@@ -1,4 +1,4 @@
-﻿using Bot.CLU;
+﻿using Bot.CognitiveServices.CLU;
 using Bot.Resources;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
@@ -6,7 +6,7 @@ using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using MockSeries;
 using MockSeries.Models;
-using Entity = Bot.CLU.CLUPrediction.Entity;
+using Entity = Bot.CognitiveServices.CLU.CLUPrediction.Entity;
 
 namespace Bot.Dialogs
 {
