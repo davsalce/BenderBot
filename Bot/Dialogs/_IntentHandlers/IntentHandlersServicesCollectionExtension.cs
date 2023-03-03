@@ -1,4 +1,6 @@
-﻿namespace Bot.Dialogs.IntentHandlers
+﻿using Bot.Dialogs._IntentHandlers;
+
+namespace Bot.Dialogs.IntentHandlers
 {
     public static class IntentHandlersServicesCollectionExtension
     {
@@ -11,7 +13,7 @@
             services.AddTransient<IIntentHandler, RecomendSeriesIntentHandler>();
             services.AddTransient<IIntentHandler, TrendingIntentHander>();
 			services.AddTransient<IIntentHandler, IntentHandlerCancel>();
-			services.AddTransient<IIntentHandler, OpenAiCompleteDialog>();
+			services.AddTransient<IIntentHandler, OpenAIIntentHandler>();
             services.AddTransient<IIntentHandler, CQAIntentHandler>();
 
             return services;
