@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using Microsoft.Bot.Schema;
 
 namespace Bot.Bot.Channels.DirectLine
 {
@@ -33,12 +34,19 @@ namespace Bot.Bot.Channels.DirectLine
             return null;
         }
 
-        public async Task<DirectLineTokenModel> Reconnect(string conversationId, int watermark)
+        public async Task<DirectLineTokenModel> Reconnect(string conversationId, string watermark)
         {
             DirectLineTokenModel directLineToken = await _httpClient.GetFromJsonAsync<DirectLineTokenModel>(
                 $"https://directline.botframework.com/v3/directline/conversations/{conversationId}?watermark={watermark}");
 
             return directLineToken;
         }
+
+        public async Task<ICollection<Activity>> RetrieveActivities(string conversationId, string watermark) 
+        {
+            ICollection<Activity> activities = await _httpClient.GetFromJsonAsync<ICollection<Activity>>(
+				$"https://directline.botframework.com/v3/directline/conversations/{conversationId}/activities?watermark={watermark}");
+            return activities;
+		}
     }
 }

@@ -4,15 +4,15 @@
     {
         public string Credential { get; set; }
         public string Endpoint { get; set; }
-        public SeriesRecommendationOptions? SeriesRecommendations { get; set; }
-        public class SeriesRecommendationOptions
+        public CompletionParametersOptions? CompletionParameters { get; set; }
+        public class CompletionParametersOptions
         {
-            public int Max_tokens { get; set; }
-            public int Temperature { get; set; }
-            public float Frequency_penalty { get; set; }
-            public int Presence_penalty { get; set; }
-            public float Top_p { get; set; }
-            public int Best_of { get; set; }
+            public int Max_tokens { get; set; } = 100;
+            public float Temperature { get; set; } = 0.5F;
+            public float Frequency_penalty { get; set; } = 0.5F;
+            public float Presence_penalty { get; set; } = 0.5F;
+			public float Top_p { get; set; } = 0.5F;
+            public int Best_of { get; set; } = 1;
             public string[] Stop { get; set; }
         }
     }

@@ -99,7 +99,7 @@ app.MapGet("api/directline/generateToken",
 });
 app.MapGet("api/directline/reconnect/{conversationId}", 
     async ([FromRoute] string conversationId,
-            [FromQuery] int watermark, 
+            [FromQuery] string watermark, 
             [FromServices] DirectLineClient directLineClient) =>
 {
     return await directLineClient.Reconnect(conversationId, watermark);

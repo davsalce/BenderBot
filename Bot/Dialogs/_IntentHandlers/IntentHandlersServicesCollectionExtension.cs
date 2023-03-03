@@ -10,8 +10,9 @@
             services.AddTransient<IIntentHandler, PendingEpisodeIntentHandler>();
             services.AddTransient<IIntentHandler, RecomendSeriesIntentHandler>();
             services.AddTransient<IIntentHandler, TrendingIntentHander>();
+			services.AddTransient<IIntentHandler, IntentHandlerCancel>();
+			services.AddTransient<IIntentHandler, OpenAiCompleteDialog>();
             services.AddTransient<IIntentHandler, CQAIntentHandler>();
-            services.AddTransient<IIntentHandler, IntentHandlerCancel>();
 
             return services;
         }

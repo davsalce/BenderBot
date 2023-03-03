@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Options;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -15,19 +16,42 @@ namespace Bot.CognitiveServices.OpenAI
             _options = options.Value;
         }
 
-        /// Method that calls Azure OpenAI completions endpoint using options.SeriesRecommendationOptions and returning an OpenAIResponse
-        public async Task<string[]?> GetSeriesRecommendationAsync(IEnumerable<string> enumerable)
+        public async Task<string> GenerateAnswerWithContext(ICollection<Activity> activities, string userId)
+        {
+			var prompt = new
+			{
+				Prompt = PrepareConversation(activities, userId),
+				Max_tokens = _options.CompletionParameters.Max_tokens,
+				Temperature = _options.CompletionParameters.Temperature,
+				Frequency_penalty = _options.CompletionParameters.Frequency_penalty,
+				Presence_penalty = _options.CompletionParameters.Presence_penalty,
+				Top_p = _options.CompletionParameters.Top_p,
+				Best_of = _options.CompletionParameters.Best_of,
+				Stop = "User"
+			};
+			var request = new HttpRequestMessage(HttpMethod.Post, "openai/deployments/text-davinci-003/completions?api-version=2022-12-01")
+			{
+				Content = new StringContent(JsonSerializer.Serialize(prompt, new JsonSerializerOptions(JsonSerializerDefaults.Web)), Encoding.UTF8, "application/json")
+			};
+			var response = await _httpClient.SendAsync(request);
+
+			var content = await response.Content.ReadFromJsonAsync<OpenAIResponse>();
+            return content?.Choices?.FirstOrDefault()?.Text;
+		}
+
+		/// Method that calls Azure OpenAI completions endpoint using options.SeriesRecommendationOptions and returning an OpenAIResponse
+		public async Task<string[]?> GetSeriesRecommendationAsync(IEnumerable<string> seriesNames)
         {
             var prompt = new
-            {
-                Prompt = GetPrompt(enumerable),
-                _options.SeriesRecommendations.Max_tokens,
-                _options.SeriesRecommendations.Temperature,
-                _options.SeriesRecommendations.Frequency_penalty,
-                _options.SeriesRecommendations.Presence_penalty,
-                _options.SeriesRecommendations.Top_p,
-                _options.SeriesRecommendations.Best_of,
-                _options.SeriesRecommendations.Stop
+			{
+                Prompt = GetPrompt(seriesNames),
+                Max_tokens = _options.CompletionParameters.Max_tokens,
+                Temperature = _options.CompletionParameters.Temperature,
+                Frequency_penalty = _options.CompletionParameters.Frequency_penalty,
+                Presence_penalty = _options.CompletionParameters.Presence_penalty,
+				Top_p = _options.CompletionParameters.Top_p,
+				Best_of =_options.CompletionParameters.Best_of,
+                Stop = "user"
             };
             var request = new HttpRequestMessage(HttpMethod.Post, "openai/deployments/text-davinci-003/completions?api-version=2022-12-01")
             {
@@ -39,8 +63,30 @@ namespace Bot.CognitiveServices.OpenAI
             return content?.Choices?.FirstOrDefault()?.Text.Split(',');
         }
 
-        /// Get prompt given a list of seriesId
-        private string GetPrompt(IEnumerable<string> seriesNames)
+
+		internal string PrepareConversation(ICollection<Activity> activities, string userId)
+		{
+			StringBuilder prompt = new StringBuilder();
+            prompt.Append("This is a conversation between Futurama's robot: 'Bender' and a user: ");
+
+			foreach (var activity in activities)
+            {
+                if (activity.From.Id == userId)
+				{
+					prompt.Append("User: ");
+                    prompt.AppendLine(activity.Text);
+				}
+                else
+                {
+					prompt.Append("Bender: ");
+					prompt.AppendLine(activity.Text);
+				}
+            }
+            return prompt.ToString();
+		}
+
+		/// Get prompt given a list of seriesId
+		private string GetPrompt(IEnumerable<string> seriesNames)
         {
             StringBuilder prompt = new StringBuilder();
 

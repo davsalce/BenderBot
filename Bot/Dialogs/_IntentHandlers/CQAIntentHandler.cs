@@ -10,6 +10,7 @@ namespace Bot.Dialogs.IntentHandlers
     {
         private readonly ConversationState _conversationState;
         private CQADialog _cQADialog;
+
         public CQAIntentHandler(ConversationState conversationState, CQADialog cQADialog) : base(conversationState)
         {
             _conversationState = conversationState;
