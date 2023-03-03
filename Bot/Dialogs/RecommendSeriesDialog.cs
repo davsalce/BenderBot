@@ -13,7 +13,7 @@ namespace Bot.Dialogs
         private readonly ITrackSeriesClient _trackseriesClient;
         private readonly OpenAIClient _openAiClient;
 
-        public RecommendSeriesDialog(ITrackSeriesClient trackseriesClient, OpenAIClient openAiClient)
+        public RecommendSeriesDialog(ITrackSeriesClient trackseriesClient, OpenAIClient openAiClient, GetTokenDialog getTokenDialog)
         {
             _trackseriesClient = trackseriesClient;
             _openAiClient = openAiClient;
@@ -26,6 +26,7 @@ namespace Bot.Dialogs
                  SearchRecommendedSeries,
                  DisplayRecommendations
              }));
+            AddDialog(getTokenDialog);
 
             AddDialog(new TextPrompt(nameof(TextPrompt)));
 

@@ -10,8 +10,8 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddDialogs(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddSingleton<RootDialog>();
             services.AddSingleton<CQADialog>();
-
             services.AddSingleton<TrendingDialog>();
             services.AddTransient<MarkAsWatchedRootDialog>();
             services.AddSingleton<PendingEpisodesDialog>();

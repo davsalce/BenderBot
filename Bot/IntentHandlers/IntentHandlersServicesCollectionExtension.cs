@@ -1,5 +1,6 @@
 ﻿
 using Bot.IntentHandlers;
+using Intelequia.Core.TurismoTenerife.Bot.IntentHandlers;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -14,6 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IIntentHandler, RecomendSeriesIntentHandler>();
             services.AddTransient<IIntentHandler, TrendingIntentHander>();
             services.AddTransient<IIntentHandler, CQAIntentHandler>();
+            services.AddTransient<IIntentHandler, IntentHandlerCancel>();
 
             return services;
         }

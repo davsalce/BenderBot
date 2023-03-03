@@ -11,23 +11,12 @@ namespace Bot.Bots
     public class BenderBot : ActivityHandler
     {
         private readonly ConversationState _conversationState;
-        private readonly IEnumerable<IIntentHandler> _intentHandlers;
-        private readonly CQADialog _cQADialog;
-        private readonly TrendingDialog _trendingDialog;
-        private readonly MarkAsWatchedRootDialog _markEpisodeAsWatched;
-        private readonly PendingEpisodesDialog _pendingEpisodesDialog;
-        private readonly RecommendSeriesDialog _recomendSeriesDialog;
-        private readonly ChangeLanguageDialog _changeLanguageDialog;
-        public BenderBot(ConversationState conversationState, IEnumerable<IIntentHandler> intentHandlers, CQADialog CQADialog, TrendingDialog trendingDialog, MarkAsWatchedRootDialog markEpisodeAsWatched, PendingEpisodesDialog pendingEpisodesDialog, RecommendSeriesDialog recomendSeriesDialog, ChangeLanguageDialog changeLanguageDialog)
+        private readonly RootDialog _rootDialog;
+
+        public BenderBot(ConversationState conversationState, RootDialog rootDialog)
         {
-            this._conversationState = conversationState;
-            _intentHandlers = intentHandlers;
-            _cQADialog = CQADialog;
-            _trendingDialog = trendingDialog;
-            _markEpisodeAsWatched = markEpisodeAsWatched;
-            _pendingEpisodesDialog = pendingEpisodesDialog;
-            _recomendSeriesDialog = recomendSeriesDialog;
-            _changeLanguageDialog = changeLanguageDialog;
+            _conversationState = conversationState;
+            _rootDialog = rootDialog;
         }
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
@@ -39,39 +28,17 @@ namespace Bot.Bots
             ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
             await turnContext.SendActivityAsync("Hola", cancellationToken: cancellationToken);
+        }
 
+        protected override async Task OnTokenResponseEventAsync(ITurnContext<IEventActivity> turnContext, CancellationToken cancellationToken)
+        {
+            // Run the Dialog with the new Token Response Event Activity.
+            await _rootDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
         }
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            DialogSet dialogSet = new DialogSet(_conversationState.CreateProperty<DialogState>("DialogState"));
-
-            dialogSet.Add(_recomendSeriesDialog);
-            dialogSet.Add(_pendingEpisodesDialog);
-            dialogSet.Add(_markEpisodeAsWatched);
-            dialogSet.Add(_trendingDialog);
-            dialogSet.Add(_cQADialog);
-            dialogSet.Add(_changeLanguageDialog);
-
-            DialogContext dialogContext = await dialogSet.CreateContextAsync(turnContext, cancellationToken);
-            DialogTurnResult results = await dialogContext.ContinueDialogAsync(cancellationToken);
-
-            if (results.Status == DialogTurnStatus.Empty)
-            {
-
-                IIntentHandler intentHandler = default;
-
-                foreach (var handler in _intentHandlers)
-                {
-                    if (await handler.IsValidAsync(turnContext, cancellationToken))
-                    {
-                        intentHandler = handler;                     
-                        break;
-                    }
-                }
-                if (intentHandler == null) intentHandler = _intentHandlers.FirstOrDefault(ih => ih.IsDefault());
-                await intentHandler.Handle(turnContext, cancellationToken);
-            }
+            await _rootDialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
         }
     }
 }

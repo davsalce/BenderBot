@@ -15,12 +15,17 @@ namespace Bot.IntentHandlers
             _pendingEpisode = pendingEpisode;
         }
 
-        public override async Task Handle(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
+        public override async Task Handle(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             await _pendingEpisode.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
         }
 
-        public override async Task<bool> IsValidAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
+        public override async Task<DialogTurnResult> Handle(DialogContext dialogContext, CancellationToken cancellationToken)
+        {
+            return await dialogContext.BeginDialogAsync(_pendingEpisode.Id, null, cancellationToken);
+        }
+
+        public override async Task<bool> IsValidAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
             return (await TopIntentAsync(turnContext, cancellationToken)).Equals("PendingEpisodes");
         }
