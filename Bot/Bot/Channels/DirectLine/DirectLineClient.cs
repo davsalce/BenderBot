@@ -1,7 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Bot.Schema;
 
 namespace Bot.Bot.Channels.DirectLine
 {

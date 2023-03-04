@@ -54,6 +54,7 @@ builder.Services.AddSingleton<ConversationAnalysisClient>(servicesProvider =>
     AzureKeyCredential credential = new AzureKeyCredential(CLUOptions.Credential); 
     return new ConversationAnalysisClient(endpoint, credential);
 });
+
 builder.Services.AddOpenAIClient(builder.Configuration);
 
 builder.Services.AddSingleton<IStorage, MemoryStorage>();
