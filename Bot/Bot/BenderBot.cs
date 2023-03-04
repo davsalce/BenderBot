@@ -24,7 +24,7 @@ namespace Bot.Bots
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded,
             ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
-            await turnContext.SendActivityAsync("Hola", cancellationToken: cancellationToken);
+            await turnContext.SendActivityAsync("Qué pasa tron", cancellationToken: cancellationToken);
         }
 
         protected override async Task OnTokenResponseEventAsync(ITurnContext<IEventActivity> turnContext, CancellationToken cancellationToken)

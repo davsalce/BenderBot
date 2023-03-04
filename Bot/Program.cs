@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
+using Microsoft.Bot.Connector.DirectLine;
 using MockSeries;
 using System.Net.Http.Headers;
 using TrackSeries.Core.Client;
@@ -64,12 +65,13 @@ builder.Services.AddSingleton<LanguageMiddleware>();
 builder.Services.AddIntentHandlers();
 builder.Services.AddDialogs(builder.Configuration);
 
-builder.Services.AddHttpClient<DirectLineClient>(client =>
+builder.Services.AddHttpClient<Bot.Bot.Channels.DirectLine.DirectLineClient>(client =>
 {
     DirectLineOptions directLineOptions = builder.Configuration.GetSection(nameof(DirectLineOptions)).Get<DirectLineOptions>();
     client.BaseAddress = new Uri(directLineOptions.BaseUrl);
     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", directLineOptions.SecretKey);
 });
+builder.Services.AddSingleton<DirectLineSDKClient>();
 
 
 builder.Services.AddSingleton<SeriesClient>();
@@ -93,14 +95,14 @@ app.MapPost("api/messages", async context =>
 
 });
 app.MapGet("api/directline/generateToken", 
-    async (DirectLineClient directLineClient) =>
+    async (Bot.Bot.Channels.DirectLine.DirectLineClient directLineClient) =>
 {
     return await directLineClient.GenerateTokenAsync();
 });
 app.MapGet("api/directline/reconnect/{conversationId}", 
     async ([FromRoute] string conversationId,
             [FromQuery] string watermark, 
-            [FromServices] DirectLineClient directLineClient) =>
+            [FromServices] Bot.Bot.Channels.DirectLine.DirectLineClient directLineClient) =>
 {
     return await directLineClient.Reconnect(conversationId, watermark);
 });

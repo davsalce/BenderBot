@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 using Microsoft.Bot.Schema;
 
@@ -29,6 +30,7 @@ namespace Bot.Bot.Channels.DirectLine
             if (response.IsSuccessStatusCode)
             {
                 DirectLineTokenModel token = await response.Content.ReadFromJsonAsync<DirectLineTokenModel>();
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
                 return token;
             }
             return null;
@@ -42,9 +44,9 @@ namespace Bot.Bot.Channels.DirectLine
             return directLineToken;
         }
 
-        public async Task<ICollection<Activity>> RetrieveActivities(string conversationId, string watermark) 
+        public async Task<DirectLineActivitiesResult> RetrieveActivities(string conversationId, string watermark) 
         {
-            ICollection<Activity> activities = await _httpClient.GetFromJsonAsync<ICollection<Activity>>(
+            var activities = await _httpClient.GetFromJsonAsync<DirectLineActivitiesResult>(
 				$"https://directline.botframework.com/v3/directline/conversations/{conversationId}/activities?watermark={watermark}");
             return activities;
 		}

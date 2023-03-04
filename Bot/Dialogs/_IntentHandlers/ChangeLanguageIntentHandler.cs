@@ -27,7 +27,8 @@ namespace Bot.Dialogs.IntentHandlers
 
         public override async Task<bool> IsValidAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            return (await TopIntentAsync(turnContext, cancellationToken)).Equals("ChangeLanguage");
+            //return (await TopIntentAsync(turnContext, cancellationToken)).Equals("ChangeLanguage");
+            return false;
         }
     }
 }

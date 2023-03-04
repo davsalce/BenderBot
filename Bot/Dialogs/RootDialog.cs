@@ -20,7 +20,8 @@ namespace Bot.Dialogs
             MarkAsWatchedRootDialog markEpisodeAsWatched,
             PendingEpisodesDialog pendingEpisodesDialog,
             RecommendSeriesDialog recomendSeriesDialog,
-            ChangeLanguageDialog changeLanguageDialog)
+            ChangeLanguageDialog changeLanguageDialog,
+            OpenAiCompleteDialog openAiCompleteDialog)
         {
             _conversationState = conversationState;
             _intentHandlers = intentHandlers;
@@ -36,6 +37,7 @@ namespace Bot.Dialogs
             AddDialog(pendingEpisodesDialog);
             AddDialog(recomendSeriesDialog);
             AddDialog(changeLanguageDialog);
+            AddDialog(openAiCompleteDialog);
 
             InitialDialogId = nameof(WaterfallDialog);
         }
