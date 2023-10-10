@@ -10,25 +10,26 @@ namespace Bot.Dialogs
 {
     public class RecommendSeriesDialog : ComponentDialog
     {
+        private readonly ConversationState _conversationState;
         private readonly ITrackSeriesClient _trackseriesClient;
         private readonly OpenAIClient _openAiClient;
 
-        public RecommendSeriesDialog(ITrackSeriesClient trackseriesClient, OpenAIClient openAiClient, GetTokenDialog getTokenDialog)
+        public RecommendSeriesDialog(ConversationState conversationState, ITrackSeriesClient trackseriesClient, OpenAIClient openAiClient, GetTokenDialog getTokenDialog)
         {
+            _conversationState = conversationState;
             _trackseriesClient = trackseriesClient;
             _openAiClient = openAiClient;
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog) + nameof(RecommendSeriesDialog), new WaterfallStep[]
              {
                 GetToken,
+                SetToken,
                 GetFollowingSeries,
-                GenerateRecomendations,
-                GetToken,
+                GenerateRecomendations,                
                 SearchRecommendedSeries,
                 DisplayRecommendations
              }));
             AddDialog(getTokenDialog);
-
             AddDialog(new TextPrompt(nameof(TextPrompt)));
 
             InitialDialogId = nameof(WaterfallDialog) + nameof(RecommendSeriesDialog);
@@ -37,6 +38,13 @@ namespace Bot.Dialogs
         private async Task<DialogTurnResult> GetToken(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             return await stepContext.BeginDialogAsync(nameof(GetTokenDialog), cancellationToken: cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> SetToken(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            IStatePropertyAccessor<TokenResponse> directLineTokenPropertyAccessor = _conversationState.CreateProperty<TokenResponse>("DirectLineToken");
+            await directLineTokenPropertyAccessor.SetAsync(stepContext.Context, (TokenResponse)stepContext.Result, cancellationToken: cancellationToken);
+            return await stepContext.NextAsync(stepContext.Result, cancellationToken);
         }
 
         private async Task<DialogTurnResult> GetFollowingSeries(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -62,10 +70,13 @@ namespace Bot.Dialogs
         {
             var recommendedSeriesNames = stepContext.Result as string[];
             ICollection<SearchShowModel> series = default;
-            ChannelData channelData = stepContext.Context.Activity.GetChannelData<ChannelData>();
-            if (!string.IsNullOrEmpty(channelData.TokenResponse?.Token))
+
+            IStatePropertyAccessor<TokenResponse> directLineTokenPropertyAccessor = _conversationState.CreateProperty<TokenResponse>("DirectLineToken");
+            TokenResponse? tokenResponse = await directLineTokenPropertyAccessor.GetAsync(stepContext.Context, cancellationToken: cancellationToken);
+
+            if (!string.IsNullOrEmpty(tokenResponse?.Token))
             {
-                _trackseriesClient.SetCurrentUserToken(channelData.TokenResponse.Token);
+                _trackseriesClient.SetCurrentUserToken(tokenResponse.Token);
                 series = await _trackseriesClient.SearchShowsByNameAsync(recommendedSeriesNames, cancellationToken);
             }
             return await stepContext.NextAsync(series, cancellationToken);

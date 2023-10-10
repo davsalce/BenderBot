@@ -1,0 +1,810 @@
+{
+    "projectFileVersion": "2022-10-01-preview",
+    "stringIndexType": "Utf16CodeUnit",
+    "metadata": {
+        "projectKind": "Conversation",
+        "settings": {
+            "confidenceThreshold": 0,
+            "normalizeCasing": false
+        },
+        "projectName": "ts-bot-conversationLenguageUndertanding",
+        "multilingual": true,
+        "description": "",
+        "language": "es"
+    },
+    "assets": {
+        "projectKind": "Conversation",
+        "intents": [
+            {
+                "category": "None"
+            },
+            {
+                "category": "PendingEpisode"
+            },
+            {
+                "category": "TrendingSeries"
+            },
+            {
+                "category": "RecomenderSeries"
+            },
+            {
+                "category": "MarkWatchEpisode"
+            }
+        ],
+        "entities": [
+            {
+                "category": "DateTime",
+                "compositionSetting": "combineComponents",
+                "prebuilts": [
+                    {
+                        "category": "DateTime"
+                    }
+                ]
+            },
+            {
+                "category": "Serie",
+                "compositionSetting": "combineComponents"
+            },
+            {
+                "category": "Episode",
+                "compositionSetting": "combineComponents",
+                "prebuilts": [
+                    {
+                        "category": "Quantity.Number"
+                    },
+                    {
+                        "category": "Quantity.Ordinal"
+                    }
+                ]
+            },
+            {
+                "category": "Season",
+                "compositionSetting": "combineComponents"
+            }
+        ],
+        "utterances": [
+            {
+                "text": "completado el 3x02 de Siete vidas",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [
+                    {
+                        "category": "Season",
+                        "offset": 14,
+                        "length": 1
+                    },
+                    {
+                        "category": "Episode",
+                        "offset": 16,
+                        "length": 2
+                    },
+                    {
+                        "category": "Serie",
+                        "offset": 22,
+                        "length": 11
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "visto el capitulo 3 de la septima temporada de the flash",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [
+                    {
+                        "category": "Episode",
+                        "offset": 18,
+                        "length": 1
+                    },
+                    {
+                        "category": "Season",
+                        "offset": 26,
+                        "length": 7
+                    },
+                    {
+                        "category": "Serie",
+                        "offset": 47,
+                        "length": 9
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "visto el quinto capitulo de la tercera temporada de juego de tronos",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [
+                    {
+                        "category": "Episode",
+                        "offset": 9,
+                        "length": 6
+                    },
+                    {
+                        "category": "Season",
+                        "offset": 31,
+                        "length": 7
+                    },
+                    {
+                        "category": "Serie",
+                        "offset": 52,
+                        "length": 15
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "ya he terminado el ultimo capitulo de la 2 temporada de arrow",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [
+                    {
+                        "category": "Episode",
+                        "offset": 19,
+                        "length": 6
+                    },
+                    {
+                        "category": "Season",
+                        "offset": 41,
+                        "length": 1
+                    },
+                    {
+                        "category": "Serie",
+                        "offset": 56,
+                        "length": 5
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "top series",
+                "language": "es",
+                "intent": "TrendingSeries",
+                "entities": [],
+                "dataset": "Test"
+            },
+            {
+                "text": "me aburro no se que ver",
+                "language": "es",
+                "intent": "RecomenderSeries",
+                "entities": [],
+                "dataset": "Test"
+            },
+            {
+                "text": "series mas vistas ",
+                "language": "es",
+                "intent": "TrendingSeries",
+                "entities": [],
+                "dataset": "Test"
+            },
+            {
+                "text": "me he terminado todas mis series",
+                "language": "es",
+                "intent": "RecomenderSeries",
+                "entities": [],
+                "dataset": "Test"
+            },
+            {
+                "text": "que series ver ",
+                "language": "es",
+                "intent": "RecomenderSeries",
+                "entities": [],
+                "dataset": "Test"
+            },
+            {
+                "text": "que capitulos no he visto",
+                "language": "es",
+                "intent": "PendingEpisode",
+                "entities": [],
+                "dataset": "Test"
+            },
+            {
+                "text": "que episodios pendientes tengo",
+                "language": "es",
+                "intent": "PendingEpisode",
+                "entities": [],
+                "dataset": "Test"
+            },
+            {
+                "text": "me gusta barrer",
+                "language": "es",
+                "intent": "None",
+                "entities": [],
+                "dataset": "Test"
+            },
+            {
+                "text": "que tal esta tu abuela",
+                "language": "es",
+                "intent": "None",
+                "entities": [],
+                "dataset": "Test"
+            },
+            {
+                "text": "ultimo capitulo visto de la 1 temporada de Friends",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [
+                    {
+                        "category": "Episode",
+                        "offset": 0,
+                        "length": 6
+                    },
+                    {
+                        "category": "Season",
+                        "offset": 28,
+                        "length": 1
+                    },
+                    {
+                        "category": "Serie",
+                        "offset": 43,
+                        "length": 7
+                    }
+                ],
+                "dataset": "Test"
+            },
+            {
+                "text": "marcame el primer episodio de la quinta temporada de los serrano",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [
+                    {
+                        "category": "Episode",
+                        "offset": 11,
+                        "length": 6
+                    },
+                    {
+                        "category": "Season",
+                        "offset": 33,
+                        "length": 6
+                    },
+                    {
+                        "category": "Serie",
+                        "offset": 53,
+                        "length": 11
+                    }
+                ],
+                "dataset": "Test"
+            },
+            {
+                "text": "me gustan las televisiones planas",
+                "language": "es",
+                "intent": "None",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "quiero salir de fiesta",
+                "language": "es",
+                "intent": "None",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "me gustan las matematicas",
+                "language": "es",
+                "intent": "None",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "tres tristes tigres comen trigo en un trigal",
+                "language": "es",
+                "intent": "None",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "mi nombre es ralph",
+                "language": "es",
+                "intent": "None",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "quiero un perro",
+                "language": "es",
+                "intent": "None",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "se me han muerto las plantas",
+                "language": "es",
+                "intent": "None",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "me quiero ir a la playa",
+                "language": "es",
+                "intent": "None",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "que tiempo hace hoy",
+                "language": "es",
+                "intent": "None",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "me gustan las lentejas",
+                "language": "es",
+                "intent": "None",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "tengo caca",
+                "language": "es",
+                "intent": "None",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "que quiero tirar de un puente",
+                "language": "es",
+                "intent": "None",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "quien es tu prima",
+                "language": "es",
+                "intent": "None",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "termine el episodio 2x07 de fringe",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [
+                    {
+                        "category": "Season",
+                        "offset": 20,
+                        "length": 1
+                    },
+                    {
+                        "category": "Episode",
+                        "offset": 22,
+                        "length": 2
+                    },
+                    {
+                        "category": "Serie",
+                        "offset": 28,
+                        "length": 6
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "marcar como visto el capitulo pendiente",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "que ver hoy ",
+                "language": "es",
+                "intent": "PendingEpisode",
+                "entities": [
+                    {
+                        "category": "DateTime",
+                        "offset": 8,
+                        "length": 3
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "capitulo terminado",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "episodios que no he visto",
+                "language": "es",
+                "intent": "PendingEpisode",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "que capítulos tengo pendientes",
+                "language": "es",
+                "intent": "PendingEpisode",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "top series que no he visto ",
+                "language": "es",
+                "intent": "RecomenderSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "grandes series de la historia",
+                "language": "es",
+                "intent": "RecomenderSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "series que no te puedes perder",
+                "language": "es",
+                "intent": "RecomenderSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "series que son recomendables ver",
+                "language": "es",
+                "intent": "RecomenderSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "series que no he visto",
+                "language": "es",
+                "intent": "RecomenderSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "que series nuevas hay disponibles",
+                "language": "es",
+                "intent": "RecomenderSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "me apetece ver una series nueva",
+                "language": "es",
+                "intent": "RecomenderSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "que esta viendo la gente ",
+                "language": "es",
+                "intent": "TrendingSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "series con mas capítulos vistos",
+                "language": "es",
+                "intent": "TrendingSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "series con mas seguidores",
+                "language": "es",
+                "intent": "TrendingSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "series de moda ",
+                "language": "es",
+                "intent": "TrendingSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "series mas famosas del mes",
+                "language": "es",
+                "intent": "TrendingSeries",
+                "entities": [
+                    {
+                        "category": "DateTime",
+                        "offset": 23,
+                        "length": 3
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "cuales son las mejores series ",
+                "language": "es",
+                "intent": "TrendingSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "top series del dia",
+                "language": "es",
+                "intent": "TrendingSeries",
+                "entities": [
+                    {
+                        "category": "DateTime",
+                        "offset": 15,
+                        "length": 3
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "series con mas visualizaciones",
+                "language": "es",
+                "intent": "TrendingSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "series mas vistas del mes",
+                "language": "es",
+                "intent": "TrendingSeries",
+                "entities": [
+                    {
+                        "category": "DateTime",
+                        "offset": 22,
+                        "length": 3
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "series mas vistas hoy",
+                "language": "es",
+                "intent": "TrendingSeries",
+                "entities": [
+                    {
+                        "category": "DateTime",
+                        "offset": 18,
+                        "length": 3
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "que series son las mas vistas esta semana",
+                "language": "es",
+                "intent": "TrendingSeries",
+                "entities": [
+                    {
+                        "category": "DateTime",
+                        "offset": 30,
+                        "length": 11
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "cuales son las series mas vistas",
+                "language": "es",
+                "intent": "TrendingSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "no estoy viendo ninguna serie necesito una",
+                "language": "es",
+                "intent": "RecomenderSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "no se que ver ",
+                "language": "es",
+                "intent": "RecomenderSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "que series ver",
+                "language": "es",
+                "intent": "RecomenderSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "me he quedado sin series",
+                "language": "es",
+                "intent": "RecomenderSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "recomiendame una serie",
+                "language": "es",
+                "intent": "RecomenderSeries",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "que episodios me faltan por ver de big bang theory",
+                "language": "es",
+                "intent": "PendingEpisode",
+                "entities": [
+                    {
+                        "category": "Serie",
+                        "offset": 35,
+                        "length": 15
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "muéstrame cuantos capítulos me faltan de Friends",
+                "language": "es",
+                "intent": "PendingEpisode",
+                "entities": [
+                    {
+                        "category": "Serie",
+                        "offset": 41,
+                        "length": 7
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "que nuevas temporadas han empezado de las series que sigo ",
+                "language": "es",
+                "intent": "PendingEpisode",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "ha empezado la nueva temporada de Lucifer",
+                "language": "es",
+                "intent": "PendingEpisode",
+                "entities": [
+                    {
+                        "category": "Serie",
+                        "offset": 34,
+                        "length": 7
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "han salido nuevos capitulos",
+                "language": "es",
+                "intent": "PendingEpisode",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "que capitulos me faltan por ver",
+                "language": "es",
+                "intent": "PendingEpisode",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "Cuantos episodios pendientes tengo",
+                "language": "es",
+                "intent": "PendingEpisode",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "visto capitulo pendiente de Suits",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [
+                    {
+                        "category": "Serie",
+                        "offset": 28,
+                        "length": 5
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "capitulo visto de breaking bad",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [
+                    {
+                        "category": "Serie",
+                        "offset": 18,
+                        "length": 12
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "visto el primer capitulo de sherlock",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [
+                    {
+                        "category": "Episode",
+                        "offset": 9,
+                        "length": 6
+                    },
+                    {
+                        "category": "Serie",
+                        "offset": 28,
+                        "length": 8
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "visto el ultimo capitulo de los serrano",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [
+                    {
+                        "category": "Episode",
+                        "offset": 9,
+                        "length": 6
+                    },
+                    {
+                        "category": "Serie",
+                        "offset": 28,
+                        "length": 11
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "capitulo visto de lucifer",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [
+                    {
+                        "category": "Serie",
+                        "offset": 18,
+                        "length": 7
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "ya he visto el capitulo 101 de the big bang theroy",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [
+                    {
+                        "category": "Season",
+                        "offset": 24,
+                        "length": 1
+                    },
+                    {
+                        "category": "Episode",
+                        "offset": 25,
+                        "length": 2
+                    },
+                    {
+                        "category": "Serie",
+                        "offset": 31,
+                        "length": 19
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Márcame como visto el episodio 1x01 de Westworld",
+                "language": "es",
+                "intent": "MarkWatchEpisode",
+                "entities": [
+                    {
+                        "category": "Season",
+                        "offset": 31,
+                        "length": 1
+                    },
+                    {
+                        "category": "Episode",
+                        "offset": 33,
+                        "length": 2
+                    },
+                    {
+                        "category": "Serie",
+                        "offset": 39,
+                        "length": 9
+                    }
+                ],
+                "dataset": "Train"
+            }
+        ]
+    }
+}

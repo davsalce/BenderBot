@@ -1,5 +1,4 @@
 ﻿using Bot.Bot.Channels.DirectLine;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Extensions.Options;
 
@@ -33,7 +32,6 @@ namespace Bot.Dialogs
 
         private async Task<DialogTurnResult> LogIn(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text("Sign in is needed to check your pending episodes!"), cancellationToken);
             return await stepContext.BeginDialogAsync(nameof(OAuthPrompt), cancellationToken: cancellationToken);
         }
     }

@@ -1,12 +1,12 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-
 namespace Bot.Bot.Channels.DirectLine
 {
     public class DirectLineClient
     {
         private readonly HttpClient _httpClient;
+        private const string BaseUrl = "https://directline.botframework.com/v3/directline";
 
         public DirectLineClient(HttpClient httpClient)
         {
@@ -22,9 +22,8 @@ namespace Bot.Bot.Channels.DirectLine
             };
 
             var jsonPostBody = JsonSerializer.Serialize(postBody);
-
             var stringContent = new StringContent(jsonPostBody, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("https://directline.botframework.com/v3/directline/tokens/generate", stringContent);
+            var response = await _httpClient.PostAsync($"{BaseUrl}/tokens/generate", stringContent);
 
             if (response.IsSuccessStatusCode)
             {
@@ -32,22 +31,20 @@ namespace Bot.Bot.Channels.DirectLine
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
                 return token;
             }
+
             return null;
         }
 
         public async Task<DirectLineTokenModel> Reconnect(string conversationId, string watermark)
         {
-            DirectLineTokenModel directLineToken = await _httpClient.GetFromJsonAsync<DirectLineTokenModel>(
-                $"https://directline.botframework.com/v3/directline/conversations/{conversationId}?watermark={watermark}");
-
-            return directLineToken;
+            return await _httpClient.GetFromJsonAsync<DirectLineTokenModel>(
+                $"{BaseUrl}/conversations/{conversationId}?watermark={watermark}");
         }
 
-        public async Task<DirectLineActivitiesResult> RetrieveActivities(string conversationId, string watermark) 
+        public async Task<DirectLineActivitiesResult> RetrieveActivities(string conversationId, string watermark)
         {
-            var activities = await _httpClient.GetFromJsonAsync<DirectLineActivitiesResult>(
-				$"https://directline.botframework.com/v3/directline/conversations/{conversationId}/activities?watermark={watermark}");
-            return activities;
-		}
+            return await _httpClient.GetFromJsonAsync<DirectLineActivitiesResult>(
+                $"{BaseUrl}/conversations/{conversationId}/activities?watermark={watermark}");
+        }
     }
 }

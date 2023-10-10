@@ -21,14 +21,14 @@ namespace Bot.CognitiveServices.OpenAI
         {
             var prompt = new
             {
-                Prompt = PrepareConversation(activities, userId),
-                Max_tokens = _options.CompletionParameters.Max_tokens,
-                Temperature = _options.CompletionParameters.Temperature,
-                Frequency_penalty = _options.CompletionParameters.Frequency_penalty,
-                Presence_penalty = _options.CompletionParameters.Presence_penalty,
-                Top_p = _options.CompletionParameters.Top_p,
-                Best_of = _options.CompletionParameters.Best_of,
-                Stop = "User"
+                prompt = PrepareConversation(activities, userId),
+                max_tokens = 500,
+                temperature = 1,
+                frequency_penalty = 1.0,
+                presence_penalty = 0,
+                top_p = 0.5,
+                best_of = 1,
+                stop = "User"
             };
             var request = new HttpRequestMessage(HttpMethod.Post, "openai/deployments/text-davinci-003/completions?api-version=2022-12-01")
             {
@@ -45,14 +45,13 @@ namespace Bot.CognitiveServices.OpenAI
         {
             var prompt = new
             {
-                Prompt = GetPrompt(seriesNames),
-                Max_tokens = _options.CompletionParameters.Max_tokens,
-                Temperature = _options.CompletionParameters.Temperature,
-                Frequency_penalty = _options.CompletionParameters.Frequency_penalty,
-                Presence_penalty = _options.CompletionParameters.Presence_penalty,
-                Top_p = _options.CompletionParameters.Top_p,
-                Best_of = _options.CompletionParameters.Best_of,
-                Stop = "user"
+                prompt = GetPrompt(seriesNames),
+                max_tokens = 500,
+                temperature = 1,
+                frequency_penalty = 1.0,
+                presence_penalty = 0,
+                top_p = 0.5,
+                best_of = 1
             };
             var request = new HttpRequestMessage(HttpMethod.Post, "openai/deployments/text-davinci-003/completions?api-version=2022-12-01")
             {
@@ -68,7 +67,7 @@ namespace Bot.CognitiveServices.OpenAI
         internal string PrepareConversation(DirectLineActivitiesResult activities, string userId)
         {
             StringBuilder prompt = new StringBuilder();
-            prompt.Append("This is a conversation between Futurama's robot: 'Bender' and a user: ");
+            prompt.Append("This is a conversation between Futurama's robot: 'Bender' and a user. Bender is witty, rude and mocking: ");
 
             foreach (var activity in activities.activities)
             {
